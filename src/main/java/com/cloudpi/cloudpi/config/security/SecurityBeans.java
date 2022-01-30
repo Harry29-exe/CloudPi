@@ -1,4 +1,4 @@
-package com.cloudpi.cloudpi.config;
+package com.cloudpi.cloudpi.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
