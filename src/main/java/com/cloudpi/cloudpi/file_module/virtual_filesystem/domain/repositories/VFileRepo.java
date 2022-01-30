@@ -7,13 +7,25 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface FileRepo extends JpaRepository<VFile, Long> {
+public interface VFileRepo extends JpaRepository<VFile, Long> {
+
+    Optional<VFile> findByPath(String path);
+
+    Optional<VFile> findByPubId(UUID pubId);
+
+    //todo test it
+    @Transactional
+    @Modifying
+    @Query("""
+            UPDATE VFile f
+            SET f.path = CONCAT(:newPath, SUBSTRING(f.path, LENGTH(:newPath) + 1))
+            WHERE f.path LIKE CONCAT(:newPath, '%')
+    """)
+    void moveDirectory(String newPath, String oldPath);
 
     //@Transactional
     //@Modifying

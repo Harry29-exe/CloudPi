@@ -1,6 +1,5 @@
-package com.cloudpi.cloudpi.file_module.physical.domain.entities;
+package com.cloudpi.cloudpi.file_module.physical.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,12 +15,16 @@ import java.util.UUID;
 public class Drive {
 
     @Id
-    @GeneratedValue
-    private Long id;
+    @Column
+    private UUID id = UUID.randomUUID();
 
     @Column(nullable = false, unique = true, updatable = false)
-    private UUID pubId;
+    private String path;
 
+    @Column(nullable = false)
+    private Long assignedSpace;
 
+    @Column(nullable = false)
+    private Long freeSpace;
 
 }

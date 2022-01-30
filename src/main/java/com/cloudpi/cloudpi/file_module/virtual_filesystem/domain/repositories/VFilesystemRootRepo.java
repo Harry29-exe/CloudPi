@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface FilesystemRootRepo extends JpaRepository<VFilesystemRoot, Long> {
+public interface VFilesystemRootRepo extends JpaRepository<VFilesystemRoot, Long> {
 
     Optional<VFilesystemRoot> findByOwner_Id(Long id);
 

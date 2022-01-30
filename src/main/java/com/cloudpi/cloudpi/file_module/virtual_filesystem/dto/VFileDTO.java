@@ -1,6 +1,7 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.dto;
 
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class VFileDTO {
 
     private UUID pubId;

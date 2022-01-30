@@ -1,10 +1,10 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.services;
 
-import com.cloudpi.cloudpi_backend.exepctions.user.endpoint.NoSuchUserException;
-import com.cloudpi.cloudpi_backend.files.filesystem.entities.Directory;
-import com.cloudpi.cloudpi_backend.files.filesystem.entities.VFilesystemRoot;
-import com.cloudpi.cloudpi_backend.files.filesystem.repositories.FilesystemRootRepo;
-import com.cloudpi.cloudpi_backend.user.domain.repositories.UserRepository;
+import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.VFile;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.VFilesystemRoot;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.repositories.VFilesystemRootRepo;
+import com.cloudpi.cloudpi.user.domain.repositiories.UserRepo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -12,27 +12,29 @@ import org.springframework.stereotype.Service;
 public class VFilesystemServiceImp implements VFilesystemService {
 
     private final Long defaultSpaceOnVirtualDrive;
-    private final UserRepository userRepository;
-    private final FilesystemRootRepo virtualDriveRepo;
+    private final UserRepo userRepository;
+    private final VFilesystemRootRepo virtualDriveRepo;
 
     public VFilesystemServiceImp(
             @Value("${cloud-pi.storage.default-space-on-virtual-drive}")
-                    String spaceOnVD,
-            UserRepository userRepository, FilesystemRootRepo virtualDriveRepo) {
+            String spaceOnVD,
+            UserRepo userRepo,
+            VFilesystemRootRepo virtualDriveRepo) {
 
         this.defaultSpaceOnVirtualDrive =
                 Long.parseLong(spaceOnVD.replace("_", ""));
-        this.userRepository = userRepository;
+        this.userRepository = userRepo;
         this.virtualDriveRepo = virtualDriveRepo;
     }
 
     @Override
     public void createVirtualFilesystem(Long userId, Long driveSize) {
         var user = userRepository.findById(userId)
-                .orElseThrow(NoSuchUserException::notFoundById);
+                .orElseThrow(ResourceNotExistException::new);
+
         var usersDrive = new VFilesystemRoot(driveSize, user);
-        var rootDir = new Directory(null, usersDrive, user.getUsername());
-        usersDrive.setRootDirectory(rootDir);
+        var rootDir = VFile.createRootDir(user.getUsername());
+        usersDrive.setRootVDirectory(rootDir);
 
         virtualDriveRepo.save(usersDrive);
     }

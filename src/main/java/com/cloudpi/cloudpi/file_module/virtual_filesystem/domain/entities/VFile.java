@@ -1,9 +1,11 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities;
 
 import com.cloudpi.cloudpi.file_module.permission.domain.entities.FilePermission;
-import com.cloudpi.cloudpi.file_module.physical.domain.entities.Drive;
+import com.cloudpi.cloudpi.file_module.physical.domain.Drive;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.VFileDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -37,22 +39,27 @@ public class VFile{
      * if it's null it means that the parents is root
      */
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "parent_id", nullable = true)
+    @JoinColumn(name = "parent_id")
     private VFile parent;
 
     @Column
     @Enumerated(EnumType.ORDINAL)
     private @NotNull FileType type = FileType.UNDEFINED;
 
+    /**
+     * Is null only for directories
+     */
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "drive_files")
-    private @NotNull Drive drive;
+    private @Nullable Drive drive;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "root_id", nullable = false)
     private @NotNull VFilesystemRoot root;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
     @PrimaryKeyJoinColumn
     private @NotNull VFileDetails details;
 
@@ -67,37 +74,56 @@ public class VFile{
             @NotBlank String path,
             @NotBlank String name,
             @NonNull VFile parent,
-            @NonNull VFilesystemRoot root,
-            @NonNull Drive drive,
+            @Nullable Drive drive,
             @NotNull FileType type,
             @Min(0) @NotNull Long size
     ) {
-        this(name, path, type, drive, root, size);
+        this(name, path, type, drive, size);
         this.parent = parent;
     }
 
-    protected VFile(String name, String path, @NonNull FileType type, Drive drive, VFilesystemRoot root, Long size) {
+    protected VFile(String name, String path, @NonNull FileType type, @Nullable Drive drive, Long size) {
+        if(type != FileType.DIRECTORY && drive == null) {
+            throw new IllegalStateException("Drive can only be null if file is directory");
+        }
         this.name = name;
         this.path = path;
         this.type = type;
         this.drive = drive;
-        this.root = root;
+        this.root = parent.getRoot();
         this.details = new VFileDetails(size, this);
     }
 
-    public VFile createRootDir(
+    public static VFile createRootDir(
+            @NotBlank String username
+    ) {
+        return new VFile(username, username, FileType.DIRECTORY, null, 0L);
+    }
+
+    public static VFile createDirectory(
             @NotBlank String name,
-            @NotBlank String path,
-            @NonNull FileType fileType,
-            @NotNull Drive drive,
-            @NotNull VFilesystemRoot root,
-            @Min(0) Long size) {
-        return new VFile(name, path, fileType, drive, root, size);
+            @NotBlank String path
+    ) {
+        return new VFile(name, path, FileType.DIRECTORY, null, 0L);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public VFileDTO mapToDTO() {
+        return new VFileDTO(
+                pubId,
+                name,
+                path,
+                parent.getPubId(),
+                details.getHasThumbnail(),
+                type,
+                details.getSize(),
+                details.getModifiedAt(),
+                details.getCreatedAt()
+        );
     }
 
 }

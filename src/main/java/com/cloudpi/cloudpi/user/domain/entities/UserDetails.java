@@ -6,6 +6,7 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -23,7 +24,7 @@ public class UserDetails {
     }
 
     @Column(nullable = false)
-    private @NonNull String nickname;
+    private @NotNull String nickname;
 
     /**
      * optional: useful for changing, getting info about

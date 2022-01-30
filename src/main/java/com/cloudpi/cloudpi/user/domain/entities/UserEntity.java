@@ -1,7 +1,7 @@
 package com.cloudpi.cloudpi.user.domain.entities;
 
-import com.cloudpi.cloudpi.config.Role;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.VFilesystemRoot
+import com.cloudpi.cloudpi.config.security.Role;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.VFilesystemRoot;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -9,8 +9,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -36,6 +37,9 @@ public class UserEntity {
     @Column(name = "id", updatable = false)
     private Long id;
 
+    @Column(unique = true, nullable = false, updatable = false)
+    private UUID pubId = UUID.randomUUID();
+
     /**
      * For sending to other users in order to give opportunity
      * to share file with specific user
@@ -45,7 +49,7 @@ public class UserEntity {
     @Column(nullable = false)
     private @NotBlank String password;
     @Column(nullable = false)
-    private @NonNull Boolean locked = false;
+    private @NotNull Boolean locked = false;
 
     @PrimaryKeyJoinColumn
     @OneToOne(mappedBy = "user",
@@ -53,7 +57,7 @@ public class UserEntity {
             fetch = FetchType.EAGER,
             orphanRemoval = true
     )
-    private @NonNull UserDetails userDetails;
+    private @NotNull UserDetails userDetails;
 
 
     @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -61,13 +65,5 @@ public class UserEntity {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserEntity that = (UserEntity) o;
-        return id.equals(that.id) && username.equals(that.username) && password.equals(that.password) && locked.equals(that.locked) && userDetails.equals(that.userDetails) && Objects.equals(userDeleteSchedule, that.userDeleteSchedule) && Objects.equals(roles, that.roles) && Objects.equals(permissions, that.permissions);
-    }
 
 }

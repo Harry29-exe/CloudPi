@@ -1,10 +1,12 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.api;
 
 import com.cloudpi.cloudpi.config.springdoc.SpringDocUtils;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.api.dto.MoveFileRequest;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.api.request.MoveFileRequest;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.VFileDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.VFilesystemInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.VFileStructureDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,22 +21,21 @@ import java.util.List;
 public interface FilesystemAPI {
 
 
-    @PostMapping("directory")
-    VFileDTO createDirectory(
-            @RequestParam String directoryPath,
-            Authentication auth);
-
     @GetMapping("file-structure")
     VFileStructureDTO getFileStructure(
             @RequestParam(defaultValue = "0") Integer structureLevels,
             @RequestParam(defaultValue = "/") String fileStructureRoot,
             Authentication auth);
 
+    @PutMapping("directory")
+    VFileDTO createDirectory(
+            @RequestParam String directoryPath,
+            Authentication auth);
 
     @GetMapping("file/{fileId}")
     VFileDTO getFileInfo(
             @PathVariable("fileId") String fileId,
-            @PathVariable(name = "with-permissions", required = false)
+            @RequestParam(name = "with-permissions", defaultValue = "false")
                     Boolean getWithPermissions);
 
 
@@ -42,24 +43,16 @@ public interface FilesystemAPI {
     void moveFile(@RequestBody @Valid MoveFileRequest requestBody);
 
 
-    @GetMapping("directory/{dirId}")
-    DirectoryDto getDirInfo(
-            @PathVariable("fileId") String fileId,
-            @PathVariable(name = "with-permissions", required = false)
-                    Boolean getWithPermissions);
-
-
     @DeleteMapping("directory/{directoryId}")
     void deleteDirectory(@PathVariable String directoryId);
 
 
-    //todo do innego api
-    @GetMapping("user-drive")
-    List<GetUserDriveInfo> getUsersVirtualDrivesInfo(
-            @PathVariable List<String> usernames);
+    @GetMapping("{username}")
+    List<VFilesystemInfoDTO> getUsersVirtualDrivesInfo(
+            @PathVariable String username);
 
 
-    @PostMapping("user-drive")
+    @PostMapping("{username}")
     void changeVirtualDriveMaxSize(
             @PathVariable String username,
             @RequestParam Long newAssignedSpace
