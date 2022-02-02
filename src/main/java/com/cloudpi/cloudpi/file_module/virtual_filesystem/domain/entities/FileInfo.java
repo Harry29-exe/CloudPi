@@ -1,9 +1,10 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities;
 
-import com.cloudpi.cloudpi.file_module.permission.domain.entities.FilePermission;
+import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
 import com.cloudpi.cloudpi.file_module.physical.domain.Drive;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.VFileDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.UpdateVFile;
 import lombok.*;
 import org.springframework.lang.Nullable;
 
@@ -19,7 +20,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @Entity
-public class VFile{
+public class FileInfo {
 
     @Id
     @GeneratedValue
@@ -35,16 +36,31 @@ public class VFile{
     @Column(unique = true, nullable = false)
     private @NotBlank String path;
 
+    @Column
+    @Enumerated(EnumType.ORDINAL)
+    private @NotNull FileType type = FileType.UNDEFINED;
+
+    @Column
+    private Integer fileInfoVersion = 0;
+
+    @Version
+    private Integer entityVersion = 0;
+
+    @Column
+    private Integer fileVersion = 0;
+
+    @OneToOne(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
+    @PrimaryKeyJoinColumn
+    private @NotNull FileInfoDetails details;
+
     /**
      * if it's null it means that the parents is root
      */
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "parent_id")
-    private VFile parent;
-
-    @Column
-    @Enumerated(EnumType.ORDINAL)
-    private @NotNull FileType type = FileType.UNDEFINED;
+    private FileInfo parent;
 
     /**
      * Is null only for directories
@@ -55,13 +71,7 @@ public class VFile{
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "root_id", nullable = false)
-    private @NotNull VFilesystemRoot root;
-
-    @OneToOne(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER)
-    @PrimaryKeyJoinColumn
-    private @NotNull VFileDetails details;
+    private @NotNull FilesystemRootInfo root;
 
     @OneToMany(
             cascade = {CascadeType.ALL},
@@ -70,10 +80,10 @@ public class VFile{
     @JoinColumn(name = "permissions")
     private List<FilePermission> permissions;
 
-    public VFile(
+    public FileInfo(
             @NotBlank String path,
             @NotBlank String name,
-            @NonNull VFile parent,
+            @NonNull FileInfo parent,
             @Nullable Drive drive,
             @NotNull FileType type,
             @Min(0) @NotNull Long size
@@ -82,7 +92,7 @@ public class VFile{
         this.parent = parent;
     }
 
-    protected VFile(String name, String path, @NonNull FileType type, @Nullable Drive drive, Long size) {
+    protected FileInfo(String name, String path, @NonNull FileType type, @Nullable Drive drive, Long size) {
         if(type != FileType.DIRECTORY && drive == null) {
             throw new IllegalStateException("Drive can only be null if file is directory");
         }
@@ -91,29 +101,31 @@ public class VFile{
         this.type = type;
         this.drive = drive;
         this.root = parent.getRoot();
-        this.details = new VFileDetails(size, this);
+        this.details = new FileInfoDetails(size, this);
     }
 
-    public static VFile createRootDir(
-            @NotBlank String username
-    ) {
-        return new VFile(username, username, FileType.DIRECTORY, null, 0L);
+    public static FileInfo createRootDir(@NotBlank String username) {
+        return new FileInfo(
+                username,
+                username,
+                FileType.DIRECTORY,
+                null,
+                0L);
     }
 
-    public static VFile createDirectory(
+    public static FileInfo createDirectory(
             @NotBlank String name,
             @NotBlank String path
     ) {
-        return new VFile(name, path, FileType.DIRECTORY, null, 0L);
+        return new FileInfo(name, path, FileType.DIRECTORY, null, 0L);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public void update(UpdateVFile updateVFile) {
+        this.name = updateVFile.getNewName();
     }
 
-    public VFileDTO mapToDTO() {
-        return new VFileDTO(
+    public FileInfoDTO mapToDTO() {
+        return new FileInfoDTO(
                 pubId,
                 name,
                 path,
@@ -124,6 +136,16 @@ public class VFile{
                 details.getModifiedAt(),
                 details.getCreatedAt()
         );
+    }
+
+    @PreUpdate
+    public void updateVersion() {
+        this.fileInfoVersion++;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
 }

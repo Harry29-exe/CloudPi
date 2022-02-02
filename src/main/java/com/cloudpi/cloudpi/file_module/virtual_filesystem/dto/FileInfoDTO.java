@@ -12,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
-public class VFileDTO {
+public class FileInfoDTO {
 
     private UUID pubId;
     private String name;

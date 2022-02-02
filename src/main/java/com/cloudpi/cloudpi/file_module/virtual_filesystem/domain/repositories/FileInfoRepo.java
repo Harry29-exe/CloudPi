@@ -1,6 +1,6 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.repositories;
 
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.VFile;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.FileInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,17 +11,17 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface VFileRepo extends JpaRepository<VFile, Long> {
+public interface FileInfoRepo extends JpaRepository<FileInfo, Long> {
 
-    Optional<VFile> findByPath(String path);
+    Optional<FileInfo> findByPath(String path);
 
-    Optional<VFile> findByPubId(UUID pubId);
+    Optional<FileInfo> findByPubId(UUID pubId);
 
     //todo test it
     @Transactional
     @Modifying
     @Query("""
-            UPDATE VFile f
+            UPDATE FileInfo f
             SET f.path = CONCAT(:newPath, SUBSTRING(f.path, LENGTH(:newPath) + 1))
             WHERE f.path LIKE CONCAT(:newPath, '%')
     """)

@@ -12,7 +12,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @Entity
-public class VFileDetails {
+public class FileInfoDetails {
 
     @Id
     @Column(name = "file_id")
@@ -35,9 +35,9 @@ public class VFileDetails {
     @MapsId
     @OneToOne
     @JoinColumn(name = "file_id")
-    private VFile file;
+    private FileInfo file;
 
-    public VFileDetails(Long size, VFile file) {
+    public FileInfoDetails(Long size, FileInfo file) {
         this.size = size;
         this.file = file;
     }

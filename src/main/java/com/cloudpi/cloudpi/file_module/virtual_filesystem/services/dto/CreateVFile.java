@@ -7,7 +7,7 @@ import lombok.Value;
 import java.util.UUID;
 
 @Value
-public class CreateVFileDTO {
+public class CreateVFile {
     VPath path;
     UUID driveId;
     FileType type;

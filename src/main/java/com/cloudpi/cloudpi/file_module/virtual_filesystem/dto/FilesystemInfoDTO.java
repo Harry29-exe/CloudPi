@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class VFilesystemInfoDTO {
+public class FilesystemInfoDTO {
 
     private String ownerUsername;
     private Long totalSpace;

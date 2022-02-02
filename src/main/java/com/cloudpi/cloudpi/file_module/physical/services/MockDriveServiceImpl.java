@@ -1,6 +1,7 @@
 package com.cloudpi.cloudpi.file_module.physical.services;
 
 import com.cloudpi.cloudpi.file_module.physical.dto.DriveDTO;
+import com.cloudpi.cloudpi.file_module.physical.services.dto.CreateDrive;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.UUID;
@@ -23,4 +24,13 @@ public class MockDriveServiceImpl implements DriveService {
         );
     }
 
+    @Override
+    public DriveDTO add(CreateDrive createDrive) {
+        return null;
+    }
+
+    @Override
+    public DriveDTO moveFilesAndDelete(UUID drivePubId) {
+        return null;
+    }
 }

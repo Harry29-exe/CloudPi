@@ -1,21 +1,22 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.services;
 
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.VFileDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VPath;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.CreateVFileDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.CreateVFile;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.UpdateVFile;
 
 import java.util.UUID;
 
 
 public interface VFileService {
 
-    VFileDTO save(CreateVFileDTO fileInfo);
+    FileInfoDTO save(CreateVFile fileInfo);
 
-    VFileDTO get(UUID filePubId);
+    FileInfoDTO get(UUID filePubId);
 
     void move(UUID filePubId, String newPath);
 
-    VFileDTO update();
+    FileInfoDTO update(UpdateVFile update);
 
     //    @PreAuthorize("fileAuthorityVerifier.canWrite(Principal, #path)")
     void delete(VPath path);

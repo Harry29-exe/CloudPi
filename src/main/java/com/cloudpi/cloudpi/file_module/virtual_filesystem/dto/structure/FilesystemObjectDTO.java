@@ -8,11 +8,11 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class VFSObjectDTO {
+public class FilesystemObjectDTO {
 
     private UUID pubId;
     private String name;
     private Integer version;
-    private List<VFSObjectDTO> children;
+    private List<FilesystemObjectDTO> children;
 
 }

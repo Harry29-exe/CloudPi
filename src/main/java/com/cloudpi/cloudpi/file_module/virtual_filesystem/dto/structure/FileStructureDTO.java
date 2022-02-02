@@ -7,9 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class VFileStructureDTO {
+public class FileStructureDTO {
 
     private String path;
-    private VFSObjectDTO root;
+    private FilesystemObjectDTO root;
 
 }

@@ -1,7 +1,7 @@
 package com.cloudpi.cloudpi.user.domain.entities;
 
 import com.cloudpi.cloudpi.config.security.Role;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.VFilesystemRoot;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.FilesystemRootInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -61,7 +61,7 @@ public class UserEntity {
 
 
     @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private VFilesystemRoot userDrive;
+    private FilesystemRootInfo userDrive;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;

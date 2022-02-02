@@ -2,11 +2,10 @@ package com.cloudpi.cloudpi.file_module.virtual_filesystem.api;
 
 import com.cloudpi.cloudpi.config.springdoc.SpringDocUtils;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.api.request.MoveFileRequest;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.VFileDTO;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.VFilesystemInfoDTO;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.VFileStructureDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FilesystemInfoDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.FileStructureDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,18 +21,18 @@ public interface FilesystemAPI {
 
 
     @GetMapping("file-structure")
-    VFileStructureDTO getFileStructure(
+    FileStructureDTO getFileStructure(
             @RequestParam(defaultValue = "0") Integer structureLevels,
             @RequestParam(defaultValue = "/") String fileStructureRoot,
             Authentication auth);
 
     @PutMapping("directory")
-    VFileDTO createDirectory(
+    FileInfoDTO createDirectory(
             @RequestParam String directoryPath,
             Authentication auth);
 
     @GetMapping("file/{fileId}")
-    VFileDTO getFileInfo(
+    FileInfoDTO getFileInfo(
             @PathVariable("fileId") String fileId,
             @RequestParam(name = "with-permissions", defaultValue = "false")
                     Boolean getWithPermissions);
@@ -48,7 +47,7 @@ public interface FilesystemAPI {
 
 
     @GetMapping("{username}")
-    List<VFilesystemInfoDTO> getUsersVirtualDrivesInfo(
+    List<FilesystemInfoDTO> getUsersVirtualDrivesInfo(
             @PathVariable String username);
 
 

@@ -12,6 +12,4 @@ public interface DriveAPI {
     @GetMapping("discs")
     List<DiscDTO> getAllDiscs();
 
-
-
 }

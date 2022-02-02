@@ -1,8 +1,7 @@
-package com.cloudpi.cloudpi.file_module.permission.domain.entities;
+package com.cloudpi.cloudpi.file_module.permission.entities;
 
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.VFile;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.FileInfo;
 import com.cloudpi.cloudpi.user.domain.entities.UserEntity;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,12 +16,15 @@ public class FilePermission {
     @GeneratedValue
     private Long id;
 
+    @Column(nullable = false, updatable = false)
+    private PermissionType type;
+
     @ManyToOne
     @JoinColumn
     private UserEntity user;
 
     @ManyToOne
     @JoinColumn
-    private VFile file;
+    private FileInfo file;
 
 }

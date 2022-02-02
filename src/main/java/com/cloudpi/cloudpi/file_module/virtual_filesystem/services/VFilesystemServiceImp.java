@@ -1,9 +1,9 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.services;
 
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.VFile;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.VFilesystemRoot;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.repositories.VFilesystemRootRepo;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.FileInfo;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.FilesystemRootInfo;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.repositories.FilesystemRootInfoRepo;
 import com.cloudpi.cloudpi.user.domain.repositiories.UserRepo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,13 +13,13 @@ public class VFilesystemServiceImp implements VFilesystemService {
 
     private final Long defaultSpaceOnVirtualDrive;
     private final UserRepo userRepository;
-    private final VFilesystemRootRepo virtualDriveRepo;
+    private final FilesystemRootInfoRepo virtualDriveRepo;
 
     public VFilesystemServiceImp(
             @Value("${cloud-pi.storage.default-space-on-virtual-drive}")
             String spaceOnVD,
             UserRepo userRepo,
-            VFilesystemRootRepo virtualDriveRepo) {
+            FilesystemRootInfoRepo virtualDriveRepo) {
 
         this.defaultSpaceOnVirtualDrive =
                 Long.parseLong(spaceOnVD.replace("_", ""));
@@ -32,8 +32,8 @@ public class VFilesystemServiceImp implements VFilesystemService {
         var user = userRepository.findById(userId)
                 .orElseThrow(ResourceNotExistException::new);
 
-        var usersDrive = new VFilesystemRoot(driveSize, user);
-        var rootDir = VFile.createRootDir(user.getUsername());
+        var usersDrive = new FilesystemRootInfo(driveSize, user);
+        var rootDir = FileInfo.createRootDir(user.getUsername());
         usersDrive.setRootVDirectory(rootDir);
 
         virtualDriveRepo.save(usersDrive);

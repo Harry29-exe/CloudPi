@@ -13,9 +13,9 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "virtual_drives")
-public class VFilesystemRoot {
+public class FilesystemRootInfo {
 
-    public VFilesystemRoot(Long assignedCapacity, UserEntity owner) {
+    public FilesystemRootInfo(Long assignedCapacity, UserEntity owner) {
         this.assignedCapacity = assignedCapacity;
         this.owner = owner;
         owner.setUserDrive(this);
@@ -35,7 +35,7 @@ public class VFilesystemRoot {
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "root_directory")
-    private VFile rootVDirectory;
+    private FileInfo rootVDirectory;
 
     @PrePersist
     void checkIdRootDirectoryNotNull() {
@@ -44,7 +44,7 @@ public class VFilesystemRoot {
         }
     }
 
-    public void setRootVDirectory(VFile rootVDirectory) {
+    public void setRootVDirectory(FileInfo rootVDirectory) {
         this.rootVDirectory = rootVDirectory;
         rootVDirectory.setRoot(this);
     }
