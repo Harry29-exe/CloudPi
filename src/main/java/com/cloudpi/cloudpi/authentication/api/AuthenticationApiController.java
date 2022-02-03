@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,14 +26,12 @@ import java.util.concurrent.TimeUnit;
 //        methods = {RequestMethod.POST, RequestMethod.OPTIONS})
 @RestController
 public class AuthenticationApiController implements AuthenticationApi {
+    public static final String REFRESH_TOKEN_COOKIE_NAME = "Refresh-Token";
+    public static final String REFRESH_TOKEN_PATH = "/api/refresh";
     private final AuthenticationService authService;
     private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
-
     private final SecureRandom secureRandom = SecureRandom.getInstanceStrong();
-
-    public static final String REFRESH_TOKEN_COOKIE_NAME = "Refresh-Token";
-    public static final String REFRESH_TOKEN_PATH = "/api/refresh";
     private final Integer refreshTokenExpiresTimeInSec;
 
     public AuthenticationApiController(
@@ -96,7 +95,7 @@ public class AuthenticationApiController implements AuthenticationApi {
                 .findFirst()
                 .orElseThrow(() -> new NoRequiredHeaderException(REFRESH_TOKEN_COOKIE_NAME));
 
-        if(refreshToken == null ||
+        if (refreshToken == null ||
                 refreshToken.getValue() == null ||
                 refreshToken.getValue().isBlank()
         ) {

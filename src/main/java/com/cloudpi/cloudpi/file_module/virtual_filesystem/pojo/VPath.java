@@ -9,13 +9,13 @@ import java.util.List;
 public class VPath {
     @Getter
     private final String username;
-    private ImmutableList<String> directories = null;
     @Getter
     private final String parentPath;
     @Getter
     private final String path;
     @Getter
     private final String name;
+    private ImmutableList<String> directories = null;
 
     public VPath(String path) {
         int incorrectIndex = path.indexOf("//");

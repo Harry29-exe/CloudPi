@@ -56,7 +56,7 @@ public class VFileServiceImpl implements VFileService {
 
     @Override
     public void move(UUID filePubId, String newPath) {
-        if(!isPathEmpty(newPath)) {
+        if (!isPathEmpty(newPath)) {
             throw new PathNotEmptyException();
         }
 
@@ -65,7 +65,7 @@ public class VFileServiceImpl implements VFileService {
                 .orElseThrow(ResourceNotExistException::new);
 
 
-        if(file.getType() == FileType.DIRECTORY) {
+        if (file.getType() == FileType.DIRECTORY) {
             fileInfoRepo.moveDirectory(newPath, file.getPath());
         } else {
             file.setPath(newPath);

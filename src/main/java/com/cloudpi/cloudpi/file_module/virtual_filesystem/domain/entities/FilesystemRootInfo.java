@@ -15,27 +15,24 @@ import javax.persistence.*;
 @Table(name = "virtual_drives")
 public class FilesystemRootInfo {
 
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private Long id;
+    @Column(nullable = false)
+    private Long assignedCapacity;
+    @OneToOne
+    @JoinColumn(name = "user_id", unique = true, updatable = false)
+    private UserEntity owner;
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "root_directory")
+    private FileInfo rootVDirectory;
+
     public FilesystemRootInfo(Long assignedCapacity, UserEntity owner) {
         this.assignedCapacity = assignedCapacity;
         this.owner = owner;
         owner.setUserDrive(this);
     }
-
-    @Id
-    @GeneratedValue
-    @Column(name = "id")
-    private Long id;
-
-    @Column(nullable = false)
-    private Long assignedCapacity;
-
-    @OneToOne
-    @JoinColumn(name = "user_id", unique = true, updatable = false)
-    private UserEntity owner;
-
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "root_directory")
-    private FileInfo rootVDirectory;
 
     @PrePersist
     void checkIdRootDirectoryNotNull() {

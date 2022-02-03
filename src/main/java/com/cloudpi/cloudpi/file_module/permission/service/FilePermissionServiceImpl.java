@@ -2,6 +2,7 @@ package com.cloudpi.cloudpi.file_module.permission.service;
 
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
 import com.cloudpi.cloudpi.file_module.permission.repositories.FilePermissionRepo;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VPath;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.UUID;
@@ -15,22 +16,32 @@ public class FilePermissionServiceImpl implements FilePermissionService {
 
     @Override
     public boolean canModify(UUID filePubId) {
-        return canModify(filePubId, getCurrentUserUsername());
+        return false;
     }
 
     @Override
-    public boolean canModify(UUID filePubId, String username) {
-        return permissionExist(filePubId, username, PermissionType.MODIFY);
+    public boolean canModify(String path) {
+        return false;
+    }
+
+    @Override
+    public boolean canModify(VPath path) {
+        return false;
     }
 
     @Override
     public boolean canRead(UUID filePubId) {
-        return canRead(filePubId, getCurrentUserUsername());
+        return false;
     }
 
     @Override
-    public boolean canRead(UUID filePubId, String username) {
-        return permissionExist(filePubId, username, PermissionType.READ);
+    public boolean canRead(String path) {
+        return false;
+    }
+
+    @Override
+    public boolean canRead(VPath path) {
+        return false;
     }
 
     protected boolean permissionExist(UUID filePubId,

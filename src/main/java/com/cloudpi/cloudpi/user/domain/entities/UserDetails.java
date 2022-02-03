@@ -15,6 +15,24 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class UserDetails {
 
+    @Column(nullable = false)
+    private @NotNull String nickname;
+    /**
+     * optional: useful for changing, getting info about
+     * account being set to be deleted
+     */
+    @Column
+    private String email;
+    @Column
+    private String pathToProfilePicture;
+    @Id
+    @Column(name = "user_id")
+    private Long id;
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
     public UserDetails(@NonNull String nickname,
                        String email,
                        String pathToProfilePicture) {
@@ -22,28 +40,5 @@ public class UserDetails {
         this.email = email;
         this.pathToProfilePicture = pathToProfilePicture;
     }
-
-    @Column(nullable = false)
-    private @NotNull String nickname;
-
-    /**
-     * optional: useful for changing, getting info about
-     * account being set to be deleted
-     */
-    @Column
-    private String email;
-
-    @Column
-    private String pathToProfilePicture;
-
-
-    @Id
-    @Column(name = "user_id")
-    private Long id;
-
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
 
 }

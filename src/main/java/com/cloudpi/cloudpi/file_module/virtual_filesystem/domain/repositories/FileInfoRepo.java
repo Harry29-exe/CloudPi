@@ -21,10 +21,10 @@ public interface FileInfoRepo extends JpaRepository<FileInfo, Long> {
     @Transactional
     @Modifying
     @Query("""
-            UPDATE FileInfo f
-            SET f.path = CONCAT(:newPath, SUBSTRING(f.path, LENGTH(:newPath) + 1))
-            WHERE f.path LIKE CONCAT(:newPath, '%')
-    """)
+                    UPDATE FileInfo f
+                    SET f.path = CONCAT(:newPath, SUBSTRING(f.path, LENGTH(:newPath) + 1))
+                    WHERE f.path LIKE CONCAT(:oldPath, '%')
+            """)
     void moveDirectory(String newPath, String oldPath);
 
     //@Transactional

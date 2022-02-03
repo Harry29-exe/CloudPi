@@ -23,9 +23,9 @@ public interface UserManagementAPI {
     @Operation(
             summary = "returns all users",
             description = """
-                Returns all basic user objects with their usernames, account types and paths to
-                profile pictures.
-                """,
+                    Returns all basic user objects with their usernames, account types and paths to
+                    profile pictures.
+                    """,
             responses = {
                     @ApiResponse(responseCode = "200", description = "Success"),
                     @ApiResponse(responseCode = "403", description = "Unauthorized request")

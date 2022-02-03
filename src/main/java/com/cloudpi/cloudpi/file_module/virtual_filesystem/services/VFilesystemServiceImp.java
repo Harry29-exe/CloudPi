@@ -17,7 +17,7 @@ public class VFilesystemServiceImp implements VFilesystemService {
 
     public VFilesystemServiceImp(
             @Value("${cloud-pi.storage.default-space-on-virtual-drive}")
-            String spaceOnVD,
+                    String spaceOnVD,
             UserRepo userRepo,
             FilesystemRootInfoRepo virtualDriveRepo) {
 

@@ -5,7 +5,10 @@ import com.cloudpi.cloudpi.file_module.physical.domain.Drive;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.UpdateVFile;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
@@ -67,7 +70,8 @@ public class FileInfo {
      */
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "drive_files")
-    private @Nullable Drive drive;
+    private @Nullable
+    Drive drive;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "root_id", nullable = false)
@@ -93,7 +97,7 @@ public class FileInfo {
     }
 
     protected FileInfo(String name, String path, @NonNull FileType type, @Nullable Drive drive, Long size) {
-        if(type != FileType.DIRECTORY && drive == null) {
+        if (type != FileType.DIRECTORY && drive == null) {
             throw new IllegalStateException("Drive can only be null if file is directory");
         }
         this.name = name;

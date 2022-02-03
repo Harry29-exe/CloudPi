@@ -9,11 +9,11 @@ import java.lang.annotation.Target;
 
 public class Stability {
 
-    private static final String STABILITY = "STABILITY: ";
-    private static final String STABILITY_H2 = "<h2>STABILITY: </h2>";
     public static final String EARLY_DEVELOPMENT = "In early development";
     public static final String INITIAL_TESTS = "Usually very basic hand testing";
     public static final String TESTED = "Endpoint passed integration tests";
+    private static final String STABILITY = "STABILITY: ";
+    private static final String STABILITY_H2 = "<h2>STABILITY: </h2>";
 
     @Operation(
             summary = STABILITY + EARLY_DEVELOPMENT,
