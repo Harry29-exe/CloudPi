@@ -3,17 +3,18 @@ package com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
-
 public class VirtualPath {
-    @Getter
+    @NotBlank
     private final String username;
-    @Getter
+    @NotBlank
     private final String parentPath;
-    @Getter
+    @NotBlank
     private final String path;
-    @Getter
+    @NotBlank
     private final String name;
     private ImmutableList<String> directories = null;
 
@@ -50,5 +51,21 @@ public class VirtualPath {
         var pathParts = List.of(parentPath.split("/"));
         directories = (ImmutableList<String>) pathParts.subList(0, pathParts.size() - 1);
         return directories;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getParentPath() {
+        return parentPath;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getName() {
+        return name;
     }
 }

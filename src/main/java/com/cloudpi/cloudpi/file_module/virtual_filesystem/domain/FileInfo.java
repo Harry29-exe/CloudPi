@@ -65,6 +65,12 @@ public class FileInfo {
     @JoinColumn(name = "parent_id")
     private FileInfo parent;
 
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "parent")
+    private List<FileInfo> children;
+
     /**
      * Is null only for directories
      */
@@ -92,11 +98,11 @@ public class FileInfo {
             @NotNull FileType type,
             @Min(0) @NotNull Long size
     ) {
-        this(name, path, type, drive, size);
+        this(name, path, drive, type, size);
         this.parent = parent;
     }
 
-    protected FileInfo(String name, String path, @NonNull FileType type, @Nullable Drive drive, Long size) {
+    protected FileInfo(String name, String path, @Nullable Drive drive, @NonNull FileType type,  Long size) {
         if (type != FileType.DIRECTORY && drive == null) {
             throw new IllegalStateException("Drive can only be null if file is directory");
         }
@@ -112,16 +118,17 @@ public class FileInfo {
         return new FileInfo(
                 username,
                 username,
-                FileType.DIRECTORY,
                 null,
+                FileType.DIRECTORY,
                 0L);
     }
 
     public static FileInfo createDirectory(
             @NotBlank String name,
-            @NotBlank String path
+            @NotBlank String path,
+            @NotNull FileInfo parent
     ) {
-        return new FileInfo(name, path, FileType.DIRECTORY, null, 0L);
+        return new FileInfo(name, path, parent, null, FileType.DIRECTORY, 0L);
     }
 
     public void update(UpdateVFile updateVFile) {

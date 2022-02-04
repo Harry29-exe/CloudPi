@@ -3,21 +3,18 @@ package com.cloudpi.cloudpi.file_module.virtual_filesystem.services;
 import com.cloudpi.cloudpi.exception.path.PathNotEmptyException;
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.file_module.physical.domain.DriveRepo;
-import com.cloudpi.cloudpi.file_module.physical.dto.DriveDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.CreateVFile;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.CreateFileInDB;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.UpdateVFile;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.cloudpi.cloudpi.utils.AppService;
 
 import java.util.UUID;
 
-@Service
-@Transactional
+@AppService
 public class FileInfoServiceImpl implements FileInfoService {
     private final FileInfoRepo fileInfoRepo;
     private final DriveRepo driveRepo;
@@ -28,23 +25,38 @@ public class FileInfoServiceImpl implements FileInfoService {
     }
 
     @Override
-    public FileInfoDTO save(CreateVFile fileInfo) {
+    public FileInfoDTO save(CreateFileInDB create) {
         var parent = fileInfoRepo
-                .findByPath(fileInfo.getPath().getParentPath())
+                .findByPath(create.getPath().getParentPath())
                 .orElseThrow(ResourceNotExistException::new);
-        var path = fileInfo.getPath();
+        var path = create.getPath();
 
         var entity = new FileInfo(
                 path.getPath(),
                 path.getName(),
                 parent,
-                driveRepo.getById(fileInfo.getDriveId()),
-                fileInfo.getType(),
-                fileInfo.getSize()
+                driveRepo.getById(create.getDriveId()),
+                create.getType(),
+                create.getSize()
         );
 
         var savedEntity = fileInfoRepo.save(entity);
         return savedEntity.mapToDTO();
+    }
+
+    @Override
+    public FileInfoDTO saveDir(VirtualPath path) {
+        var parent = fileInfoRepo
+                .findByPath(path.getParentPath())
+                .orElseThrow(ResourceNotExistException::new);
+
+        var entity = FileInfo.createDirectory(
+                path.getName(),
+                path.getPath(),
+                parent
+        );
+
+        return entity.mapToDTO();
     }
 
     @Override

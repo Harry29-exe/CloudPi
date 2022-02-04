@@ -1,9 +1,20 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.services;
 
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FilesystemInfoDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.FileStructureDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
+
+import javax.validation.constraints.NotNull;
+
 public interface FilesystemInfoService {
 
-    void createVirtualFilesystem(Long userId, Long driveSize);
+    void createRoot(Long userId, Long driveSize);
 
-    void createVirtualFilesystem(Long userId);
+    void createRoot(Long userId);
+
+    FileStructureDTO get(
+            VirtualPath entryPoint,
+            Integer depth,
+            @NotNull String username);
 
 }

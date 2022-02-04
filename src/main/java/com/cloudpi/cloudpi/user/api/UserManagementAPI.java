@@ -110,4 +110,5 @@ public interface UserManagementAPI {
     )
     @DeleteMapping("{username}/delete-now")
     void deleteUser(@PathVariable(name = "username") String username);
+
 }

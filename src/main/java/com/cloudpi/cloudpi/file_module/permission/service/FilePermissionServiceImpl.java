@@ -47,7 +47,7 @@ public class FilePermissionServiceImpl implements FilePermissionService {
     protected boolean permissionExist(UUID filePubId,
                                       String username,
                                       PermissionType type) {
-        return filePermissionRepo.permissionExists(
+        return filePermissionRepo.hasPermission(
                 filePubId,
                 username,
                 type

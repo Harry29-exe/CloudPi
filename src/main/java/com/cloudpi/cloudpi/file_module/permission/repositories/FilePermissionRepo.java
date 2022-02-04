@@ -19,6 +19,7 @@ public interface FilePermissionRepo extends JpaRepository<FilePermission, Long> 
                 u.username = :username AND
                 fs.type = :type
             """)
-    Boolean permissionExists(UUID filePubId, String username, PermissionType type);
+    Boolean hasPermission(UUID filePubId, String username, PermissionType type);
+
 
 }

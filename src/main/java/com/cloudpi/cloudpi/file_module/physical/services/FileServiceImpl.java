@@ -4,8 +4,9 @@ import com.cloudpi.cloudpi.exception.file.CouldNotReadFileException;
 import com.cloudpi.cloudpi.exception.file.CouldNotSaveFileException;
 import com.cloudpi.cloudpi.file_module.permission.service.dto.CreateFile;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FileInfoService;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.CreateVFile;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.CreateFileInDB;
 import com.cloudpi.cloudpi.utils.AppService;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -32,7 +33,7 @@ public class FileServiceImpl implements FileService {
         var drive = driveService.getDriveForNewFile(file.getSize());
         var vPath = create.getPath();
 
-        var newFile = fileInfoService.save(new CreateVFile(
+        var newFile = fileInfoService.save(new CreateFileInDB(
                 vPath,
                 drive.getPubId(),
                 create.getFileType(),
@@ -43,6 +44,11 @@ public class FileServiceImpl implements FileService {
 
 
         return newFile;
+    }
+
+    @Override
+    public FileInfoDTO createDir(VirtualPath path) {
+        return fileInfoService.saveDir(path);
     }
 
     @Override
