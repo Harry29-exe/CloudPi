@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 
 @Entity
-@Table(name = "virtual_drives")
+@Table(name = "filesystems")
 public class FilesystemRootInfo {
 
     @Id
