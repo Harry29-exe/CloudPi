@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@RequestMapping("/user-management/")
+@RequestMapping("/user/")
 @Tag(name = "User Management API", description =
         "API for various operations with users")
 public interface UserManagementAPI {
@@ -32,7 +32,7 @@ public interface UserManagementAPI {
             }
     )
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "users", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     List<UserIdDTO> getAllUsers();
 
     @Operation(
@@ -47,9 +47,8 @@ public interface UserManagementAPI {
                     @ApiResponse(responseCode = "404", description = "No user with provided username")
             }
     )
-    //    @Secured(UserAPIAuthorities.GET_DETAILS)
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/users/details/{usernames}")
+    @GetMapping("{usernames}/details")
     List<UserDetailsDTO> getUserDetails(@PathVariable(name = "usernames") List<String> username);
 
 
@@ -64,7 +63,7 @@ public interface UserManagementAPI {
             }
     )
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
+    @PostMapping("new")
     void createNewUser(@RequestBody @Valid PostUserRequest user);
 
 
@@ -81,7 +80,7 @@ public interface UserManagementAPI {
             }
     )
     @ResponseStatus(HttpStatus.CREATED)
-    @PatchMapping("users/{username}")
+    @PatchMapping("{username}")
     void updateUserDetails(@PathVariable(name = "username") String username,
                            @RequestBody PatchUserRequest request);
 
