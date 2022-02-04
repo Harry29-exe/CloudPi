@@ -63,13 +63,13 @@ public class UserEntity {
     }
 
     public UserIdDTO toUserIdDTO() {
-        return new UserIdDTO(pubId.toString(), userDetails.getNickname(),
+        return new UserIdDTO(username, pubId.toString(), userDetails.getNickname(),
                 userDetails.getPathToProfilePicture());
     }
 
     public UserDetailsDTO toUserDetailsDTO() {
         return new UserDetailsDTO(userDetails.getEmail(), userDetails.getPathToProfilePicture(),
-                userDetails.getNickname(), username, roles);
+                userDetails.getNickname(), pubId.toString(), roles);
     }
 
 }

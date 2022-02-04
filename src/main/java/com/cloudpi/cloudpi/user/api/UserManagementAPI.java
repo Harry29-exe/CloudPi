@@ -95,7 +95,7 @@ public interface UserManagementAPI {
                     @ApiResponse(responseCode = "404", description = "No user with provided username")
             }
     )
-    @DeleteMapping("{username}/delete-now")
+    @DeleteMapping("{username}")
     void deleteUser(@PathVariable(name = "username") String username);
 
 }
