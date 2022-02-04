@@ -10,12 +10,12 @@ import java.util.List;
 public class PasswordConfig {
 
     public static final List<Character> defaultSpecialChars =
-            List.of('!', '#', '$', '%', '&', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '@', '[', ']', '^', '_', '~');
+            List.of('!', '@', '#', '$', '%', '^', '&', '_', '-', '+', '?');
 
     @Bean
     public PasswordSpec getPasswordRequirements() {
         return new PasswordSpec(defaultSpecialChars,
-                12, 3, 1, 2, false, 1);
+                6, 1, 1, 1, false, 1);
     }
 
 }
