@@ -2,10 +2,13 @@ package com.cloudpi.cloudpi.file_module.physical.services;
 
 import com.cloudpi.cloudpi.file_module.physical.dto.DriveDTO;
 import com.cloudpi.cloudpi.file_module.physical.services.dto.CreateDrive;
+import com.cloudpi.cloudpi.utils.AppService;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.nio.file.Path;
 import java.util.UUID;
 
+@AppService
 public class MockDriveServiceImpl implements DriveService {
     private final String pathToSaveFiles;
 
@@ -30,7 +33,13 @@ public class MockDriveServiceImpl implements DriveService {
     }
 
     @Override
-    public DriveDTO moveFilesAndDelete(UUID drivePubId) {
-        return null;
+    public Path getPath(UUID drivePubId) {
+        return Path.of(pathToSaveFiles);
+    }
+
+    @Override
+    public Path getPathToFile(UUID filePubId) {
+
+        return Path.of(pathToSaveFiles + filePubId);
     }
 }

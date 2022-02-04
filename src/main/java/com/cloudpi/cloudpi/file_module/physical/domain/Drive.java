@@ -1,15 +1,18 @@
 package com.cloudpi.cloudpi.file_module.physical.domain;
 
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Drive {
 
@@ -25,5 +28,8 @@ public class Drive {
 
     @Column(nullable = false)
     private Long freeSpace;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "drive")
+    private Set<FileInfo> files;
 
 }

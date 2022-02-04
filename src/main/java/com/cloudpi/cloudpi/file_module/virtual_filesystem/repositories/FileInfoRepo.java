@@ -1,6 +1,6 @@
-package com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.repositories;
+package com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories;
 
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.FileInfo;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

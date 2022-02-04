@@ -1,6 +1,6 @@
 package com.cloudpi.cloudpi.file_module.permission.service;
 
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VPath;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +16,7 @@ public interface FilePermissionService {
 
     boolean canModify(String path);
 
-    boolean canModify(VPath path);
+    boolean canModify(VirtualPath path);
 
 //    boolean canModify(String path, String username);
 
@@ -26,7 +26,7 @@ public interface FilePermissionService {
 
     boolean canRead(String path);
 
-    boolean canRead(VPath path);
+    boolean canRead(VirtualPath path);
 
 //    boolean canRead(String path, String username);
 

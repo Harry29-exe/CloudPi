@@ -1,21 +1,21 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.services;
 
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.FileInfo;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.FilesystemRootInfo;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.repositories.FilesystemRootInfoRepo;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FilesystemRootInfo;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FilesystemRootInfoRepo;
 import com.cloudpi.cloudpi.user.domain.repositiories.UserRepo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class VFilesystemServiceImp implements VFilesystemService {
+public class FilesystemInfoServiceImp implements FilesystemInfoService {
 
     private final Long defaultSpaceOnVirtualDrive;
     private final UserRepo userRepository;
     private final FilesystemRootInfoRepo virtualDriveRepo;
 
-    public VFilesystemServiceImp(
+    public FilesystemInfoServiceImp(
             @Value("${cloud-pi.storage.default-space-on-virtual-drive}")
                     String spaceOnVD,
             UserRepo userRepo,

@@ -1,7 +1,7 @@
 package com.cloudpi.cloudpi.file_module.permission.service.dto;
 
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VPath;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
 import lombok.Value;
 import org.springframework.lang.Nullable;
 
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 public class CreateFile {
 
     @NotNull
-    VPath path;
+    VirtualPath path;
     @Nullable
     FileType fileType;
 

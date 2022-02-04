@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.List;
 
 
-public class VPath {
+public class VirtualPath {
     @Getter
     private final String username;
     @Getter
@@ -17,7 +17,7 @@ public class VPath {
     private final String name;
     private ImmutableList<String> directories = null;
 
-    public VPath(String path) {
+    public VirtualPath(String path) {
         int incorrectIndex = path.indexOf("//");
         if (path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);

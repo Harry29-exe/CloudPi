@@ -1,6 +1,6 @@
 package com.cloudpi.cloudpi.file_module.permission.entities;
 
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.FileInfo;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import com.cloudpi.cloudpi.user.domain.entities.UserEntity;
 import lombok.Getter;
 import lombok.Setter;

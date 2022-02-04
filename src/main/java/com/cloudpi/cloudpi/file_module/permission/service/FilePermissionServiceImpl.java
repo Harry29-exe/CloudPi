@@ -2,7 +2,7 @@ package com.cloudpi.cloudpi.file_module.permission.service;
 
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
 import com.cloudpi.cloudpi.file_module.permission.repositories.FilePermissionRepo;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VPath;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.UUID;
@@ -25,7 +25,7 @@ public class FilePermissionServiceImpl implements FilePermissionService {
     }
 
     @Override
-    public boolean canModify(VPath path) {
+    public boolean canModify(VirtualPath path) {
         return false;
     }
 
@@ -40,7 +40,7 @@ public class FilePermissionServiceImpl implements FilePermissionService {
     }
 
     @Override
-    public boolean canRead(VPath path) {
+    public boolean canRead(VirtualPath path) {
         return false;
     }
 

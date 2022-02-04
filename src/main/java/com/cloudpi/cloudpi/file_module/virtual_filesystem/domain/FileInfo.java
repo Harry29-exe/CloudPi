@@ -1,4 +1,4 @@
-package com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities;
+package com.cloudpi.cloudpi.file_module.virtual_filesystem.domain;
 
 import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
 import com.cloudpi.cloudpi.file_module.physical.domain.Drive;

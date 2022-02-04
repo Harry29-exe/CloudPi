@@ -1,6 +1,6 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.services;
 
-public interface VFilesystemService {
+public interface FilesystemInfoService {
 
     void createVirtualFilesystem(Long userId, Long driveSize);
 

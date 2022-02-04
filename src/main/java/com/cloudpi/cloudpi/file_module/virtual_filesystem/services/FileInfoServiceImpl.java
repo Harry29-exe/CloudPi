@@ -3,11 +3,12 @@ package com.cloudpi.cloudpi.file_module.virtual_filesystem.services;
 import com.cloudpi.cloudpi.exception.path.PathNotEmptyException;
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.file_module.physical.domain.DriveRepo;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.entities.FileInfo;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.repositories.FileInfoRepo;
+import com.cloudpi.cloudpi.file_module.physical.dto.DriveDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VPath;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.CreateVFile;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.UpdateVFile;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,11 @@ import java.util.UUID;
 
 @Service
 @Transactional
-public class VFileServiceImpl implements VFileService {
+public class FileInfoServiceImpl implements FileInfoService {
     private final FileInfoRepo fileInfoRepo;
     private final DriveRepo driveRepo;
 
-    public VFileServiceImpl(FileInfoRepo fileInfoRepo, DriveRepo driveRepo) {
+    public FileInfoServiceImpl(FileInfoRepo fileInfoRepo, DriveRepo driveRepo) {
         this.fileInfoRepo = fileInfoRepo;
         this.driveRepo = driveRepo;
     }
@@ -85,7 +86,7 @@ public class VFileServiceImpl implements VFileService {
     }
 
     @Override
-    public void delete(VPath path) {
+    public void delete(VirtualPath path) {
         var entity = fileInfoRepo
                 .findByPath(path.getPath())
                 .orElseThrow(ResourceNotExistException::new);
