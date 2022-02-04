@@ -2,7 +2,9 @@ package com.cloudpi.cloudpi.file_module.permission.service;
 
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
 import com.cloudpi.cloudpi.file_module.permission.repositories.FilePermissionRepo;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.utils.AppService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -11,45 +13,91 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.UUID;
 
-//@AppService
+@AppService
 @Transactional
 @Validated
 @Service(value = "filePermissionService")
 public class FilePermissionServiceImpl implements FilePermissionService {
     private final FilePermissionRepo filePermissionRepo;
+    private final FileInfoRepo fileInfoRepo;
 
-    public FilePermissionServiceImpl(FilePermissionRepo filePermissionRepo) {
+    public FilePermissionServiceImpl(FilePermissionRepo filePermissionRepo, FileInfoRepo fileInfoRepo) {
         this.filePermissionRepo = filePermissionRepo;
+        this.fileInfoRepo = fileInfoRepo;
     }
 
     @Override
     public boolean canModify(UUID filePubId) {
-        return true;
+        FileInfo file = fileInfoRepo.findByPubId(filePubId)
+                .orElseThrow();
+        String username = getCurrentUserUsername();
+
+        while(file != null) {
+            boolean canModify = checkPermission(file, PermissionType.MODIFY, username);
+            if(canModify) {
+                return true;
+            }
+            file = file.getParent();
+        }
+        return false;
     }
 
     @Override
     public boolean canModify(String path) {
-        return true;
+        FileInfo file = fileInfoRepo.findByPath(path)
+                .orElseThrow();
+        String username = getCurrentUserUsername();
+
+        while(file != null) {
+            boolean canModify = checkPermission(file, PermissionType.MODIFY, username);
+            if(canModify) {
+                return true;
+            }
+            file = file.getParent();
+        }
+        return false;
     }
 
     @Override
     public boolean canModify(VirtualPath path) {
-        return true;
+        return canModify(path.getPath());
     }
 
     @Override
     public boolean canRead(UUID filePubId) {
-        return true;
+        FileInfo file = fileInfoRepo.findByPubId(filePubId)
+                .orElseThrow();
+        String username = getCurrentUserUsername();
+
+        while(file != null) {
+            boolean canModify = checkPermission(file, PermissionType.READ, username);
+            if(canModify) {
+                return true;
+            }
+            file = file.getParent();
+        }
+        return false;
     }
 
     @Override
     public boolean canRead(String path) {
-        return true;
+        FileInfo file = fileInfoRepo.findByPath(path)
+                .orElseThrow();
+        String username = getCurrentUserUsername();
+
+        while(file != null) {
+            boolean canModify = checkPermission(file, PermissionType.READ, username);
+            if(canModify) {
+                return true;
+            }
+            file = file.getParent();
+        }
+        return false;
     }
 
     @Override
     public boolean canRead(VirtualPath path) {
-        return true;
+        return canRead(path.getPath());
     }
 
     protected boolean permissionExist(UUID filePubId,
@@ -66,6 +114,15 @@ public class FilePermissionServiceImpl implements FilePermissionService {
         return SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
+    }
+
+    private boolean checkPermission(FileInfo file, PermissionType permission, String username) {
+        return file.getPermissions()
+                .stream()
+                .anyMatch(per ->
+                per.getUser().getUsername().equals(username)
+                        && per.getType() == permission
+        );
     }
 
 }
