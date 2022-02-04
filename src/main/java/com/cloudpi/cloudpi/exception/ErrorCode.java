@@ -18,8 +18,12 @@ public enum ErrorCode {
     /**
      * resources
      */
-    NO_RESOURCE;
+    NO_RESOURCE,
 
+    /**
+     * validation
+     */
+    INVALID_VALIDATION;
 
     public ErrorBody toErrorBody() {
         return new ErrorBody(this);
