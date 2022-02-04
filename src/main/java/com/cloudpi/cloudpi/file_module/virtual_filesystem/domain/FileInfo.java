@@ -94,11 +94,6 @@ public class FileInfo {
             @NotNull FileType type,
             @Min(0) @NotNull Long size
     ) {
-        this(name, path, drive, type, size);
-        this.parent = parent;
-    }
-
-    protected FileInfo(String name, String path, @Nullable Drive drive, @NonNull FileType type,  Long size) {
         if (type != FileType.DIRECTORY && drive == null) {
             throw new IllegalStateException("Drive can only be null if file is directory");
         }
@@ -106,7 +101,18 @@ public class FileInfo {
         this.path = path;
         this.type = type;
         this.drive = drive;
+        this.parent = parent;
         this.root = parent.getRoot();
+        this.details = new FileInfoDetails(size, this);
+    }
+
+    private FileInfo(String name, String path, @NonNull FileType type,  Long size) {
+        if (type != FileType.DIRECTORY && drive == null) {
+            throw new IllegalStateException("Drive can only be null if file is directory");
+        }
+        this.name = name;
+        this.path = path;
+        this.type = type;
         this.details = new FileInfoDetails(size, this);
     }
 
@@ -114,7 +120,6 @@ public class FileInfo {
         return new FileInfo(
                 username,
                 username,
-                null,
                 FileType.DIRECTORY,
                 0L);
     }
