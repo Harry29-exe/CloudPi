@@ -44,7 +44,7 @@ public class UserEntity {
             fetch = FetchType.EAGER,
             orphanRemoval = true
     )
-    private @NotNull UserDetails userDetails;
+    private @NotNull UserDetailsEntity userDetailsEntity;
     @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private FilesystemRootInfo userDrive;
     @ElementCollection(fetch = FetchType.EAGER)
@@ -52,24 +52,24 @@ public class UserEntity {
 
     public UserEntity(@NonNull String username,
                       @NonNull String password,
-                      @NonNull UserDetails userDetails,
+                      @NonNull UserDetailsEntity userDetailsEntity,
                       Set<Role> roles) {
 
         this.username = username;
         this.password = password;
-        this.userDetails = userDetails;
-        this.userDetails.setUser(this);
+        this.userDetailsEntity = userDetailsEntity;
+        this.userDetailsEntity.setUser(this);
         this.roles = roles;
     }
 
     public UserIdDTO toUserIdDTO() {
-        return new UserIdDTO(username, pubId.toString(), userDetails.getNickname(),
-                userDetails.getPathToProfilePicture());
+        return new UserIdDTO(username, pubId.toString(), userDetailsEntity.getNickname(),
+                userDetailsEntity.getPathToProfilePicture());
     }
 
     public UserDetailsDTO toUserDetailsDTO() {
-        return new UserDetailsDTO(userDetails.getEmail(), userDetails.getPathToProfilePicture(),
-                userDetails.getNickname(), pubId.toString(), roles);
+        return new UserDetailsDTO(userDetailsEntity.getEmail(), userDetailsEntity.getPathToProfilePicture(),
+                userDetailsEntity.getNickname(), pubId.toString(), roles);
     }
 
 }

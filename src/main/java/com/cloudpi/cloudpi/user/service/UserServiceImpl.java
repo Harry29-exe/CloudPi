@@ -5,6 +5,7 @@ import com.cloudpi.cloudpi.exception.user.UserNotExistException;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FilesystemInfoService;
 import com.cloudpi.cloudpi.user.api.requests.PatchUserRequest;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
+import com.cloudpi.cloudpi.user.domain.entities.UserDetailsEntity;
 import com.cloudpi.cloudpi.user.domain.entities.UserEntity;
 import com.cloudpi.cloudpi.user.domain.repositiories.UserRepo;
 import com.cloudpi.cloudpi.user.dto.UserDetailsDTO;
@@ -15,8 +16,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
 import java.util.List;
@@ -69,10 +69,15 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         roles.add(Role.USER);
         String password = passwordEncoder.encode(user.password());
 
-        UserEntity userEntity = new UserEntity(user.username(), password,
-                new com.cloudpi.cloudpi.user.domain.entities.UserDetails(user.nickname(), user.email(), null),
+        UserEntity userEntity = new UserEntity(
+                user.username(),
+                password,
+                new UserDetailsEntity(
+                        user.nickname(),
+                        user.email(),
+                        null),
                 roles);
-        UserEntity createdUser = userRepo.save(userEntity);
+        UserEntity createdUser = userRepo.saveAndFlush(userEntity);
         filesystemService.createRoot(createdUser.getId());
     }
 
@@ -81,13 +86,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         var user = userRepo.findByUsername(username)
                 .orElseThrow(UserNotExistException::new);
         if(request.email() != null) {
-            user.getUserDetails().setEmail(request.email());
+            user.getUserDetailsEntity().setEmail(request.email());
         }
         if(request.nickname() != null) {
-            user.getUserDetails().setNickname(request.nickname());
+            user.getUserDetailsEntity().setNickname(request.nickname());
         }
         if(request.pathToProfilePicture() != null) {
-            user.getUserDetails().setPathToProfilePicture(request.pathToProfilePicture());
+            user.getUserDetailsEntity().setPathToProfilePicture(request.pathToProfilePicture());
         }
 
         userRepo.save(user);

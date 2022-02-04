@@ -23,11 +23,11 @@ public class FileInfoDetails {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private @NotNull Date modifiedAt;
+    private @NotNull Date modifiedAt = new Date();
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = false)
-    private @NotNull Date createdAt;
+    private @NotNull Date createdAt = new Date();
 
     @Column
     private Boolean hasThumbnail = false;
