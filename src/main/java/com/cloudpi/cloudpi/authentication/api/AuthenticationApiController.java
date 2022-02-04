@@ -19,11 +19,6 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-//@CrossOrigin(
-//        origins = {FRONTEND_ADDRESS, "https://192.168.0.185:4430"},
-//        exposedHeaders = "Authorization",
-//        allowCredentials = "true",
-//        methods = {RequestMethod.POST, RequestMethod.OPTIONS})
 @RestController
 public class AuthenticationApiController implements AuthenticationApi {
     public static final String REFRESH_TOKEN_COOKIE_NAME = "Refresh-Token";

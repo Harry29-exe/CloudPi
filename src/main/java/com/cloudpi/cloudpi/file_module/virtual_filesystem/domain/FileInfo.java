@@ -51,7 +51,10 @@ public class FileInfo {
 
     @OneToOne(
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER)
+            orphanRemoval = true,
+            fetch = FetchType.EAGER,
+            mappedBy = "file"
+    )
     @PrimaryKeyJoinColumn
     private @NotNull FileInfoDetails details;
 
@@ -106,7 +109,7 @@ public class FileInfo {
         this.details = new FileInfoDetails(size, this);
     }
 
-    private FileInfo(String name, String path, @NonNull FileType type,  Long size) {
+    private FileInfo(String name, String path, @NonNull FileType type, Long size) {
         if (type != FileType.DIRECTORY && drive == null) {
             throw new IllegalStateException("Drive can only be null if file is directory");
         }

@@ -24,7 +24,7 @@ public class FilesystemRootInfo {
     @OneToOne
     @JoinColumn(name = "user_id", unique = true, updatable = false)
     private UserEntity owner;
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "root_directory")
     private FileInfo rootVDirectory;
 
@@ -34,12 +34,12 @@ public class FilesystemRootInfo {
         owner.setUserDrive(this);
     }
 
-    @PrePersist
-    void checkIdRootDirectoryNotNull() {
-        if (rootVDirectory == null) {
-            throw new IllegalStateException("Virtual drive must have assigned root directory");
-        }
-    }
+//    @PrePersist
+//    void checkIdRootDirectoryNotNull() {
+//        if (rootVDirectory == null) {
+//            throw new IllegalStateException("Virtual drive must have assigned root directory");
+//        }
+//    }
 
     public void setRootVDirectory(FileInfo rootVDirectory) {
         this.rootVDirectory = rootVDirectory;

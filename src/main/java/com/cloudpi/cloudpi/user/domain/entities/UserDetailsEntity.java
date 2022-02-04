@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "user_details")
 @Entity
 @NoArgsConstructor
-public class UserDetails {
+public class UserDetailsEntity {
 
     @Column(nullable = false)
     private @NotNull String nickname;
@@ -33,9 +33,9 @@ public class UserDetails {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    public UserDetails(@NonNull String nickname,
-                       String email,
-                       String pathToProfilePicture) {
+    public UserDetailsEntity(@NonNull String nickname,
+                             String email,
+                             String pathToProfilePicture) {
         this.nickname = nickname;
         this.email = email;
         this.pathToProfilePicture = pathToProfilePicture;
