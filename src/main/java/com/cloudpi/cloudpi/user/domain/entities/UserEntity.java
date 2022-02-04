@@ -2,6 +2,8 @@ package com.cloudpi.cloudpi.user.domain.entities;
 
 import com.cloudpi.cloudpi.config.security.Role;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FilesystemRootInfo;
+import com.cloudpi.cloudpi.user.dto.UserDetailsDTO;
+import com.cloudpi.cloudpi.user.dto.UserIdDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -58,6 +60,16 @@ public class UserEntity {
         this.userDetails = userDetails;
         this.userDetails.setUser(this);
         this.roles = roles;
+    }
+
+    public UserIdDTO toUserIdDTO() {
+        return new UserIdDTO(pubId.toString(), userDetails.getNickname(),
+                userDetails.getPathToProfilePicture());
+    }
+
+    public UserDetailsDTO toUserDetailsDTO() {
+        return new UserDetailsDTO(userDetails.getEmail(), userDetails.getPathToProfilePicture(),
+                userDetails.getNickname(), username, roles);
     }
 
 }

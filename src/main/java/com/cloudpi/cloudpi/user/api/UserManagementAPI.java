@@ -64,7 +64,7 @@ public interface UserManagementAPI {
             }
     )
     @ResponseStatus(HttpStatus.CREATED)
-    @PutMapping
+    @PostMapping
     void createNewUser(@RequestBody @Valid PostUserRequest user);
 
 
@@ -84,19 +84,6 @@ public interface UserManagementAPI {
     @PatchMapping("users/{username}")
     void updateUserDetails(@PathVariable(name = "username") String username,
                            @RequestBody PatchUserRequest request);
-
-
-    @Operation(
-            summary = "schedule delete for user with provided username",
-            description = "Schedules delete for user whose username matches the one specified in the path",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Success"),
-                    @ApiResponse(responseCode = "403", description = "Unauthorized request"),
-                    @ApiResponse(responseCode = "404", description = "No user with provided username")
-            }
-    )
-    @DeleteMapping("/users/{username}")
-    void scheduleUserDelete(@PathVariable(name = "username") String username);
 
 
     @Operation(
