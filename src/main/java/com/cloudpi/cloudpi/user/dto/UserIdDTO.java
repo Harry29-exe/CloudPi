@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class UserIdDTO {
-
-    private String nickname;
+    private String username;
     private String pubId;
+    private String nickname;
     private String pathToProfilePicture;
 
 }
