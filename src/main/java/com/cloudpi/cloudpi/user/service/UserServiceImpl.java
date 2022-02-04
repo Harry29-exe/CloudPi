@@ -2,6 +2,7 @@ package com.cloudpi.cloudpi.user.service;
 
 import com.cloudpi.cloudpi.config.security.Role;
 import com.cloudpi.cloudpi.exception.user.UserNotExistException;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FilesystemInfoService;
 import com.cloudpi.cloudpi.user.api.requests.PatchUserRequest;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
 import com.cloudpi.cloudpi.user.domain.entities.UserEntity;
@@ -26,10 +27,12 @@ import java.util.Set;
 public class UserServiceImpl implements UserDetailsService, UserService {
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final FilesystemInfoService filesystemService;
 
-    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder, FilesystemInfoService filesystemService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.filesystemService = filesystemService;
     }
 
     @Override
@@ -70,7 +73,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         UserEntity userEntity = new UserEntity(user.username(), password,
                 new com.cloudpi.cloudpi.user.domain.entities.UserDetails(user.nickname(), user.email(), null),
                 roles);
-        userRepo.save(userEntity);
+        UserEntity createdUser = userRepo.save(userEntity);
+        filesystemService.createRoot(createdUser.getId());
     }
 
     @Override
