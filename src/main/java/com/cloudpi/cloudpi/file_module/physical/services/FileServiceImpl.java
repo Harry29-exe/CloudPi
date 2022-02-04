@@ -29,7 +29,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public FileInfoDTO save(CreateFile create, MultipartFile file) {
+    public FileInfoDTO create(CreateFile create, MultipartFile file) {
         var drive = driveService.getDriveForNewFile(file.getSize());
         var vPath = create.getPath();
 

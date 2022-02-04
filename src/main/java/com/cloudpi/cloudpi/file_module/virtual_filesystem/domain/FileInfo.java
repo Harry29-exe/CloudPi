@@ -46,9 +46,6 @@ public class FileInfo {
     @Column
     private Integer fileInfoVersion = 0;
 
-    @Version
-    private Integer entityVersion = 0;
-
     @Column
     private Integer fileVersion = 0;
 
@@ -76,8 +73,7 @@ public class FileInfo {
      */
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "drive_files")
-    private @Nullable
-    Drive drive;
+    private @Nullable Drive drive;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "root_id", nullable = false)

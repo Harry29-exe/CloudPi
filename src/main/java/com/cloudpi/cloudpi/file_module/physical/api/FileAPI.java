@@ -1,5 +1,6 @@
 package com.cloudpi.cloudpi.file_module.physical.api;
 
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.core.io.Resource;
@@ -22,7 +23,7 @@ public interface FileAPI {
             path = "file",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    void uploadNewFile(
+    FileInfoDTO uploadNewFile(
             @RequestParam(defaultValue = "UNDEFINED") FileType fileType,
             @RequestParam String filepath,
             @RequestParam MultipartFile file,
@@ -33,14 +34,14 @@ public interface FileAPI {
             path = "image/{imageName}",
             consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    void uploadNewImage(
+    FileInfoDTO uploadNewImage(
             @PathVariable String imageName,
-            @RequestBody byte[] image,
+            @RequestBody MultipartFile file,
             Authentication auth);
 
 
     @GetMapping("file/{fileId}")
-    Resource downloadFile(@PathVariable String fileId);
+    Resource downloadFile(@PathVariable UUID fileId);
 
 
     @GetMapping("directory/{directoryId}")
@@ -53,10 +54,6 @@ public interface FileAPI {
             @RequestBody List<String> imageNames);
 
 
-    @DeleteMapping("directory/{fileId}")
-    void deleteDirectory(@PathVariable String fileId);
-
-
     @DeleteMapping("file/{fileId}")
     void deleteFile(@PathVariable UUID fileId);
 
@@ -65,7 +62,7 @@ public interface FileAPI {
             path = "file",
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    void deleteFiles(@RequestBody @NotEmpty List<UUID> fileId);
+    void deleteFiles(@RequestBody @NotEmpty List<UUID> fileIds);
 
 
 }
