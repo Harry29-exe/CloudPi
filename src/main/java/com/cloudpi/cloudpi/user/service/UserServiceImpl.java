@@ -8,20 +8,19 @@ import com.cloudpi.cloudpi.user.domain.entities.UserEntity;
 import com.cloudpi.cloudpi.user.domain.repositiories.UserRepo;
 import com.cloudpi.cloudpi.user.dto.UserDetailsDTO;
 import com.cloudpi.cloudpi.user.dto.UserIdDTO;
+import com.cloudpi.cloudpi.utils.AppService;
 import com.google.common.collect.ImmutableList;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Service
-@Transactional
+@AppService
 public class UserServiceImpl implements UserDetailsService, UserService {
     private final UserRepo userRepo;
 
