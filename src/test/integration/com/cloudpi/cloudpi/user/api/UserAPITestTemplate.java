@@ -3,7 +3,6 @@ package com.cloudpi.cloudpi.user.api;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
 import com.cloudpi.cloudpi.utils.ControllerTest;
 import com.cloudpi.cloudpi.utils.MockClient;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,7 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ControllerTest
-public class UserManagementAPITestTemplate {
+public class UserAPITestTemplate {
     protected final String apiAddress = "/user";
 
     @Autowired

@@ -4,13 +4,10 @@ import com.cloudpi.cloudpi.config.security.Role;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FilesystemRootInfo;
 import com.cloudpi.cloudpi.user.dto.UserDetailsDTO;
 import com.cloudpi.cloudpi.user.dto.UserIdDTO;
-import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -47,7 +44,7 @@ public class UserEntity {
             fetch = FetchType.EAGER,
             orphanRemoval = true
     )
-    private @NotNull UserDetailsEntity userDetailsEntity;
+    private @NotNull UserDetailsEntity userDetails;
     @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private FilesystemRootInfo userDrive;
     @ElementCollection(fetch = FetchType.EAGER)
@@ -55,24 +52,29 @@ public class UserEntity {
 
     public UserEntity(@NonNull String username,
                       @NonNull String password,
-                      @NonNull UserDetailsEntity userDetailsEntity,
+                      @NonNull UserDetailsEntity userDetails,
                       Set<Role> roles) {
 
         this.username = username;
         this.password = password;
-        this.userDetailsEntity = userDetailsEntity;
-        this.userDetailsEntity.setUser(this);
+        this.userDetails = userDetails;
+        this.userDetails.setUser(this);
         this.roles = roles;
     }
 
     public UserIdDTO toUserIdDTO() {
-        return new UserIdDTO(username, pubId.toString(), userDetailsEntity.getNickname(),
-                userDetailsEntity.getPathToProfilePicture());
+        return new UserIdDTO(username, pubId.toString(), userDetails.getNickname(),
+                userDetails.getPathToProfilePicture());
     }
 
     public UserDetailsDTO toUserDetailsDTO() {
-        return new UserDetailsDTO(userDetailsEntity.getEmail(), userDetailsEntity.getPathToProfilePicture(),
-                userDetailsEntity.getNickname(), pubId.toString(), roles);
+        return new UserDetailsDTO(
+                username,
+                userDetails.getEmail(),
+                userDetails.getPathToProfilePicture(),
+                userDetails.getNickname(),
+                pubId.toString(),
+                roles);
     }
 
 }

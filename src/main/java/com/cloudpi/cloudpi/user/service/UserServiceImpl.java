@@ -86,13 +86,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         var user = userRepo.findByUsername(username)
                 .orElseThrow(UserNotExistException::new);
         if(request.email() != null) {
-            user.getUserDetailsEntity().setEmail(request.email());
+            user.getUserDetails().setEmail(request.email());
         }
         if(request.nickname() != null) {
-            user.getUserDetailsEntity().setNickname(request.nickname());
+            user.getUserDetails().setNickname(request.nickname());
         }
         if(request.pathToProfilePicture() != null) {
-            user.getUserDetailsEntity().setPathToProfilePicture(request.pathToProfilePicture());
+            user.getUserDetails().setPathToProfilePicture(request.pathToProfilePicture());
         }
 
         userRepo.save(user);

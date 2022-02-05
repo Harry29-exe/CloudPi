@@ -1,16 +1,16 @@
 package com.cloudpi.cloudpi.user.dto;
 
 import com.cloudpi.cloudpi.config.security.Role;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserDetailsDTO {
+    private String username;
     private String email;
     private String pathToProfilePicture;
     private String nickname;
