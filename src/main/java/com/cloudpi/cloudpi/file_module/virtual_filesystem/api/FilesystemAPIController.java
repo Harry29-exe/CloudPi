@@ -4,13 +4,16 @@ import com.cloudpi.cloudpi.file_module.virtual_filesystem.api.request.MoveFileRe
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FilesystemInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.FileStructureDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FileInfoService;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FilesystemInfoService;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.CreateFileInDB;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class FilesystemAPIController implements FilesystemAPI {
@@ -29,6 +32,15 @@ public class FilesystemAPIController implements FilesystemAPI {
 
     @Override
     public FileInfoDTO createDirectory(String directoryPath, Authentication auth) {
+        /*
+        CreateFileInDB createFile = new CreateFileInDB(
+                new VirtualPath(directoryPath),
+                UUID.randomUUID(),
+                FileType.DIRECTORY,
+                10000L
+        );
+        return fileInfoService.save(createFile);
+         */
         return null;
     }
 

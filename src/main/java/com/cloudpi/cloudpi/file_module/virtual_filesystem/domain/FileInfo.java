@@ -3,6 +3,7 @@ package com.cloudpi.cloudpi.file_module.virtual_filesystem.domain;
 import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
 import com.cloudpi.cloudpi.file_module.physical.domain.Drive;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.FilesystemObjectDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.UpdateVFile;
 import lombok.Getter;
@@ -151,6 +152,18 @@ public class FileInfo {
                 details.getModifiedAt(),
                 details.getCreatedAt()
         );
+    }
+
+    public FilesystemObjectDTO mapToFilesystemObjectDTO(int depth) {
+        var file = new FilesystemObjectDTO();
+        file.setName(this.name);
+        file.setPubId(this.pubId);
+        file.setVersion(this.fileVersion);
+        if(depth > 0) {
+            file.setChildren(this.children.stream()
+                    .map(f -> f.mapToFilesystemObjectDTO(depth - 1)).toList());
+        }
+        return file;
     }
 
     @PreUpdate

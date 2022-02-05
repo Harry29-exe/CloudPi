@@ -5,12 +5,18 @@ import com.cloudpi.cloudpi.file_module.physical.services.FileService;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FilesystemRootInfo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.FileStructureDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.FilesystemObjectDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FilesystemRootInfoRepo;
 import com.cloudpi.cloudpi.user.domain.repositiories.UserRepo;
 import com.cloudpi.cloudpi.utils.AppService;
 import org.springframework.beans.factory.annotation.Value;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @AppService
 public class FilesystemInfoServiceImp implements FilesystemInfoService {
@@ -57,9 +63,15 @@ public class FilesystemInfoServiceImp implements FilesystemInfoService {
         this.createRoot(userId, this.defaultSpaceOnVirtualDrive);
     }
 
+    // todo zabezpieczyc i testowac
     @Override
     public FileStructureDTO get(VirtualPath entryPoint, Integer depth, String username) {
-        return null;
+        String path = entryPoint.getPath();
+        var rootDir = fileInfoRepo.findByPath(path)
+                .orElseThrow();
+
+        FilesystemObjectDTO rootObj = rootDir.mapToFilesystemObjectDTO(depth);
+        return new FileStructureDTO(entryPoint.getPath(), rootObj);
     }
 
 }
