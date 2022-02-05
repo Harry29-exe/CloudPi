@@ -4,10 +4,13 @@ import com.cloudpi.cloudpi.config.security.Role;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FilesystemRootInfo;
 import com.cloudpi.cloudpi.user.dto.UserDetailsDTO;
 import com.cloudpi.cloudpi.user.dto.UserIdDTO;
+import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
