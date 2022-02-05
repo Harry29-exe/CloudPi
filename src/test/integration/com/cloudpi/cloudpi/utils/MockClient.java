@@ -25,7 +25,7 @@ public class MockClient {
 
 
         var result = mockMvc.perform(
-                post("/api/login")
+                post("/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
                 ).andExpect(status().isOk())

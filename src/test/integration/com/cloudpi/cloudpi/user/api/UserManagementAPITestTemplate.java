@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ControllerTest
 public class UserManagementAPITestTemplate {
-    protected final String apiAddress = "/api//user-management";
+    protected final String apiAddress = "/user";
 
     @Autowired
     protected MockMvc mockMvc;
@@ -51,7 +51,7 @@ public class UserManagementAPITestTemplate {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonMapper.writeValueAsString(userRequest))
                         .header("Authorization", authToken)
-        ).andExpect(status().isOk());
+        ).andExpect(status().is(201));
     }
 
 }

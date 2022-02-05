@@ -43,7 +43,6 @@ public class AuthenticationApiController implements AuthenticationApi {
 
     @Override
     public void login(Boolean dontLogout, LoginRequest requestBody, HttpServletRequest request, HttpServletResponse response) {
-
         authService.authenticate(requestBody.username(), requestBody.password());
 
         var user = userDetailsService.loadUserByUsername(requestBody.username());

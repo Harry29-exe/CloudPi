@@ -1,4 +1,4 @@
-create sequence hibernate_sequence start 1 increment 1;
+create sequence hibernate_sequence start 100 increment 1;
 create table drive
 (
     id             uuid         not null,

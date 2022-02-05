@@ -10,10 +10,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ControllerTest
 class GetAllUsers extends UserManagementAPITestTemplate {
@@ -26,11 +28,12 @@ class GetAllUsers extends UserManagementAPITestTemplate {
     @Test
     @WithUser
     void should_return_all_users() throws Exception {
-       var result = mockMvc.perform(
-               get(apiAddress)
-       ).andReturn();
+        var result = mockMvc.perform(
+               get(apiAddress + "/")
+        ).andExpect(status().is2xxSuccessful()
+        ).andReturn();
 
-        var body = (List<UserIdDTO>) MockClient.getBody(result, List.class);
+        var body = Arrays.stream(MockClient.getBody(result, UserIdDTO[].class)).toList();
 
         assert body.size() == createUserRequests.size() + 1;
         assert body.stream().anyMatch(u -> Objects.equals(u.getUsername(), "admin"));
