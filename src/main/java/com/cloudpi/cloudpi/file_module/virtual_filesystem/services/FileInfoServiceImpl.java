@@ -67,7 +67,6 @@ public class FileInfoServiceImpl implements FileInfoService {
                 .mapToDTO();
     }
 
-    // todo zmiana parent id przy przeniesieniu
     @Override
     public void move(UUID filePubId, String newPath) {
         if (!isPathEmpty(newPath)) {
@@ -84,6 +83,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         } else {
             file.setPath(newPath);
         }
+        changeParentAndName(file, newPath);
     }
 
     @Override
@@ -120,4 +120,11 @@ public class FileInfoServiceImpl implements FileInfoService {
         return fileInfoRepo.findByPath(path).isEmpty();
     }
 
+    private void changeParentAndName(FileInfo file, String newPath) {
+        VirtualPath newVirtualPath = new VirtualPath(newPath);
+        var parent = fileInfoRepo.findByPath(newVirtualPath.getParentPath())
+                .orElseThrow();
+        file.setParent(parent);
+        file.setName(newVirtualPath.getName());
+    }
 }

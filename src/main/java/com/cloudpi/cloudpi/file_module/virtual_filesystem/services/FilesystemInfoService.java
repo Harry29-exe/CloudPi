@@ -20,4 +20,6 @@ public interface FilesystemInfoService {
 
     List<FilesystemInfoDTO> getUsersVirtualDrives(String username);
 
+    void changeVirtualDriveSize(String username, Long newAssignedSpace);
+
 }

@@ -85,14 +85,20 @@ public class FilesystemInfoServiceImp implements FilesystemInfoService {
     @Override
     public List<FilesystemInfoDTO> getUsersVirtualDrives(String username) {
         var filesystems = filesystemRootInfoRepo.findAllByOwner_Username(username);
-        List<FilesystemInfoDTO> virtualDrives = new ArrayList<>();
+        return getVirtualDrivesInfo(username, filesystems);
+    }
+
+    // todo better exception
+    @Override
+    public void changeVirtualDriveSize(String username, Long newAssignedSpace) {
+        var filesystems = filesystemRootInfoRepo.findAllByOwner_Username(username);
         filesystems.forEach(filesystem -> {
-            var files = fileInfoRepo.findByRootId(filesystem.getId());
-            long totalSpace = filesystem.getAssignedCapacity();
-            long freeSpace = totalSpace - files.stream().mapToLong(file -> file.getDetails().getSize()).sum();
-            virtualDrives.add(new FilesystemInfoDTO(username, totalSpace, freeSpace));
+            if(getUsedSpace(filesystem) > newAssignedSpace) {
+                throw new IllegalStateException("Cannot assign less space than is currently used");
+            }
+            filesystem.setAssignedCapacity(newAssignedSpace);
         });
-        return virtualDrives;
+        filesystemRootInfoRepo.saveAll(filesystems);
     }
 
     private List<FilePermission> grantPermissionsToRoot(UserEntity user, FileInfo rootDir) {
@@ -100,5 +106,20 @@ public class FilesystemInfoServiceImp implements FilesystemInfoService {
         permissions.add(new FilePermission(PermissionType.READ, user, rootDir));
         permissions.add(new FilePermission(PermissionType.MODIFY, user, rootDir));
         return permissions;
+    }
+
+    private List<FilesystemInfoDTO> getVirtualDrivesInfo(String username, List<FilesystemRootInfo> filesystems) {
+        List<FilesystemInfoDTO> virtualDrives = new ArrayList<>();
+        filesystems.forEach(filesystem -> {
+            long totalSpace = filesystem.getAssignedCapacity();
+            long freeSpace = totalSpace - getUsedSpace(filesystem);
+            virtualDrives.add(new FilesystemInfoDTO(username, totalSpace, freeSpace));
+        });
+        return virtualDrives;
+    }
+
+    private long getUsedSpace(FilesystemRootInfo filesystem) {
+        var files = fileInfoRepo.findByRootId(filesystem.getId());
+        return files.stream().mapToLong(file -> file.getDetails().getSize()).sum();
     }
 }
