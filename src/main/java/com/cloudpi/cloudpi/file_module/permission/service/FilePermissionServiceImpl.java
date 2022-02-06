@@ -35,22 +35,6 @@ public class FilePermissionServiceImpl implements FilePermissionService {
     }
 
     @Override
-    public boolean canModify(UUID filePubId) {
-        FileInfo file = fileInfoRepo.findByPubId(filePubId)
-                .orElseThrow();
-        String username = getCurrentUserUsername();
-
-        while(file != null) {
-            boolean canModify = checkPermission(file, PermissionType.MODIFY, username);
-            if(canModify) {
-                return true;
-            }
-            file = file.getParent();
-        }
-        return false;
-    }
-
-    @Override
     public boolean canModify(String path) {
         FileInfo file = fileInfoRepo.findByPath(path)
                 .orElseThrow();
@@ -69,6 +53,22 @@ public class FilePermissionServiceImpl implements FilePermissionService {
     @Override
     public boolean canModify(VirtualPath path) {
         return canModify(path.getPath());
+    }
+
+    @Override
+    public boolean canModify(UUID filePubId) {
+        FileInfo file = fileInfoRepo.findByPubId(filePubId)
+                .orElseThrow();
+        String username = getCurrentUserUsername();
+
+        while(file != null) {
+            boolean canModify = checkPermission(file, PermissionType.MODIFY, username);
+            if(canModify) {
+                return true;
+            }
+            file = file.getParent();
+        }
+        return false;
     }
 
     @Override
