@@ -5,6 +5,7 @@ import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.FileStru
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 public interface FilesystemInfoService {
 
@@ -16,5 +17,7 @@ public interface FilesystemInfoService {
             VirtualPath entryPoint,
             Integer depth,
             @NotNull String username);
+
+    List<FilesystemInfoDTO> getUsersVirtualDrives(String username);
 
 }

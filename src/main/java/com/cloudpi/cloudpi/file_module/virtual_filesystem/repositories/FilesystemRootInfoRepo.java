@@ -4,6 +4,7 @@ import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FilesystemRootI
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -12,5 +13,6 @@ public interface FilesystemRootInfoRepo extends JpaRepository<FilesystemRootInfo
     Optional<FilesystemRootInfo> findByOwner_Id(Long id);
 
     Optional<FilesystemRootInfo> findByOwner_Username(String username);
+    List<FilesystemRootInfo> findAllByOwner_Username(String username);
 
 }

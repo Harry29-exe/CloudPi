@@ -37,22 +37,23 @@ public class FilesystemAPIController implements FilesystemAPI {
 
     @Override
     public FileInfoDTO getFileInfo(String fileId, Boolean getWithPermissions) {
-        return null;
+        UUID fileUUID = UUID.fromString(fileId);
+        return fileInfoService.get(fileUUID);
     }
 
     @Override
     public void moveFile(MoveFileRequest requestBody) {
-
+        fileInfoService.move(requestBody.filePubId(), requestBody.newPath());
     }
 
     @Override
     public void deleteDirectory(String directoryId) {
-
+        fileInfoService.delete(UUID.fromString(directoryId));
     }
 
     @Override
     public List<FilesystemInfoDTO> getUsersVirtualDrivesInfo(String username) {
-        return null;
+        return filesystemInfoService.getUsersVirtualDrives(username);
     }
 
     @Override

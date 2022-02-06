@@ -8,6 +8,7 @@ import com.cloudpi.cloudpi.file_module.permission.service.dto.GrantPermission;
 import com.cloudpi.cloudpi.file_module.physical.services.FileService;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FilesystemRootInfo;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FilesystemInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.FileStructureDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.FilesystemObjectDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
@@ -79,6 +80,19 @@ public class FilesystemInfoServiceImp implements FilesystemInfoService {
 
         FilesystemObjectDTO rootObj = rootDir.mapToFilesystemObjectDTO(depth);
         return new FileStructureDTO(entryPoint.getPath(), rootObj);
+    }
+
+    @Override
+    public List<FilesystemInfoDTO> getUsersVirtualDrives(String username) {
+        var filesystems = filesystemRootInfoRepo.findAllByOwner_Username(username);
+        List<FilesystemInfoDTO> virtualDrives = new ArrayList<>();
+        filesystems.forEach(filesystem -> {
+            var files = fileInfoRepo.findByRootId(filesystem.getId());
+            long totalSpace = filesystem.getAssignedCapacity();
+            long freeSpace = totalSpace - files.stream().mapToLong(file -> file.getDetails().getSize()).sum();
+            virtualDrives.add(new FilesystemInfoDTO(username, totalSpace, freeSpace));
+        });
+        return virtualDrives;
     }
 
     private List<FilePermission> grantPermissionsToRoot(UserEntity user, FileInfo rootDir) {

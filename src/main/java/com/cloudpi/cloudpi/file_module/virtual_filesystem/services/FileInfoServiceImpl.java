@@ -67,6 +67,7 @@ public class FileInfoServiceImpl implements FileInfoService {
                 .mapToDTO();
     }
 
+    // todo zmiana parent id przy przeniesieniu
     @Override
     public void move(UUID filePubId, String newPath) {
         if (!isPathEmpty(newPath)) {

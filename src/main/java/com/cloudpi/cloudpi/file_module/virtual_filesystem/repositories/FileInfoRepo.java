@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,4 +38,10 @@ public interface FileInfoRepo extends JpaRepository<FileInfo, Long> {
     //        """)
     //void updateFileSize(UUID id, Long newSize, Date updateDate);
 
+    @Query("""
+                SELECT f
+                FROM FileInfo f
+                WHERE f.root.id = :rootId
+            """)
+    List<FileInfo> findByRootId(long rootId);
 }
