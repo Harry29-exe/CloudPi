@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,14 +20,24 @@ public class FilesystemRootInfo {
     @GeneratedValue
     @Column(name = "id")
     private Long id;
+
     @Column(nullable = false)
     private Long assignedCapacity;
+
     @OneToOne
     @JoinColumn(name = "user_id", unique = true, updatable = false)
     private UserEntity owner;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "root_directory")
     private FileInfo rootVDirectory;
+
+    @OneToMany(
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY,
+            mappedBy = "root")
+    private List<FileInfo> files;
 
     public FilesystemRootInfo(Long assignedCapacity, UserEntity owner) {
         this.assignedCapacity = assignedCapacity;
