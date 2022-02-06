@@ -100,6 +100,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public void deleteUser(String username) {
+        //todo add deleting files
         var user = userRepo.findByUsername(username)
                 .orElseThrow(UserNotExistException::new);
         userRepo.delete(user);
