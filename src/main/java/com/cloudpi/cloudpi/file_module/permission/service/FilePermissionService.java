@@ -1,9 +1,14 @@
 package com.cloudpi.cloudpi.file_module.permission.service;
 
+import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
+import com.cloudpi.cloudpi.file_module.permission.service.dto.GrantPermission;
+import com.cloudpi.cloudpi.file_module.permission.service.dto.RevokePermission;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -30,4 +35,7 @@ public interface FilePermissionService {
 
 //    boolean canRead(String path, String username);
 
+    void grantPermissions(Set<GrantPermission> permissions);
+
+    void revokePermissions(Set<RevokePermission> permissions);
 }

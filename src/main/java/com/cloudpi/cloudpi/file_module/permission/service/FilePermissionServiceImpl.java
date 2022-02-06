@@ -1,17 +1,22 @@
 package com.cloudpi.cloudpi.file_module.permission.service;
 
+import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
 import com.cloudpi.cloudpi.file_module.permission.repositories.FilePermissionRepo;
+import com.cloudpi.cloudpi.file_module.permission.service.dto.GrantPermission;
+import com.cloudpi.cloudpi.file_module.permission.service.dto.RevokePermission;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
+import com.cloudpi.cloudpi.user.domain.entities.UserEntity;
+import com.cloudpi.cloudpi.user.domain.repositiories.UserRepo;
 import com.cloudpi.cloudpi.utils.AppService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.UUID;
+import java.util.*;
 
 @AppService
 @Transactional
@@ -20,10 +25,13 @@ import java.util.UUID;
 public class FilePermissionServiceImpl implements FilePermissionService {
     private final FilePermissionRepo filePermissionRepo;
     private final FileInfoRepo fileInfoRepo;
+    private final UserRepo userRepo;
 
-    public FilePermissionServiceImpl(FilePermissionRepo filePermissionRepo, FileInfoRepo fileInfoRepo) {
+    public FilePermissionServiceImpl(FilePermissionRepo filePermissionRepo, FileInfoRepo fileInfoRepo,
+                                     UserRepo userRepo) {
         this.filePermissionRepo = filePermissionRepo;
         this.fileInfoRepo = fileInfoRepo;
+        this.userRepo = userRepo;
     }
 
     @Override
@@ -98,6 +106,39 @@ public class FilePermissionServiceImpl implements FilePermissionService {
     @Override
     public boolean canRead(VirtualPath path) {
         return canRead(path.getPath());
+    }
+
+    // todo change exceptions
+    @Override
+    public void grantPermissions(Set<GrantPermission> permissions) {
+        Set<FilePermission> filePers = new HashSet<>();
+        permissions.forEach(per -> {
+            var user = userRepo.findByUsername(per.getUsername())
+                    .orElseThrow();
+            var file = fileInfoRepo.findByPubId(per.getFileUUID())
+                    .orElseThrow();
+            if(checkPermission(file, per.getPermissionType(), user.getUsername())) {
+                throw new IllegalArgumentException("One of the permissions currently exists");
+            }
+            filePers.add(new FilePermission(per.getPermissionType(), user, file));
+        });
+        filePermissionRepo.saveAll(filePers);
+    }
+
+    @Override
+    public void revokePermissions(Set<RevokePermission> permissions) {
+        Set<FilePermission> filePers = new HashSet<>();
+        permissions.forEach(per -> {
+            var user = userRepo.findByUsername(per.getUsername())
+                    .orElseThrow();
+            var file = fileInfoRepo.findByPubId(per.getFileUUID())
+                    .orElseThrow();
+            if(!checkPermission(file, per.getPermissionType(), user.getUsername())) {
+                throw new IllegalArgumentException("There is no such permission");
+            }
+            filePers.add(new FilePermission(per.getPermissionType(), user, file));
+        });
+        filePermissionRepo.deleteAll(filePers);
     }
 
     protected boolean permissionExist(UUID filePubId,

@@ -32,16 +32,7 @@ public class FilesystemAPIController implements FilesystemAPI {
 
     @Override
     public FileInfoDTO createDirectory(String directoryPath, Authentication auth) {
-        /*
-        CreateFileInDB createFile = new CreateFileInDB(
-                new VirtualPath(directoryPath),
-                UUID.randomUUID(),
-                FileType.DIRECTORY,
-                10000L
-        );
-        return fileInfoService.save(createFile);
-         */
-        return null;
+        return fileInfoService.saveDir(new VirtualPath(directoryPath));
     }
 
     @Override

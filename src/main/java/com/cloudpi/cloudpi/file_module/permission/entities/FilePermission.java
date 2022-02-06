@@ -2,7 +2,9 @@ package com.cloudpi.cloudpi.file_module.permission.entities;
 
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import com.cloudpi.cloudpi.user.domain.entities.UserEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,7 +12,14 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class FilePermission {
+
+    public FilePermission(PermissionType type, UserEntity user, FileInfo file) {
+        this.type = type;
+        this.user = user;
+        this.file = file;
+    }
 
     @Id
     @GeneratedValue
@@ -26,5 +35,4 @@ public class FilePermission {
     @ManyToOne
     @JoinColumn
     private FileInfo file;
-
 }
