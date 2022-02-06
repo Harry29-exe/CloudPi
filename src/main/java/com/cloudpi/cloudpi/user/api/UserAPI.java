@@ -1,5 +1,7 @@
 package com.cloudpi.cloudpi.user.api;
 
+import com.cloudpi.cloudpi.config.security.IsAdminOrMod;
+import com.cloudpi.cloudpi.config.security.Role;
 import com.cloudpi.cloudpi.user.api.requests.PatchUserRequest;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
 import com.cloudpi.cloudpi.user.dto.UserDetailsDTO;
@@ -8,7 +10,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,25 +20,32 @@ import javax.validation.Valid;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
-@RequestMapping("/user/")
+@RequestMapping("/user")
 @Tag(name = "User Management API", description =
         "API for various operations with users")
 public interface UserAPI {
 
-    @GetMapping(produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+
+
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all users",
             description = " Returns all basic user objects with their usernames, account types and paths to profile pictures.")
     List<UserIdDTO> getAllUsers();
 
-    @GetMapping("{usernames}/details")
+
+
+    @PreAuthorize("hasAnyRole('"+Role.admin+"', '"+Role.moderator+"') OR " +
+            "(#usernames.size() == 1 AND #usernames.get(0) == authentication.name)")
+    @GetMapping(value = "{usernames}/details")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "returns all details of user with provided username",
-            description = "Returns all details of user whose username matches the one specified in the URI path")
-    List<UserDetailsDTO> getUserDetails(@PathVariable(name = "usernames") List<String> username);
+            description = "Returns all details of user whose username matches the one specified in the URI path",
+            parameters = @Parameter(name = "usernames", description = "One or more usernames whose details you want to acquire"))
+    List<UserDetailsDTO> getUserDetails(@PathVariable(name = "usernames") List<String> usernames);
 
 
-
+    @IsAdminOrMod
     @PostMapping("new")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Creates user with given values",
@@ -43,6 +54,8 @@ public interface UserAPI {
     void createNewUser(@RequestBody @Valid PostUserRequest user);
 
 
+    @PreAuthorize("hasAnyRole('"+Role.admin+"', '"+Role.moderator+"') OR " +
+            "#username == authentication.name")
     @PatchMapping("{username}")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "updates user with provided username",
@@ -52,9 +65,13 @@ public interface UserAPI {
                            @RequestBody PatchUserRequest request);
 
 
+    @PreAuthorize("hasAnyRole('"+Role.admin+"', '"+Role.moderator+"') OR " +
+            "#username == authentication.name")
+    @DeleteMapping("{username}")
     @Operation(summary = "deletes user with provided username",
             description = "Deletes user whose username matches the one specified in the path")
-    @DeleteMapping("{username}")
     void deleteUser(@PathVariable(name = "username") String username);
+
+
 
 }

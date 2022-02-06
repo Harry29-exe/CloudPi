@@ -9,15 +9,15 @@ public enum Role implements GrantedAuthority {
     USER,
     BOT;
 
-    public static final String admin = "ADMIN";
-    public static final String moderator = "MODERATOR";
-    public static final String user = "USER";
-    public static final String bot = "BOT";
+    public static final String admin = "ROLE_ADMIN";
+    public static final String moderator = "ROLE_MODERATOR";
+    public static final String user = "ROLE_USER";
+    public static final String bot = "ROLE_BOT";
 
 
     @Override
     public String getAuthority() {
-        return this.name();
+        return "ROLE_"+this.name();
     }
 
 }
