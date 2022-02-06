@@ -14,9 +14,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.cloudpi.cloudpi.utils.MockClient.getBody;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ControllerTest
@@ -74,6 +72,10 @@ public class TestGetUserDetails extends UserAPITestTemplate {
         //given
         var username = "Alice";
         //when
+
+        mockMvc.perform(
+                get(endpointAddress(username))
+        ).andExpect(status().is(403));
 
     }
 

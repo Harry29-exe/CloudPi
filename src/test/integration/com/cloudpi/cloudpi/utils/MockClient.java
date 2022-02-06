@@ -3,16 +3,13 @@ package com.cloudpi.cloudpi.utils;
 import com.cloudpi.cloudpi.authentication.api.dto.LoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultMatcher;
 
+import java.util.Arrays;
+import java.util.List;
 
-import java.util.Map;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -44,6 +41,16 @@ public class MockClient {
                 result.getResponse().getContentAsByteArray(),
                 tClass
         );
+    }
+
+    public static <T> List<T> getBodyAsList(MvcResult result, Class<T> tClass) throws Exception {
+        ObjectMapper objectMapper = new JsonMapper();
+        var array = (T[]) objectMapper.readValue(
+                result.getResponse().getContentAsByteArray(),
+                tClass.arrayType()
+        );
+
+        return Arrays.asList(array);
     }
 
 }

@@ -45,7 +45,7 @@ class TestGetAllUsers extends UserAPITestTemplate {
     void should_return_401_to_non_authenticated_user() throws Exception {
         mockMvc.perform(
                 get(apiAddress)
-        ).andExpect(status().is(401));
+        ).andExpect(status().is(403));
     }
 
 }

@@ -1,12 +1,12 @@
 package com.cloudpi.cloudpi.user.api;
 
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
-import com.cloudpi.cloudpi.utils.ControllerTest;
 import com.cloudpi.cloudpi.utils.MockClient;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 
@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ControllerTest
 public class UserAPITestTemplate {
     protected final String apiAddress = "/user";
 
@@ -51,6 +50,23 @@ public class UserAPITestTemplate {
                         .content(jsonMapper.writeValueAsString(userRequest))
                         .header("Authorization", authToken)
         ).andExpect(status().is(201));
+    }
+
+    protected ResultActions fetchCreateNewUser(PostUserRequest request) throws Exception {
+        var bodyStr = this.jsonMapper.writeValueAsString(request);
+
+        //when
+        return mockMvc.perform(
+                post(apiAddress + "/new")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bodyStr)
+        );
+    }
+
+    protected ResultActions fetchGetAllUsers() throws Exception {
+        return mockMvc.perform(
+                get(apiAddress)
+        );
     }
 
 }

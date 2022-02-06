@@ -23,10 +23,11 @@ public class UserController implements UserAPI {
         return userService.getAllUsers();
     }
 
-    @Override
-    public List<UserDetailsDTO> getUserDetails(List<String> username) {
-        return userService.getUserDetails(username);
-    }
+//    @Secured({Role.admin, Role.moderator})
+@Override
+public List<UserDetailsDTO> getUserDetails(List<String> usernames) {
+    return userService.getUserDetails(usernames);
+}
 
     @Override
     public void createNewUser(PostUserRequest user) {
