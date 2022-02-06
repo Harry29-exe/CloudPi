@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface FileService {
 
-    @PreAuthorize("@filePermissionService.canModify(#create.path)")
+    @PreAuthorize("@filePermissionService.canModify(#create.path.parentPath)")
     FileInfoDTO create(CreateFile create, MultipartFile file);
 
     @PreAuthorize("@filePermissionService.canModify(#path.parentPath)")

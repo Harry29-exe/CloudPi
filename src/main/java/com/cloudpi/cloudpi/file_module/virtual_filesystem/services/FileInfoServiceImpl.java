@@ -51,12 +51,12 @@ public class FileInfoServiceImpl implements FileInfoService {
                 .orElseThrow(ResourceNotExistException::new);
 
         var entity = FileInfo.createDirectory(
-                path.getName(),
                 path.getPath(),
+                path.getName(),
                 parent
         );
-
-        return entity.mapToDTO();
+        var savedDir = fileInfoRepo.save(entity);
+        return savedDir.mapToDTO();
     }
 
     @Override

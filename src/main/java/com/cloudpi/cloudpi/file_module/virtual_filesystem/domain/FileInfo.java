@@ -129,11 +129,11 @@ public class FileInfo {
     }
 
     public static FileInfo createDirectory(
-            @NotBlank String name,
             @NotBlank String path,
+            @NotBlank String name,
             @NotNull FileInfo parent
     ) {
-        return new FileInfo(name, path, parent, null, FileType.DIRECTORY, 0L);
+        return new FileInfo(path, name, parent, null, FileType.DIRECTORY, 0L);
     }
 
     public void update(UpdateVFile updateVFile) {
