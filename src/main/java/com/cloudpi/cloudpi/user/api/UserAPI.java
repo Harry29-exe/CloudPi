@@ -10,17 +10,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
-import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
-@RequestMapping("/user")
+@RequestMapping("/user/")
 @Tag(name = "User Management API", description =
         "API for various operations with users")
 public interface UserAPI {

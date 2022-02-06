@@ -81,13 +81,13 @@ public class TestGetUserDetails extends UserAPITestTemplate {
 
 
     private String endpointAddress(List<String> usernames) {
-        return apiAddress + "/" +
-                String.join(",", usernames) + "/details";
+        return apiAddress + String.join(",", usernames)
+                + "/details";
     }
 
     private String endpointAddress(String... usernames) {
-        return apiAddress + "/" +
-                String.join(",", usernames) + "/details";
+        return apiAddress + String.join(",", usernames)
+                + "/details";
     }
 
     private List<UserDetailsDTO> getBody(MvcResult mvcResult) throws Exception {
