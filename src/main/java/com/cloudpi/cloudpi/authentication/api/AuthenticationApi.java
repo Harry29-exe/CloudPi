@@ -23,11 +23,9 @@ public interface AuthenticationApi {
     @PostMapping("/logout")
     void logout(HttpServletResponse response);
 
-    @PreAuthorize("isAuthenticated()")
     @PostMapping("/refresh/auth-token")
     void refreshAuthToken(HttpServletRequest request, HttpServletResponse response);
 
-    @PreAuthorize("isAuthenticated()")
     @PostMapping("/refresh/refresh-token")
     void refreshRefreshToken(HttpServletRequest request, HttpServletResponse response);
 

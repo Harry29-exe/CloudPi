@@ -11,6 +11,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import javax.servlet.http.Cookie;
 import java.util.Arrays;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -18,6 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class AuthenticationApiTestTemplate {
 
     protected final String apiAddress = "/";
+    protected final String refreshCookieName = AuthenticationApiController.REFRESH_TOKEN_COOKIE_NAME;
     private final JsonMapper jsonMapper = new JsonMapper();
 
     @Autowired
@@ -58,9 +60,10 @@ public class AuthenticationApiTestTemplate {
         );
     }
 
-    protected ResultActions fetchRefreshAuthToken(AuthTokens tokens) throws Exception {
+    protected ResultActions fetchRefreshAuthToken(String refreshToken) throws Exception {
         return mockMvc.perform(
                 post(apiAddress + "refresh/auth-token")
+                        .cookie(new Cookie(refreshCookieName, refreshToken))
         );
     }
 
