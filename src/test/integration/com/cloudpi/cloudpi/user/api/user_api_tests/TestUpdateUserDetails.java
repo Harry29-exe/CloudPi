@@ -1,4 +1,4 @@
-package com.cloudpi.cloudpi.user.api.user_management_test;
+package com.cloudpi.cloudpi.user.api.user_api_tests;
 
 import com.cloudpi.cloudpi.user.api.UserAPITestTemplate;
 import com.cloudpi.cloudpi.utils.ControllerTest;

@@ -1,7 +1,10 @@
 package com.cloudpi.cloudpi.authentication.api;
 
 import com.cloudpi.cloudpi.authentication.api.dto.LoginRequest;
+import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
+import com.cloudpi.cloudpi.utils.UserAPIUtils;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -12,13 +15,26 @@ import java.util.Arrays;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-class AuthenticationApiTestTemplate {
+public class AuthenticationApiTestTemplate {
 
     protected final String apiAddress = "/";
     private final JsonMapper jsonMapper = new JsonMapper();
 
     @Autowired
     protected MockMvc mockMvc;
+    protected UserAPIUtils userAPIUtils;
+
+    protected final ImmutableList<PostUserRequest> userRequests = ImmutableList.of(
+            new PostUserRequest("bob", "bob", null, "P@ssword123"),
+            new PostUserRequest("Alice", "Alice", null, "P@ssword321")
+    );
+
+    protected void initDB() throws Exception {
+        userAPIUtils = new UserAPIUtils(mockMvc);
+        for (PostUserRequest request : userRequests) {
+            userAPIUtils.addUserToDB(request);
+        }
+    }
 
     protected ResultActions fetchLogin(String username, String password) throws Exception {
         var requestBody = jsonMapper.writeValueAsString(
