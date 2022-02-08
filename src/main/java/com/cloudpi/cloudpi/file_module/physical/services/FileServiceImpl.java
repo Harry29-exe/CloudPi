@@ -1,18 +1,24 @@
 package com.cloudpi.cloudpi.file_module.physical.services;
 
+import com.cloudpi.cloudpi.exception.file.CouldNotDeleteFileException;
+import com.cloudpi.cloudpi.exception.file.CouldNotModifyFileException;
 import com.cloudpi.cloudpi.exception.file.CouldNotReadFileException;
 import com.cloudpi.cloudpi.exception.file.CouldNotSaveFileException;
 import com.cloudpi.cloudpi.file_module.permission.service.dto.CreateFile;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FilesystemRootInfoRepo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FileInfoService;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FilesystemInfoService;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.CreateFileInDB;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.UpdateVFile;
 import com.cloudpi.cloudpi.utils.AppService;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -65,12 +71,34 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public FileInfoDTO modify(UUID filePubId, MultipartFile file) {
-        return null;
+        var path = driveService.getPathToFile(filePubId);
+        var fileToModify = path.toFile();
+        if(fileToModify.isDirectory()) {
+            throw new CouldNotModifyFileException("You cannot modify directories with this endpoint");
+        }
+        try {
+            FileOutputStream stream = new FileOutputStream(fileToModify, false);
+            stream.write(file.getBytes());
+            stream.close();
+            return fileInfoService.update(new UpdateVFile(filePubId, file.getName()));
+        } catch (IOException ioex) {
+            throw new CouldNotModifyFileException("There is no such file");
+        }
     }
 
     @Override
     public void delete(UUID filePubId) {
-
+        var path = driveService.getPathToFile(filePubId);
+        var fileToDelete = path.toFile();
+        if(fileToDelete.isDirectory()) {
+            throw new CouldNotDeleteFileException("This endpoint is prepared to delete files, not directories. " +
+                    "Use filesystem delete endpoint instead.");
+        }
+        boolean couldDelete = fileToDelete.delete();
+        if(!couldDelete) {
+            throw new CouldNotDeleteFileException("Could not delete specified file");
+        }
+        fileInfoService.delete(filePubId);
     }
 
     protected void saveFileToDisc(MultipartFile inFile, String newFilePath) {

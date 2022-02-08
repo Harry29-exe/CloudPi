@@ -1,5 +1,6 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.services;
 
+import com.cloudpi.cloudpi.exception.file.CouldNotSaveFileException;
 import com.cloudpi.cloudpi.exception.path.PathNotEmptyException;
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.file_module.physical.domain.DriveRepo;
@@ -8,6 +9,7 @@ import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoR
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FilesystemRootInfoRepo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.CreateFileInDB;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.UpdateVFile;
 import com.cloudpi.cloudpi.utils.AppService;
@@ -18,14 +20,21 @@ import java.util.UUID;
 public class FileInfoServiceImpl implements FileInfoService {
     private final FileInfoRepo fileInfoRepo;
     private final DriveRepo driveRepo;
+    private final FilesystemRootInfoRepo filesystemRootInfoRepo;
 
-    public FileInfoServiceImpl(FileInfoRepo fileInfoRepo, DriveRepo driveRepo) {
+    public FileInfoServiceImpl(FileInfoRepo fileInfoRepo, DriveRepo driveRepo,
+                               FilesystemRootInfoRepo filesystemRootInfoRepo) {
         this.fileInfoRepo = fileInfoRepo;
         this.driveRepo = driveRepo;
+        this.filesystemRootInfoRepo = filesystemRootInfoRepo;
     }
 
     @Override
     public FileInfoDTO save(CreateFileInDB create) {
+        if(!canAddNewFile(create.getPath().getUsername(), create.getSize())) {
+            throw new CouldNotSaveFileException();
+        }
+
         var parent = fileInfoRepo
                 .findByPath(create.getPath().getParentPath())
                 .orElseThrow(ResourceNotExistException::new);
@@ -126,5 +135,14 @@ public class FileInfoServiceImpl implements FileInfoService {
                 .orElseThrow();
         file.setParent(parent);
         file.setName(newVirtualPath.getName());
+    }
+
+    private boolean canAddNewFile(String username, long fileSize) {
+        var filesystem = filesystemRootInfoRepo.findByOwner_Username(username)
+                .orElseThrow();
+        var files = fileInfoRepo.findByRootId(filesystem.getId());
+        long freeSpace = filesystem.getAssignedCapacity() - files.stream()
+                .mapToLong(file -> file.getDetails().getSize()).sum();
+        return freeSpace >= fileSize;
     }
 }

@@ -50,7 +50,7 @@ public class FilesystemAPIController implements FilesystemAPI {
     }
 
     @Override
-    public List<FilesystemInfoDTO> getUsersVirtualDrivesInfo(String username) {
+    public FilesystemInfoDTO getUsersVirtualDrivesInfo(String username) {
         return filesystemInfoService.getUsersVirtualDrives(username);
     }
 
