@@ -1,24 +1,21 @@
-package com.cloudpi.cloudpi.user.api.user_management_test;
+package com.cloudpi.cloudpi.user.api.user_api_tests;
 
-import com.cloudpi.cloudpi.user.api.UserManagementAPITestTemplate;
+import com.cloudpi.cloudpi.user.api.UserAPITestTemplate;
 import com.cloudpi.cloudpi.user.dto.UserIdDTO;
 import com.cloudpi.cloudpi.utils.ControllerTest;
 import com.cloudpi.cloudpi.utils.MockClient;
 import com.cloudpi.cloudpi.utils.mock_mvc_users.WithUser;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ControllerTest
-class GetAllUsers extends UserManagementAPITestTemplate {
+class TestGetAllUsers extends UserAPITestTemplate {
 
     @BeforeEach
     void setPutUsers() throws Exception {
@@ -29,7 +26,7 @@ class GetAllUsers extends UserManagementAPITestTemplate {
     @WithUser
     void should_return_all_users() throws Exception {
         var result = mockMvc.perform(
-               get(apiAddress + "/")
+               get(apiAddress)
         ).andExpect(status().is2xxSuccessful()
         ).andReturn();
 
@@ -42,6 +39,13 @@ class GetAllUsers extends UserManagementAPITestTemplate {
                     .anyMatch(u -> Objects.equals(u.getUsername(), userRequest.username()));
         }
 
+    }
+
+    @Test
+    void should_return_401_to_non_authenticated_user() throws Exception {
+        mockMvc.perform(
+                get(apiAddress)
+        ).andExpect(status().is(403));
     }
 
 }

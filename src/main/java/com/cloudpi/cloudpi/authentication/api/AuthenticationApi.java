@@ -1,6 +1,7 @@
 package com.cloudpi.cloudpi.authentication.api;
 
 import com.cloudpi.cloudpi.authentication.api.dto.LoginRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,7 @@ public interface AuthenticationApi {
                HttpServletRequest request,
                HttpServletResponse response);
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/logout")
     void logout(HttpServletResponse response);
 

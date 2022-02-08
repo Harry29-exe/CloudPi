@@ -62,12 +62,13 @@ public class FileInfo {
     /**
      * if it's null it means that the parents is root
      */
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne
     @JoinColumn(name = "parent_id")
     private FileInfo parent;
 
     @OneToMany(
             cascade = CascadeType.ALL,
+            orphanRemoval = true,
             fetch = FetchType.LAZY,
             mappedBy = "parent")
     private List<FileInfo> children;
@@ -75,7 +76,7 @@ public class FileInfo {
     /**
      * Is null only for directories
      */
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "drive_files")
     private @Nullable Drive drive;
 

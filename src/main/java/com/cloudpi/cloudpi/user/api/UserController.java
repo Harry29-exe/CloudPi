@@ -11,10 +11,10 @@ import java.util.List;
 
 @RestController
 // TODO lepsza obsluga wyjatkow, np przy tworzeniu uzytkownika przy walidacji
-public class UserManagementController implements  UserManagementAPI {
+public class UserController implements UserAPI {
     private final UserService userService;
 
-    public UserManagementController(UserService userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -24,8 +24,8 @@ public class UserManagementController implements  UserManagementAPI {
     }
 
     @Override
-    public List<UserDetailsDTO> getUserDetails(List<String> username) {
-        return userService.getUserDetails(username);
+    public List<UserDetailsDTO> getUserDetails(List<String> usernames) {
+        return userService.getUserDetails(usernames);
     }
 
     @Override
