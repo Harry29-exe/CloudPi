@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,8 +65,12 @@ public class FileAPIController implements FileAPI {
     }
 
     @Override
-    public List<Resource> getImagesPreview(Integer previewResolution, List<String> imageNames) {
-        throw new NotYetImplementedException();
+    public List<byte[]> getImagesPreview(Integer previewResolution, List<UUID> imageIds) {
+        List<byte[]> resources = new ArrayList<>();
+        for (UUID imageId : imageIds) {
+            resources.add(fileService.readPreview(previewResolution, imageId).getBody());
+        }
+        return resources;
     }
 
     @Override

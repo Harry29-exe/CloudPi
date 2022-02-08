@@ -13,13 +13,20 @@ import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FilesystemInf
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.CreateFileInDB;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.UpdateVFile;
 import com.cloudpi.cloudpi.utils.AppService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -99,6 +106,24 @@ public class FileServiceImpl implements FileService {
             throw new CouldNotDeleteFileException("Could not delete specified file");
         }
         fileInfoService.delete(filePubId);
+    }
+
+    // todo dokladnie przetestowac i zoptymalizowac te metode
+    @Override
+    public ResponseEntity<byte[]> readPreview(Integer previewResolution, UUID imageId) {
+        var path = driveService.getPathToFile(imageId);
+        var file = path.toFile();
+        try {
+            BufferedImage bufferedImage = ImageIO.read(file);
+            Image image = bufferedImage.getScaledInstance(previewResolution, previewResolution, Image.SCALE_SMOOTH);
+            BufferedImage outputImage = new BufferedImage(previewResolution, previewResolution, BufferedImage.TYPE_INT_RGB);
+            outputImage.getGraphics().drawImage(image, 0, 0, null);
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            ImageIO.write(outputImage, "jpg", os);
+            return new ResponseEntity<>(os.toByteArray(), HttpStatus.OK);
+        } catch(IOException ioex) {
+            throw new CouldNotReadFileException();
+        }
     }
 
     protected void saveFileToDisc(MultipartFile inFile, String newFilePath) {
