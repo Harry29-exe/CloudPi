@@ -1,10 +1,11 @@
-create sequence hibernate_sequence start 100 increment 1;
+create sequence hibernate_sequence start 1000 increment 1;
 create table drive
 (
-    id             uuid         not null,
+    id             int8         not null,
     assigned_space int8         not null,
     free_space     int8         not null,
     path           varchar(255) not null,
+    pub_id         uuid,
     primary key (id)
 );
 create table file_info
@@ -16,7 +17,7 @@ create table file_info
     path              varchar(255) not null,
     pub_id            uuid         not null,
     type              int4         not null,
-    drive_files       uuid,
+    drive_files       int8,
     parent_id         int8,
     root_id           int8         not null,
     primary key (id)

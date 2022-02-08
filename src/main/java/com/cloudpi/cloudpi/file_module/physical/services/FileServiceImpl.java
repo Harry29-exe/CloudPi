@@ -40,7 +40,7 @@ public class FileServiceImpl implements FileService {
                 file.getSize()
         ));
 
-        saveFileToDisc(file, drive.getPath() + newFile.getPubId());
+        saveFileToDisc(file, drive.getPath() + "/" + newFile.getPubId());
 
 
         return newFile;

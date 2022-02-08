@@ -1,6 +1,8 @@
 package com.cloudpi.cloudpi.utils;
 
 import com.cloudpi.cloudpi.authentication.api.dto.LoginRequest;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.http.MediaType;
@@ -46,6 +48,7 @@ public class MockMvcUtils {
 
     public static <T> T getBody(MockHttpServletResponse response, Class<T> tClass) throws Exception {
         ObjectMapper objectMapper = new JsonMapper();
+        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         return objectMapper.readValue(
                 response.getContentAsByteArray(),
                 tClass
@@ -54,6 +57,7 @@ public class MockMvcUtils {
 
     public static <T> List<T> getBodyAsList(MvcResult result, Class<T> tClass) throws Exception {
         ObjectMapper objectMapper = new JsonMapper();
+        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         var array = (T[]) objectMapper.readValue(
                 result.getResponse().getContentAsByteArray(),
                 tClass.arrayType()

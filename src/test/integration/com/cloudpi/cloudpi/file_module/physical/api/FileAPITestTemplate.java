@@ -1,12 +1,17 @@
 package com.cloudpi.cloudpi.file_module.physical.api;
 
+import com.cloudpi.cloudpi.file_module.physical.api.requests.PostDriveRequest;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
 import com.cloudpi.cloudpi.utils.ControllerTest;
+import com.cloudpi.cloudpi.utils.MockMvcUtils;
 import com.cloudpi.cloudpi.utils.UserAPIUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -16,6 +21,8 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ControllerTest
 public class FileAPITestTemplate {
@@ -26,6 +33,7 @@ public class FileAPITestTemplate {
     private String storageMockPath;
 
     protected final String apiAddress = "/files/";
+    protected final ObjectMapper jsonMapper = new JsonMapper();
 
     protected final ImmutableList<PostUserRequest> userRequestList = ImmutableList.of(
             new PostUserRequest(
@@ -42,12 +50,29 @@ public class FileAPITestTemplate {
             )
     );
 
+    protected void initTemplate() throws Exception {
+        clearStorageDirectory();
+        addDrive();
+        addUsersToDB();
+    }
+
     protected void addUsersToDB() throws Exception {
         var userApiUtils = new UserAPIUtils(mockMvc);
 
         for (var userRequest : userRequestList) {
             userApiUtils.addUserToDB(userRequest);
         }
+    }
+
+    protected void addDrive() throws Exception {
+        var drive = new PostDriveRequest(getStoragePath().toString(), (long) Math.pow(10, 10));
+        var authToken = MockMvcUtils.getAdminAuthToken(mockMvc);
+        mockMvc.perform(
+                post("/drive/new")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonMapper.writeValueAsString(drive))
+                        .header("Authorization", authToken)
+        ).andExpect(status().is2xxSuccessful());
     }
 
     protected void clearStorageDirectory() {

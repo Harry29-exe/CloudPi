@@ -1,9 +1,7 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.dto;
 
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.lang.Nullable;
 
 import java.util.Date;
@@ -12,6 +10,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FileInfoDTO {
 
     private UUID pubId;

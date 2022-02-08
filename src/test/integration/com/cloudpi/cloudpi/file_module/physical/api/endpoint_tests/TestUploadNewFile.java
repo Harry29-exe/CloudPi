@@ -19,8 +19,7 @@ public class TestUploadNewFile extends FileAPITestTemplate {
 
     @BeforeEach
     void setUp() throws Exception {
-        addUsersToDB();
-        clearStorageDirectory();
+        initTemplate();
     }
 
     @AfterAll

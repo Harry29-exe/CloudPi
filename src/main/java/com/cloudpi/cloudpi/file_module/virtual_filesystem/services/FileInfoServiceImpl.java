@@ -4,10 +4,10 @@ import com.cloudpi.cloudpi.exception.path.PathNotEmptyException;
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.file_module.physical.domain.DriveRepo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.CreateFileInDB;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.UpdateVFile;
 import com.cloudpi.cloudpi.utils.AppService;
@@ -35,7 +35,8 @@ public class FileInfoServiceImpl implements FileInfoService {
                 path.getPath(),
                 path.getName(),
                 parent,
-                driveRepo.getById(create.getDriveId()),
+                driveRepo.findByPubId(create.getDriveId())
+                        .orElseThrow(),
                 create.getType(),
                 create.getSize()
         );
