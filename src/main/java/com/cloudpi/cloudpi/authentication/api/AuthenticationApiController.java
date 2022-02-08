@@ -53,8 +53,8 @@ public class AuthenticationApiController implements AuthenticationApi {
 
         var refreshToken = jwtService.createRefreshToken(user);
         this.addRefreshTokenCookie(refreshToken, response, !dontLogout);
-
-        this.delayLogin();
+        //todo this should be disabled only for tests
+//        this.delayLogin();
     }
 
     @Override
