@@ -8,6 +8,7 @@ import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FilesystemRootInfoRepo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.CreateFileInDB;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.UpdateVFile;
