@@ -2,6 +2,8 @@ package com.cloudpi.cloudpi.file_module.physical.api;
 
 import com.cloudpi.cloudpi.config.springdoc.NotImplemented;
 import com.cloudpi.cloudpi.config.springdoc.Stability;
+import com.cloudpi.cloudpi.config.springdoc.NotImplemented;
+import com.cloudpi.cloudpi.config.springdoc.Stability;
 import com.cloudpi.cloudpi.file_module.permission.service.dto.CreateFile;
 import com.cloudpi.cloudpi.file_module.physical.services.FileService;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
@@ -13,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -70,9 +73,13 @@ public class FileAPIController implements FileAPI {
     }
 
     @Override
-    @NotImplemented.LOW
-    public List<Resource> getImagesPreview(Integer previewResolution, List<String> imageNames) {
-        throw new NotYetImplementedException();
+    @Stability.EarlyDevelopment
+    public List<byte[]> getImagesPreview(Integer previewResolution, List<UUID> imageIds) {
+        List<byte[]> resources = new ArrayList<>();
+        for (UUID imageId : imageIds) {
+            resources.add(fileService.readPreview(previewResolution, imageId).getBody());
+        }
+        return resources;
     }
 
     @Override

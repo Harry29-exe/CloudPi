@@ -49,9 +49,9 @@ public interface FileAPI {
 
 
     @GetMapping(path = "image-preview")
-    List<Resource> getImagesPreview(
+    List<byte[]> getImagesPreview(
             @RequestParam(defaultValue = "64") Integer previewResolution,
-            @RequestBody List<String> imageNames);
+            @RequestBody List<UUID> imageIds);
 
 
     @DeleteMapping("file/{fileId}")

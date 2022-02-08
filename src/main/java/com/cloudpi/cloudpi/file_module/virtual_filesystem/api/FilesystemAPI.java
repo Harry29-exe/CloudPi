@@ -47,7 +47,7 @@ public interface FilesystemAPI {
 
 
     @GetMapping("{username}")
-    List<FilesystemInfoDTO> getUsersVirtualDrivesInfo(
+    FilesystemInfoDTO getUsersVirtualDrivesInfo(
             @PathVariable String username);
 
 
