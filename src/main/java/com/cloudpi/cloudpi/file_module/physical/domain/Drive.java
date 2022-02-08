@@ -1,5 +1,6 @@
 package com.cloudpi.cloudpi.file_module.physical.domain;
 
+import com.cloudpi.cloudpi.file_module.physical.dto.DriveDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,8 +18,11 @@ import java.util.UUID;
 public class Drive {
 
     @Id
+    @GeneratedValue
+    private Long id;
+
     @Column
-    private UUID id = UUID.randomUUID();
+    private UUID pubId = UUID.randomUUID();
 
     @Column(nullable = false, unique = true, updatable = false)
     private String path;
@@ -31,5 +35,24 @@ public class Drive {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "drive")
     private Set<FileInfo> files;
+
+    public double calcFillPerc() {
+        return (double) (assignedSpace - freeSpace) / assignedSpace;
+    }
+
+    public Drive(String path, Long assignedSpace) {
+        this.path = path;
+        this.assignedSpace = assignedSpace;
+        this.freeSpace = assignedSpace;
+    }
+
+    public DriveDTO mapToDTO() {
+        return new DriveDTO(
+                pubId,
+                path,
+                assignedSpace,
+                freeSpace
+        );
+    }
 
 }

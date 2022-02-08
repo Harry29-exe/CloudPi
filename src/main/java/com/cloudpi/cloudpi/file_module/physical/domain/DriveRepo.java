@@ -7,14 +7,17 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface DriveRepo extends JpaRepository<Drive, UUID> {
+public interface DriveRepo extends JpaRepository<Drive, Long> {
 
     @Query("""
-        SELECT d.path
-        FROM Drive d
-        JOIN d.files f
-        WHERE f.pubId = :filePubId
-        """)
+            SELECT d.path
+            FROM Drive d
+            JOIN d.files f
+            WHERE f.pubId = :filePubId
+            """)
     Drive findByAssignedFile(UUID filePubId);
+
+    Drive findByPubId(UUID pubId);
+
 
 }
