@@ -1,4 +1,4 @@
-package com.cloudpi.cloudpi.file_module.physical.api.authentication_api_tests;
+package com.cloudpi.cloudpi.authentication.api.endpoints_tests;
 
 import com.cloudpi.cloudpi.authentication.api.AuthenticationApiTestTemplate;
 import com.cloudpi.cloudpi.utils.ControllerTest;

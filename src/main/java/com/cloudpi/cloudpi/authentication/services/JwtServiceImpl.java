@@ -35,10 +35,10 @@ public class JwtServiceImpl implements JwtService {
     private final Logger logger = LoggerFactory.getLogger(JwtServiceImpl.class);
 
 
-    public JwtServiceImpl(@Value("${jwt.secrets.auth}") String authSecret,
-                          @Value("${jwt.secrets.refresh}") String refreshSecret,
-                          @Value("${jwt.config.auth.exp_in_sec}") Integer authExp,
-                          @Value("${jwt.config.refresh.exp_in_sec}") Integer refreshExp) {
+    public JwtServiceImpl(@Value("${cloud-pi.keys.jwt.auth}") String authSecret,
+                          @Value("${cloud-pi.keys.jwt.refresh}") String refreshSecret,
+                          @Value("${cloud-pi.keys.jwt.auth-expire}") Integer authExp,
+                          @Value("${cloud-pi.keys.jwt.refresh-expire}") Integer refreshExp) {
 
         if (authSecret.getBytes(StandardCharsets.UTF_8).length < (256 / 8)) {
             throw new IllegalArgumentException("Auth secret must be at least 256 bit long");

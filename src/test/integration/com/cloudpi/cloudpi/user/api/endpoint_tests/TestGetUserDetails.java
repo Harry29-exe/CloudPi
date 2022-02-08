@@ -1,4 +1,4 @@
-package com.cloudpi.cloudpi.user.api.user_api_tests;
+package com.cloudpi.cloudpi.user.api.endpoint_tests;
 
 import com.cloudpi.cloudpi.config.security.Role;
 import com.cloudpi.cloudpi.user.api.UserAPITestTemplate;

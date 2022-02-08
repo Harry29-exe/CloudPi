@@ -33,7 +33,7 @@ public class AuthenticationApiController implements AuthenticationApi {
             AuthenticationService authService,
             UserDetailsService userDetailsService,
             JwtService jwtService,
-            @Value("${jwt.config.refresh.exp_in_sec}") Integer refreshExp
+            @Value("${cloud-pi.keys.jwt.refresh-expire}") Integer refreshExp
     ) throws NoSuchAlgorithmException {
         this.authService = authService;
         this.userDetailsService = userDetailsService;

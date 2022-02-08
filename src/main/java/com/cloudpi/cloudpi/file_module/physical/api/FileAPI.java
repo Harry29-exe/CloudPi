@@ -19,7 +19,7 @@ import java.util.UUID;
         description = "API for uploading, downloading and deleting files")
 public interface FileAPI {
 
-    @PutMapping(
+    @PostMapping(
             path = "file",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
