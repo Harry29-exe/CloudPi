@@ -9,7 +9,7 @@ import com.cloudpi.cloudpi.utils.mock_mvc_users.WithUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.cloudpi.cloudpi.utils.MockClient.getBodyAsList;
+import static com.cloudpi.cloudpi.utils.MockMvcUtils.getBodyAsList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

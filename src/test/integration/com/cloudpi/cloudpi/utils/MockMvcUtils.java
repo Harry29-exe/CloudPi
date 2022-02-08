@@ -4,6 +4,7 @@ import com.cloudpi.cloudpi.authentication.api.dto.LoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -13,7 +14,7 @@ import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class MockClient {
+public class MockMvcUtils {
 
     public static String getAuthToken(MockMvc mockMvc, String username, String password) throws Exception {
         var objectMapper = new JsonMapper();
@@ -22,8 +23,8 @@ public class MockClient {
 
 
         var result = mockMvc.perform(
-                post("/login")
-                        .contentType(MediaType.APPLICATION_JSON)
+                        post("/login")
+                                .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
                 ).andExpect(status().isOk())
                 .andReturn();
@@ -39,6 +40,14 @@ public class MockClient {
         ObjectMapper objectMapper = new JsonMapper();
         return objectMapper.readValue(
                 result.getResponse().getContentAsByteArray(),
+                tClass
+        );
+    }
+
+    public static <T> T getBody(MockHttpServletResponse response, Class<T> tClass) throws Exception {
+        ObjectMapper objectMapper = new JsonMapper();
+        return objectMapper.readValue(
+                response.getContentAsByteArray(),
                 tClass
         );
     }

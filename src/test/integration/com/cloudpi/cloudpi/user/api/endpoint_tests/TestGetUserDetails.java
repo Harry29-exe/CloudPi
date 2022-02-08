@@ -5,7 +5,7 @@ import com.cloudpi.cloudpi.user.api.UserAPITestTemplate;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
 import com.cloudpi.cloudpi.user.dto.UserDetailsDTO;
 import com.cloudpi.cloudpi.utils.ControllerTest;
-import com.cloudpi.cloudpi.utils.MockClient;
+import com.cloudpi.cloudpi.utils.MockMvcUtils;
 import com.cloudpi.cloudpi.utils.mock_mvc_users.WithUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,7 +92,7 @@ public class TestGetUserDetails extends UserAPITestTemplate {
 
     private List<UserDetailsDTO> getBody(MvcResult mvcResult) throws Exception {
         return Arrays.stream(
-                MockClient.getBody(mvcResult, UserDetailsDTO[].class)
+                MockMvcUtils.getBody(mvcResult, UserDetailsDTO[].class)
         ).toList();
     }
 

@@ -3,7 +3,7 @@ package com.cloudpi.cloudpi.user.api.endpoint_tests;
 import com.cloudpi.cloudpi.user.api.UserAPITestTemplate;
 import com.cloudpi.cloudpi.user.dto.UserIdDTO;
 import com.cloudpi.cloudpi.utils.ControllerTest;
-import com.cloudpi.cloudpi.utils.MockClient;
+import com.cloudpi.cloudpi.utils.MockMvcUtils;
 import com.cloudpi.cloudpi.utils.mock_mvc_users.WithUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ class TestGetAllUsers extends UserAPITestTemplate {
         ).andExpect(status().is2xxSuccessful()
         ).andReturn();
 
-        var body = Arrays.stream(MockClient.getBody(result, UserIdDTO[].class)).toList();
+        var body = Arrays.stream(MockMvcUtils.getBody(result, UserIdDTO[].class)).toList();
 
         assert body.size() == createUserRequests.size() + 1;
         assert body.stream().anyMatch(u -> Objects.equals(u.getUsername(), "admin"));

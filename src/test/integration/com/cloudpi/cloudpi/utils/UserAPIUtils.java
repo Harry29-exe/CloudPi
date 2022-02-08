@@ -19,7 +19,7 @@ public class UserAPIUtils {
     }
 
     public void addUserToDB(PostUserRequest userRequest) throws Exception {
-        var authToken = MockClient.getAdminAuthToken(mockMvc);
+        var authToken = MockMvcUtils.getAdminAuthToken(mockMvc);
         mockMvc.perform(
                 post(apiAddress + "new")
                         .contentType(MediaType.APPLICATION_JSON)
