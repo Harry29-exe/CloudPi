@@ -1,18 +1,17 @@
 package com.cloudpi.cloudpi.authentication.api;
 
 import com.cloudpi.cloudpi.authentication.api.dto.LoginRequest;
+import com.cloudpi.cloudpi.user.api.UserAPIUtils;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
-import com.cloudpi.cloudpi.utils.UserAPIUtils;
+import com.cloudpi.cloudpi.utils.AuthTokens;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import javax.servlet.http.Cookie;
-import java.util.Arrays;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -71,36 +70,6 @@ public class AuthenticationApiTestTemplate {
         return mockMvc.perform(
                 post(apiAddress + "refresh/refresh-token")
         );
-    }
-
-    protected static class AuthTokens {
-        public final String authToken;
-        public final String refreshToken;
-
-        public AuthTokens(ResultActions mockResult) {
-            this(mockResult.andReturn().getResponse());
-        }
-
-        public AuthTokens(MockHttpServletResponse response) {
-            authToken = response.getHeader("Authorization");
-            refreshToken = Arrays.stream(response.getCookies())
-                    .filter(cookie ->
-                            cookie.getName().equals(AuthenticationApiController.REFRESH_TOKEN_COOKIE_NAME))
-                    .findFirst()
-                    .orElseThrow()
-                    .getValue();
-
-            validate();
-        }
-
-        private void validate() {
-            if (authToken == null || authToken.isBlank()) {
-                throw new IllegalArgumentException("Auth token is blank or null");
-            }
-            if (refreshToken == null || refreshToken.isBlank()) {
-                throw new IllegalArgumentException("Refresh token is blank or null");
-            }
-        }
     }
 
 

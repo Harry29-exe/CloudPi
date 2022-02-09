@@ -53,7 +53,6 @@ public class TestUploadNewFile extends FileAPITestTemplate {
 
         //then
         assert fileExist(fileInfo.getPubId());
-
     }
 
 }

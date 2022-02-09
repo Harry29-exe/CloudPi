@@ -1,6 +1,7 @@
-package com.cloudpi.cloudpi.utils;
+package com.cloudpi.cloudpi.user.api;
 
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
+import com.cloudpi.cloudpi.utils.MockMvcUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.http.MediaType;
