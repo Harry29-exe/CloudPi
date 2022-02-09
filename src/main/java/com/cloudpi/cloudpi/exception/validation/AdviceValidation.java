@@ -16,6 +16,7 @@ import static com.cloudpi.cloudpi.exception.ErrorCode.INVALID_VALIDATION;
 public class AdviceValidation extends ExceptionHandlerPrototype {
     private final String ERROR_CODE = "INPUT_VALUES_CONSTRAINT_VIOLATION";
 
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ValidationException.class})
     public ErrorBody handleJavaxValidationExceptions(ValidationException ex) {
         //todo marge to method below

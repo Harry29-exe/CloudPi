@@ -1,5 +1,6 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.services;
 
+import com.cloudpi.cloudpi.exception.file.ChangeDriveSizeException;
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
@@ -71,12 +72,11 @@ public class FilesystemInfoServiceImp implements FilesystemInfoService {
         this.createRoot(userId, this.defaultSpaceOnVirtualDrive);
     }
 
-    // todo zabezpieczyc i testowac
     @Override
     public FileStructureDTO get(VirtualPath entryPoint, Integer depth, String username) {
         String path = entryPoint.getPath().isEmpty() ? username : entryPoint.getPath();
         var rootDir = fileInfoRepo.findByPath(path)
-                .orElseThrow();
+                .orElseThrow(ResourceNotExistException::new);
 
         FilesystemObjectDTO rootObj = rootDir.mapToFilesystemObjectDTO(depth);
         return new FileStructureDTO(entryPoint.getPath(), rootObj);
@@ -85,17 +85,16 @@ public class FilesystemInfoServiceImp implements FilesystemInfoService {
     @Override
     public FilesystemInfoDTO getUsersVirtualDrives(String username) {
         var filesystem = filesystemRootInfoRepo.findByOwner_Username(username)
-                .orElseThrow();
+                .orElseThrow(ResourceNotExistException::new);
         return getVirtualDrivesInfo(username, filesystem);
     }
 
-    // todo better exception
     @Override
     public void changeVirtualDriveSize(String username, Long newAssignedSpace) {
         var filesystem = filesystemRootInfoRepo.findByOwner_Username(username)
-                .orElseThrow();
+                .orElseThrow(ResourceNotExistException::new);
         if(getUsedSpace(filesystem) > newAssignedSpace) {
-            throw new IllegalStateException("Cannot assign less space than is currently used");
+            throw new ChangeDriveSizeException();
         }
         filesystem.setAssignedCapacity(newAssignedSpace);
         filesystemRootInfoRepo.save(filesystem);

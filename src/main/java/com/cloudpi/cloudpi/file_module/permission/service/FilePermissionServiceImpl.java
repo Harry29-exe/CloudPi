@@ -1,5 +1,6 @@
 package com.cloudpi.cloudpi.file_module.permission.service;
 
+import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
 import com.cloudpi.cloudpi.file_module.permission.repositories.FilePermissionRepo;
@@ -37,7 +38,7 @@ public class FilePermissionServiceImpl implements FilePermissionService {
     @Override
     public boolean canModify(String path) {
         FileInfo file = fileInfoRepo.findByPath(path)
-                .orElseThrow();
+                .orElseThrow(ResourceNotExistException::new);
         String username = getCurrentUserUsername();
 
         while(file != null) {
@@ -58,7 +59,7 @@ public class FilePermissionServiceImpl implements FilePermissionService {
     @Override
     public boolean canModify(UUID filePubId) {
         FileInfo file = fileInfoRepo.findByPubId(filePubId)
-                .orElseThrow();
+                .orElseThrow(ResourceNotExistException::new);
         String username = getCurrentUserUsername();
 
         while(file != null) {
@@ -74,7 +75,7 @@ public class FilePermissionServiceImpl implements FilePermissionService {
     @Override
     public boolean canRead(UUID filePubId) {
         FileInfo file = fileInfoRepo.findByPubId(filePubId)
-                .orElseThrow();
+                .orElseThrow(ResourceNotExistException::new);
         String username = getCurrentUserUsername();
 
         while(file != null) {
@@ -90,7 +91,7 @@ public class FilePermissionServiceImpl implements FilePermissionService {
     @Override
     public boolean canRead(String path) {
         FileInfo file = fileInfoRepo.findByPath(path)
-                .orElseThrow();
+                .orElseThrow(ResourceNotExistException::new);
         String username = getCurrentUserUsername();
 
         while(file != null) {
@@ -108,17 +109,19 @@ public class FilePermissionServiceImpl implements FilePermissionService {
         return canRead(path.getPath());
     }
 
-    // todo change exceptions
     @Override
     public void grantPermissions(Set<GrantPermission> permissions) {
         Set<FilePermission> filePers = new HashSet<>();
         permissions.forEach(per -> {
             var user = userRepo.findByUsername(per.getUsername())
-                    .orElseThrow();
+                    .orElseThrow(ResourceNotExistException::new);
             var file = fileInfoRepo.findByPubId(per.getFileUUID())
-                    .orElseThrow();
+                    .orElseThrow(ResourceNotExistException::new);
             if(checkPermission(file, per.getPermissionType(), user.getUsername())) {
-                throw new IllegalArgumentException("One of the permissions currently exists");
+                String errorMessage = String.format("User: %s, permission: %s, file: %s",
+                        user.getUsername(), per.getPermissionType().toString(), file.getName());
+                throw new IllegalArgumentException("One of the permissions currently exists. " +
+                        "Existing permission: " + errorMessage);
             }
             filePers.add(new FilePermission(per.getPermissionType(), user, file));
         });
@@ -130,11 +133,14 @@ public class FilePermissionServiceImpl implements FilePermissionService {
         Set<FilePermission> filePers = new HashSet<>();
         permissions.forEach(per -> {
             var user = userRepo.findByUsername(per.getUsername())
-                    .orElseThrow();
+                    .orElseThrow(ResourceNotExistException::new);
             var file = fileInfoRepo.findByPubId(per.getFileUUID())
-                    .orElseThrow();
+                    .orElseThrow(ResourceNotExistException::new);
             if(!checkPermission(file, per.getPermissionType(), user.getUsername())) {
-                throw new IllegalArgumentException("There is no such permission");
+                String errorMessage = String.format("User: %s, permission: %s, file: %s",
+                        user.getUsername(), per.getPermissionType().toString(), file.getName());
+                throw new IllegalArgumentException("There is no such permission. " +
+                        "Not existing permission: " + errorMessage);
             }
             filePers.add(new FilePermission(per.getPermissionType(), user, file));
         });

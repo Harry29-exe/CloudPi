@@ -1,6 +1,7 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.services;
 
 import com.cloudpi.cloudpi.exception.file.CouldNotSaveFileException;
+import com.cloudpi.cloudpi.exception.file.NotEnoughSpaceException;
 import com.cloudpi.cloudpi.exception.path.PathNotEmptyException;
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.file_module.physical.domain.DriveRepo;
@@ -32,7 +33,7 @@ public class FileInfoServiceImpl implements FileInfoService {
     @Override
     public FileInfoDTO save(CreateFileInDB create) {
         if(!canAddNewFile(create.getPath().getUsername(), create.getSize())) {
-            throw new CouldNotSaveFileException();
+            throw new NotEnoughSpaceException();
         }
 
         var parent = fileInfoRepo
@@ -133,14 +134,14 @@ public class FileInfoServiceImpl implements FileInfoService {
     private void changeParentAndName(FileInfo file, String newPath) {
         VirtualPath newVirtualPath = new VirtualPath(newPath);
         var parent = fileInfoRepo.findByPath(newVirtualPath.getParentPath())
-                .orElseThrow();
+                .orElseThrow(ResourceNotExistException::new);
         file.setParent(parent);
         file.setName(newVirtualPath.getName());
     }
 
     private boolean canAddNewFile(String username, long fileSize) {
         var filesystem = filesystemRootInfoRepo.findByOwner_Username(username)
-                .orElseThrow();
+                .orElseThrow(ResourceNotExistException::new);
         var files = fileInfoRepo.findByRootId(filesystem.getId());
         long freeSpace = filesystem.getAssignedCapacity() - files.stream()
                 .mapToLong(file -> file.getDetails().getSize()).sum();
