@@ -12,6 +12,7 @@ public class TestPasswordEncoderBean {
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
+//        return new SCryptPasswordEncoder(2, 2, 2, 32, 64);
         return new BCryptPasswordEncoder(4);
     }
 
