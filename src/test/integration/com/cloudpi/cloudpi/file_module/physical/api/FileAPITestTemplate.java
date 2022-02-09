@@ -29,6 +29,7 @@ public class FileAPITestTemplate extends AbstractAPITestTemplate {
 
     protected final String apiAddress = "/files/";
     protected final ObjectMapper jsonMapper = new JsonMapper();
+    protected final FileAPIUtils fileAPIUtils = new FileAPIUtils(mockMvc, fetchUtils);
 
     protected void initTemplate() throws Exception {
         clearStorageDirectory();

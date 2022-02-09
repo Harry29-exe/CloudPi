@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -36,7 +37,7 @@ public abstract class AbstractAPITestTemplate {
     @Autowired
     protected MockMvc mockMvc;
     protected ObjectMapper mapper = new JsonMapper();
-    protected FetchUtils fetchUtils;
+    protected FetchUtils fetchUtils = new FetchUtils();
 
 
     public class FetchUtils {
@@ -48,7 +49,7 @@ public abstract class AbstractAPITestTemplate {
             }
 
             return mockMvc.perform(
-                    request.header(authTokenMap.get(username).authToken)
+                    request.header("Authorization", authTokenMap.get(username).authToken)
             );
         }
 
@@ -90,7 +91,9 @@ public abstract class AbstractAPITestTemplate {
 
             var response = mockMvc.perform(
                             post("/login")
-                                    .content(mapper.writeValueAsString(requestBody)))
+                                    .content(mapper.writeValueAsString(requestBody))
+                                    .contentType(MediaType.APPLICATION_JSON)
+                    )
                     .andExpect(status().is2xxSuccessful())
                     .andReturn()
                     .getResponse();

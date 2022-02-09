@@ -5,10 +5,12 @@ import com.cloudpi.cloudpi.utils.AbstractAPITestTemplate.FetchUtils;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 public class FileAPIUtils {
     private final MockMvc mockMvc;
@@ -28,22 +30,45 @@ public class FileAPIUtils {
                 null,
                 textfileContent.getBytes(StandardCharsets.UTF_8));
 
-        return mockMvc.perform(
+        return fetchUtils.fetchAs(
+                asUsername,
                 multipart(uploadNewFileAddr())
                         .file(file)
-                        .param(asUsername + "/text.txt")
+                        .param("filepath", asUsername + "/text.txt")
                         .param("fileType", FileType.TEXT_FILE.name())
         );
     }
 
-    public String uploadNewFileAddr() {
+    public static String uploadNewFileAddr() {
         return "/files/file";
     }
 
-    public String uploadNewImageAddr(String imageName) {
+    public static MockHttpServletRequestBuilder uploadNewFileBuilder() {
+        return post(uploadNewFileAddr());
+    }
+
+    public static String uploadNewImageAddr(String imageName) {
         return "/files/image/" + imageName;
     }
 
-//    public String
+    public static MockHttpServletRequestBuilder uploadNewImageBuilder(String imageName) {
+        return post(uploadNewImageAddr(imageName));
+    }
+
+    public static String downloadFileAddr(UUID filePubId) {
+        return "/files/file/" + filePubId;
+    }
+
+    public static MockHttpServletRequestBuilder downloadFileBuilder(UUID filePubId) {
+        return get(downloadFileAddr(filePubId));
+    }
+
+    public static String deleteFileAddr(UUID filePubId) {
+        return "/files/file/" + filePubId;
+    }
+
+    public static MockHttpServletRequestBuilder deleteFileBuilder(UUID filePubId) {
+        return delete(deleteFileAddr(filePubId));
+    }
 
 }
