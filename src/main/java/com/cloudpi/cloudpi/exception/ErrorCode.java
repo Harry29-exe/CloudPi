@@ -23,7 +23,16 @@ public enum ErrorCode {
     /**
      * validation
      */
-    INVALID_VALIDATION;
+    INVALID_VALIDATION,
+
+    /**
+     * files
+     */
+    DELETE_FAILED,
+    MODIFY_FAILED,
+    READ_FAILED,
+    SAVE_FAILED,
+    NOT_ENOUGH_SPACE;
 
     public ErrorBody toErrorBody() {
         return new ErrorBody(this);

@@ -11,7 +11,7 @@ import java.util.UUID;
 public interface DriveRepo extends JpaRepository<Drive, Long> {
 
     @Query("""
-            SELECT d.path
+            SELECT d
             FROM Drive d
             JOIN d.files f
             WHERE f.pubId = :filePubId

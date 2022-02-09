@@ -2,6 +2,7 @@ package com.cloudpi.cloudpi.file_module.physical.api;
 
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,9 @@ public interface FileAPI {
             path = "file",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "uploads new file",
+            description = "Uploads new file to the filesystem basing on provided path and filetype")
     FileInfoDTO uploadNewFile(
             @RequestParam(defaultValue = "UNDEFINED") FileType fileType,
             @RequestParam String filepath,
@@ -32,15 +36,20 @@ public interface FileAPI {
     //todo potrzebne?
     @PostMapping(
             path = "image/{imageName}",
-            consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "uploads new image",
+            description = "Uploads new image to ~/images/ directory")
     FileInfoDTO uploadNewImage(
             @PathVariable String imageName,
-            @RequestBody MultipartFile file,
+            @RequestParam MultipartFile file,
             Authentication auth);
 
 
     @GetMapping("file/{fileId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "downloads a file",
+            description = "Returns a binary of file with provided UUID")
     Resource downloadFile(@PathVariable UUID fileId);
 
 
@@ -49,12 +58,15 @@ public interface FileAPI {
 
 
     @GetMapping(path = "image-preview")
+    @Operation(summary = "creates image preview with provided resolution",
+            description = "returns base64 encoded resized images for files with provided UUIDs in the body")
     List<byte[]> getImagesPreview(
             @RequestParam(defaultValue = "64") Integer previewResolution,
             @RequestBody List<UUID> imageIds);
 
 
     @DeleteMapping("file/{fileId}")
+    @Operation(summary = "deletes a file with provided UUID")
     void deleteFile(@PathVariable UUID fileId);
 
 
@@ -62,6 +74,7 @@ public interface FileAPI {
             path = "file",
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
+    @Operation(summary = "deletes files with provided UUIDs in the body")
     void deleteFiles(@RequestBody @NotEmpty List<UUID> fileIds);
 
 
