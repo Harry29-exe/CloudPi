@@ -3,9 +3,9 @@ package com.cloudpi.cloudpi.file_module.physical.api;
 import com.cloudpi.cloudpi.file_module.physical.api.requests.PostDriveRequest;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.user.api.UserAPIUtils;
-import com.cloudpi.cloudpi.utils.AbstractAPITestTemplate;
-import com.cloudpi.cloudpi.utils.ControllerTest;
-import com.cloudpi.cloudpi.utils.MockMvcUtils;
+import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPITestTemplate;
+import com.cloudpi.cloudpi.utils.controller_tests.ControllerTest;
+import com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -91,6 +91,14 @@ public class FileAPITestTemplate extends AbstractAPITestTemplate {
     protected boolean fileExist(UUID fileId) {
         var storagePath = Paths.get(getStoragePath() + "/" + fileId);
         return storagePath.toFile().exists();
+    }
+
+    protected boolean fileStorageEmpty() {
+        var storagePath = getStoragePath();
+        var files = storagePath.toFile().listFiles();
+
+        assert files != null;
+        return files.length == 0;
     }
 
     protected Path getStoragePath() {

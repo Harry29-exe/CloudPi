@@ -1,7 +1,7 @@
 package com.cloudpi.cloudpi.file_module.physical.api;
 
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
-import com.cloudpi.cloudpi.utils.AbstractAPITestTemplate.FetchUtils;
+import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPITestTemplate.FetchUtils;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -23,7 +23,7 @@ public class FileAPIUtils {
         this.fetchUtils = fetchUtils;
     }
 
-    public ResultActions uploadTextfile(String asUsername) throws Exception {
+    public ResultActions uploadTextfileAs(String asUsername) throws Exception {
         var file = new MockMultipartFile(
                 "file",
                 "text.txt",
@@ -35,6 +35,21 @@ public class FileAPIUtils {
                 multipart(uploadNewFileAddr())
                         .file(file)
                         .param("filepath", asUsername + "/text.txt")
+                        .param("fileType", FileType.TEXT_FILE.name())
+        );
+    }
+
+    public ResultActions uploadTextfileTo(String path) throws Exception {
+        var file = new MockMultipartFile(
+                "file",
+                "text.txt",
+                null,
+                textfileContent.getBytes(StandardCharsets.UTF_8));
+
+        return mockMvc.perform(
+                multipart(uploadNewFileAddr())
+                        .file(file)
+                        .param("filepath", path)
                         .param("fileType", FileType.TEXT_FILE.name())
         );
     }

@@ -1,4 +1,4 @@
-package com.cloudpi.cloudpi.utils;
+package com.cloudpi.cloudpi.utils.controller_tests;
 
 import com.cloudpi.cloudpi.authentication.api.AuthenticationApiController;
 import org.springframework.mock.web.MockHttpServletResponse;

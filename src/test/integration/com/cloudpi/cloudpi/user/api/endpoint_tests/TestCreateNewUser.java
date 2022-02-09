@@ -4,12 +4,12 @@ import com.cloudpi.cloudpi.config.security.Role;
 import com.cloudpi.cloudpi.user.api.UserAPITestTemplate;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
 import com.cloudpi.cloudpi.user.dto.UserIdDTO;
-import com.cloudpi.cloudpi.utils.ControllerTest;
+import com.cloudpi.cloudpi.utils.controller_tests.ControllerTest;
 import com.cloudpi.cloudpi.utils.mock_mvc_users.WithUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.cloudpi.cloudpi.utils.MockMvcUtils.getBodyAsList;
+import static com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils.getBodyAsList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

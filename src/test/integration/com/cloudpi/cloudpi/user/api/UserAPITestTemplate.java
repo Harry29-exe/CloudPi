@@ -3,7 +3,7 @@ package com.cloudpi.cloudpi.user.api;
 import com.cloudpi.cloudpi.user.api.requests.PatchUserRequest;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
 import com.cloudpi.cloudpi.user.dto.UserIdDTO;
-import com.cloudpi.cloudpi.utils.MockMvcUtils;
+import com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 
-import static com.cloudpi.cloudpi.utils.MockMvcUtils.getBodyAsList;
+import static com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils.getBodyAsList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

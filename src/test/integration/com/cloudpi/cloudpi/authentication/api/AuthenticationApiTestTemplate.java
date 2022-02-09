@@ -3,7 +3,7 @@ package com.cloudpi.cloudpi.authentication.api;
 import com.cloudpi.cloudpi.authentication.api.dto.LoginRequest;
 import com.cloudpi.cloudpi.user.api.UserAPIUtils;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
-import com.cloudpi.cloudpi.utils.AuthTokens;
+import com.cloudpi.cloudpi.utils.controller_tests.AuthTokens;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Autowired;

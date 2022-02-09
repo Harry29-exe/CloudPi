@@ -2,7 +2,7 @@ package com.cloudpi.cloudpi.authentication.api.endpoints_tests;
 
 import com.cloudpi.cloudpi.authentication.api.AuthenticationApiController;
 import com.cloudpi.cloudpi.authentication.api.AuthenticationApiTestTemplate;
-import com.cloudpi.cloudpi.utils.ControllerTest;
+import com.cloudpi.cloudpi.utils.controller_tests.ControllerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

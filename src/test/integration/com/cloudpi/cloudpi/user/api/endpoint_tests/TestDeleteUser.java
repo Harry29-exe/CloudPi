@@ -2,7 +2,7 @@ package com.cloudpi.cloudpi.user.api.endpoint_tests;
 
 import com.cloudpi.cloudpi.config.security.Role;
 import com.cloudpi.cloudpi.user.api.UserAPITestTemplate;
-import com.cloudpi.cloudpi.utils.ControllerTest;
+import com.cloudpi.cloudpi.utils.controller_tests.ControllerTest;
 import com.cloudpi.cloudpi.utils.mock_mvc_users.WithUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
