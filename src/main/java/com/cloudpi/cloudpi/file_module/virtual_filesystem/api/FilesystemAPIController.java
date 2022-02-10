@@ -2,6 +2,7 @@ package com.cloudpi.cloudpi.file_module.virtual_filesystem.api;
 
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.api.request.MoveFileRequest;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileSearchQueryDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FilesystemInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.FileStructureDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
@@ -57,5 +58,10 @@ public class FilesystemAPIController implements FilesystemAPI {
     @Override
     public void changeVirtualDriveMaxSize(String username, Long newAssignedSpace) {
         filesystemInfoService.changeVirtualDriveSize(username, newAssignedSpace);
+    }
+
+    @Override
+    public List<FileInfoDTO> findInUserFiles(FileSearchQueryDTO searchQuery, Authentication auth) {
+        return null;
     }
 }

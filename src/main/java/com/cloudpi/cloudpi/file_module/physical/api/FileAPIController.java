@@ -1,9 +1,5 @@
 package com.cloudpi.cloudpi.file_module.physical.api;
 
-import com.cloudpi.cloudpi.config.springdoc.NotImplemented;
-import com.cloudpi.cloudpi.config.springdoc.Stability;
-import com.cloudpi.cloudpi.config.springdoc.NotImplemented;
-import com.cloudpi.cloudpi.config.springdoc.Stability;
 import com.cloudpi.cloudpi.file_module.permission.service.dto.CreateFile;
 import com.cloudpi.cloudpi.file_module.physical.services.FileService;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
@@ -29,7 +25,6 @@ public class FileAPIController implements FileAPI {
     }
 
     @Override
-    @Stability.InitialTests
     public FileInfoDTO uploadNewFile(
             FileType fileType,
             String filepath,
@@ -43,7 +38,6 @@ public class FileAPIController implements FileAPI {
     }
 
     @Override
-    @Stability.EarlyDevelopment
     public FileInfoDTO uploadNewImage(
             String imageName,
             MultipartFile file,
@@ -61,19 +55,16 @@ public class FileAPIController implements FileAPI {
     }
 
     @Override
-    @Stability.EarlyDevelopment
     public Resource downloadFile(UUID fileId) {
         return fileService.read(fileId);
     }
 
     @Override
-    @NotImplemented.LOW
     public Resource compressAndDownloadDirectory(String directoryId) {
         throw new NotYetImplementedException();
     }
 
     @Override
-    @Stability.EarlyDevelopment
     public List<byte[]> getImagesPreview(Integer previewResolution, List<UUID> imageIds) {
         List<byte[]> resources = new ArrayList<>();
         for (UUID imageId : imageIds) {
@@ -83,13 +74,11 @@ public class FileAPIController implements FileAPI {
     }
 
     @Override
-    @Stability.EarlyDevelopment
     public void deleteFile(UUID fileId) {
         fileService.delete(fileId);
     }
 
     @Override
-    @Stability.EarlyDevelopment
     public void deleteFiles(List<UUID> fileIds) {
         for (var fileId: fileIds) {
             fileService.delete(fileId);
