@@ -1,5 +1,6 @@
 package com.cloudpi.cloudpi.file_module.physical.api;
 
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPIMockClient;
 import com.cloudpi.cloudpi.utils.controller_tests.FetchUtils;
@@ -14,7 +15,9 @@ import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequ
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
+import static com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils.getBody;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Profile("controller-test")
 @Component
@@ -37,10 +40,7 @@ public class FileAPIMockClient extends AbstractAPIMockClient {
 
         return fetchUtils.as(
                 asUsername,
-                multipart(uploadNewFileAddr())
-                        .file(file)
-                        .param("filepath", asUsername + "/text.txt")
-                        .param("fileType", FileType.TEXT_FILE.name())
+                uploadNewFileRequest(file, asUsername + "/text.txt", FileType.TEXT_FILE)
         );
     }
 
@@ -52,45 +52,81 @@ public class FileAPIMockClient extends AbstractAPIMockClient {
                 textfileContent.getBytes(StandardCharsets.UTF_8));
 
         return mockMvc.perform(
-                multipart(uploadNewFileAddr())
-                        .file(file)
-                        .param("filepath", path)
-                        .param("fileType", FileType.TEXT_FILE.name())
+                uploadNewFileRequest(file, path, FileType.TEXT_FILE)
         );
     }
 
-//    public ResultActions downloadFile()
-
-    public static String uploadNewFileAddr() {
-        return "/files/file";
+    //-------------uploadNewFile-------------
+    public MockHttpServletRequestBuilder uploadNewFileRequest(MockMultipartFile file, String path, FileType type) {
+        return multipart("/files/file")
+                .file(file)
+                .param("filepath", path)
+                .param("fileType", type.name());
     }
 
-    public static MockMultipartHttpServletRequestBuilder uploadNewFileReqBuilder() {
-        return multipart(uploadNewFileAddr());
+    public FileInfoDTO uploadNewFile(MockMultipartFile file, String path, FileType type) throws Exception {
+        var response = perform(
+                uploadNewFileRequest(file, path, type)
+        )
+                .andExpect(status().is2xxSuccessful())
+                .andReturn()
+                .getResponse();
+
+        return getBody(response, FileInfoDTO.class);
     }
 
-    public static String uploadNewImageAddr(String imageName) {
-        return "/files/image/" + imageName;
+    public ResultActions performUploadNewFile(MockMultipartFile file, String path, FileType type) throws Exception {
+        return perform(
+                uploadNewFileRequest(file, path, type)
+        );
     }
 
-    public static MockHttpServletRequestBuilder uploadNewImageReqBuilder(String imageName) {
-        return post(uploadNewImageAddr(imageName));
+    public ResultActions performUploadNewFile(MockMultipartFile file, String path, FileType type, String asUsername) throws Exception {
+        return perform(
+                uploadNewFileRequest(file, path, type),
+                asUsername
+        );
     }
 
-    public static String downloadFileAddr(UUID filePubId) {
-        return "/files/file/" + filePubId;
+
+    //-------------uploadNewImage-------------
+    public MockMultipartHttpServletRequestBuilder uploadNewImageRequest(MockMultipartFile image, String imageName) {
+        return multipart("/files/image/" + imageName);
     }
 
-    public static MockHttpServletRequestBuilder downloadFileReqBuilder(UUID filePubId) {
-        return get(downloadFileAddr(filePubId));
+    public FileInfoDTO uploadNewImage(MockMultipartFile image, String imageName) throws Exception {
+        var response = perform(
+                uploadNewImageRequest(image, imageName)
+        )
+                .andExpect(status().is2xxSuccessful())
+                .andReturn()
+                .getResponse();
+
+        return getBody(response, FileInfoDTO.class);
     }
 
-    public static String deleteFileAddr(UUID filePubId) {
-        return "/files/file/" + filePubId;
+    public ResultActions performUploadNewImage(MockMultipartFile image, String imageName) throws Exception {
+        return perform(
+                uploadNewImageRequest(image, imageName)
+        );
     }
 
-    public static MockHttpServletRequestBuilder deleteFileReqBuilder(UUID filePubId) {
-        return delete(deleteFileAddr(filePubId));
+    public ResultActions performUploadNewImage(MockMultipartFile image, String imageName, String asUsername) throws Exception {
+        return perform(
+                uploadNewImageRequest(image, imageName),
+                asUsername
+        );
+    }
+
+
+    //-------------downloadFile-------------
+    public MockHttpServletRequestBuilder downloadFileReqBuilder(UUID filePubId) {
+        return get("/files/file/" + filePubId);
+    }
+
+    //-------------deleteFile-------------
+    public MockHttpServletRequestBuilder deleteFileReqBuilder(UUID filePubId) {
+        return delete("/files/file/" + filePubId);
     }
 
 }

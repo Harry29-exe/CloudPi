@@ -1,9 +1,9 @@
 package com.cloudpi.cloudpi.file_module.physical.api.endpoint_tests;
 
 import com.cloudpi.cloudpi.config.security.Role;
-import com.cloudpi.cloudpi.file_module.physical.api.FileAPIMockClient;
 import com.cloudpi.cloudpi.file_module.physical.api.FileAPITestTemplate;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.utils.controller_tests.ControllerTest;
 import com.cloudpi.cloudpi.utils.mock_mvc_users.WithUser;
 import org.junit.jupiter.api.AfterAll;
@@ -34,11 +34,8 @@ public class TestUploadNewFile extends FileAPITestTemplate {
         var file = getTextFile();
 
         //when
-        var response = mockMvc.perform(
-                        FileAPIMockClient.uploadNewFileReqBuilder()
-                                .file(file)
-                                .param("filepath", "bob/text.txt")
-                )
+        var response = fileAPI
+                .performUploadNewFile(file, "bob/text.txt", FileType.TEXT_FILE)
                 .andExpect(status().is2xxSuccessful())
                 .andReturn()
                 .getResponse();
@@ -61,7 +58,7 @@ public class TestUploadNewFile extends FileAPITestTemplate {
     void should_return_403_when_saving_without_permissions() throws Exception {
         //given
         //when
-        fileAPIMockClient.uploadTextfileTo("bob/text.txt")
+        fileAPI.uploadTextfileTo("bob/text.txt")
                 //then
                 .andExpect(status().is(403));
 
@@ -73,7 +70,7 @@ public class TestUploadNewFile extends FileAPITestTemplate {
     void should_return_403_to_admin_without_permissions() throws Exception {
         //given
         //when
-        fileAPIMockClient.uploadTextfileTo("bob/text.txt")
+        fileAPI.uploadTextfileTo("bob/text.txt")
                 //then
                 .andExpect(status().is(403));
 

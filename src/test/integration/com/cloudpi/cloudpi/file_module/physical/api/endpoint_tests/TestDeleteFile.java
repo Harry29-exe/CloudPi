@@ -13,7 +13,7 @@ public class TestDeleteFile extends FileAPITestTemplate {
     @BeforeEach
     void init() throws Exception {
         initTemplate();
-        fileAPIMockClient.uploadTextfileTo("bob/text.txt");
+        fileAPI.uploadTextfileTo("bob/text.txt");
     }
 
     @Test

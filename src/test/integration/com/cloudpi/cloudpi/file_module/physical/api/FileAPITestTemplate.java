@@ -25,7 +25,7 @@ public class FileAPITestTemplate extends AbstractAPITestTemplate {
     private String storageMockPath;
 
     @Autowired
-    protected FileAPIMockClient fileAPIMockClient;
+    protected FileAPIMockClient fileAPI;
     @Autowired
     protected UserAPIMockClient userAPI;
 
