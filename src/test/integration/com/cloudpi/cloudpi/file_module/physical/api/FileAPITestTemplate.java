@@ -1,23 +1,20 @@
 package com.cloudpi.cloudpi.file_module.physical.api;
 
 import com.cloudpi.cloudpi.file_module.physical.api.requests.PostDriveRequest;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
-import com.cloudpi.cloudpi.user.api.UserAPIUtils;
+import com.cloudpi.cloudpi.user.api.UserAPIMockClient;
 import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPITestTemplate;
 import com.cloudpi.cloudpi.utils.controller_tests.ControllerTest;
 import com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -27,9 +24,12 @@ public class FileAPITestTemplate extends AbstractAPITestTemplate {
     @Value("${cloud-pi.storage.mock.save-files-dir}")
     private String storageMockPath;
 
-    protected final String apiAddress = "/files/";
+    @Autowired
+    protected FileAPIMockClient fileAPIMockClient;
+    @Autowired
+    protected UserAPIMockClient userAPI;
+
     protected final ObjectMapper jsonMapper = new JsonMapper();
-    protected final FileAPIUtils fileAPIUtils = new FileAPIUtils(mockMvc, fetchUtils);
 
     protected void initTemplate() throws Exception {
         clearStorageDirectory();
@@ -38,10 +38,9 @@ public class FileAPITestTemplate extends AbstractAPITestTemplate {
     }
 
     protected void addUsersToDB() throws Exception {
-        var userApiUtils = new UserAPIUtils(mockMvc);
-
         for (var userRequest : userRequestList) {
-            userApiUtils.addUserToDB(userRequest);
+            userAPI.performCreateNewUser(userRequest, "admin")
+                    .andExpect(status().is2xxSuccessful());
         }
     }
 
@@ -71,16 +70,6 @@ public class FileAPITestTemplate extends AbstractAPITestTemplate {
                 throw new IllegalStateException();
             }
         }
-    }
-
-    protected ResultActions fetchCreateFile(MockMultipartFile file, FileType fileType, String filePath) throws Exception {
-        return mockMvc.perform(
-                multipart(apiAddress + "file")
-                        .file(file)
-                        .requestAttr("fileType", fileType)
-                        .requestAttr("filepath", filePath)
-
-        );
     }
 
     protected boolean fileExist(String fileId) {

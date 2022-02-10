@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils.getBodyAsList;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ControllerTest
@@ -30,22 +30,26 @@ public class TestGetUserDetails extends UserAPITestTemplate {
     @Test
     @WithUser(authorities = Role.admin)
     void should_return_details_of_2_users() throws Exception {
-        var usernames = createUserRequests.stream()
+        //given
+        var usernames = userRequestList.stream()
                 .map(PostUserRequest::username)
                 .toList();
 
-        var result = mockMvc.perform(
-                get(endpointAddress(usernames))
-        ).andExpect(status().isOk()
-        ).andReturn();
+        //when
+        var response = userAPI.performGetUserDetails(usernames)
+                .andExpect(status().is(200))
+                .andReturn();
 
-        var body = getBody(result);
+        //then
+        var returnedUserDetails = getBodyAsList(response, UserDetailsDTO.class);
 
-        assert usernames.size() == body.size();
-        for(var username : usernames) {
-            assert body.stream().anyMatch(details ->
-                    details.getUsername().equals(username)
-            );
+        assert usernames.size() == returnedUserDetails.size();
+        for (var username : usernames) {
+            assert returnedUserDetails
+                    .stream()
+                    .anyMatch(details ->
+                            details.getUsername().equals(username)
+                    );
         }
     }
 
@@ -53,41 +57,29 @@ public class TestGetUserDetails extends UserAPITestTemplate {
     @WithUser(username = "bob", authorities = Role.user)
     void should_return_users_own_details() throws Exception {
         //given
-        var username = "bob";
+        var username = List.of("bob");
         //when
-        var result = mockMvc.perform(
-                get(endpointAddress(username))
-        ).andExpect(status().is2xxSuccessful()
-        ).andReturn();
+        var result = userAPI
+                .performGetUserDetails(username)
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
 
         var body = getBody(result);
 
         //then
         assert body.size() == 1;
-        assert body.get(0).getUsername().equals(username);
+        assert body.get(0).getUsername().equals(username.get(0));
     }
 
     @Test
     void should_return_401_when_accessing_other_user_details() throws Exception {
         //given
-        var username = "Alice";
+        var username = List.of("Alice");
         //when
 
-        mockMvc.perform(
-                get(endpointAddress(username))
-        ).andExpect(status().is(403));
+        userAPI.performGetUserDetails(username)
+                .andExpect(status().is(403));
 
-    }
-
-
-    private String endpointAddress(List<String> usernames) {
-        return apiAddress + String.join(",", usernames)
-                + "/details";
-    }
-
-    private String endpointAddress(String... usernames) {
-        return apiAddress + String.join(",", usernames)
-                + "/details";
     }
 
     private List<UserDetailsDTO> getBody(MvcResult mvcResult) throws Exception {

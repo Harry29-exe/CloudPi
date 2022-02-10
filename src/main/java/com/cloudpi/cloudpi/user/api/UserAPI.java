@@ -32,14 +32,14 @@ public interface UserAPI {
 
 
 
-    @PreAuthorize("hasAnyRole('"+Role.admin+"', '"+Role.moderator+"') OR " +
+    @PreAuthorize("hasAnyRole('" + Role.admin + "', '" + Role.moderator + "') OR " +
             "(#usernames.size() == 1 AND #usernames.get(0) == authentication.name)")
     @GetMapping(value = "{usernames}/details")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "returns all details of user with provided username",
             description = "Returns all details of user whose username matches the one specified in the URI path",
             parameters = @Parameter(name = "usernames", description = "One or more usernames whose details you want to acquire"))
-    List<UserDetailsDTO> getUserDetails(@PathVariable(name = "usernames") List<String> usernames);
+    List<UserDetailsDTO> getUsersDetails(@PathVariable(name = "usernames") List<String> usernames);
 
 
     @IsAdminOrMod

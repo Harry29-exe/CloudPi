@@ -24,11 +24,11 @@ public class TestDeleteUser extends UserAPITestTemplate {
         var username = "Alice";
 
         //when
-        fetchDeleteUser(username)
-                .andExpect(status().isOk());
+        userAPI.deleteUser(username);
 
         //then
-        var allUsers = fetchGetAllUsersAndReturnBody();
+        var allUsers = userAPI.getAllUsers();
+
         assert allUsers.size() == 2;
         assert allUsers.stream()
                 .noneMatch(user -> user.getUsername().equals(username));
@@ -41,11 +41,11 @@ public class TestDeleteUser extends UserAPITestTemplate {
         var username = "bob";
 
         //when
-        fetchDeleteUser(username)
-                .andExpect(status().isOk());
+        userAPI.deleteUser(username);
 
         //then
-        var allUsers = fetchGetAllUsersAndReturnBody();
+        var allUsers = userAPI.getAllUsers();
+
         assert allUsers.size() == 2;
         assert allUsers.stream()
                 .noneMatch(u -> u.getUsername().equals(username));
@@ -58,7 +58,7 @@ public class TestDeleteUser extends UserAPITestTemplate {
         var username = "Alice";
 
         //when
-        fetchDeleteUser(username)
+        userAPI.performDeleteUser(username)
                 //then
                 .andExpect(status().is(403));
     }
@@ -69,7 +69,7 @@ public class TestDeleteUser extends UserAPITestTemplate {
         var username = "Alive";
 
         //when
-        fetchDeleteUser(username)
+        userAPI.performDeleteUser(username)
                 //then
                 .andExpect(status().is(403));
     }
