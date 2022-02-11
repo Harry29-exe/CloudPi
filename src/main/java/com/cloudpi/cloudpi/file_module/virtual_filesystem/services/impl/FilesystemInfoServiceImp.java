@@ -1,11 +1,10 @@
-package com.cloudpi.cloudpi.file_module.virtual_filesystem.services;
+package com.cloudpi.cloudpi.file_module.virtual_filesystem.services.impl;
 
 import com.cloudpi.cloudpi.exception.file.ChangeDriveSizeException;
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
 import com.cloudpi.cloudpi.file_module.permission.service.FilePermissionService;
-import com.cloudpi.cloudpi.file_module.permission.service.dto.GrantPermission;
 import com.cloudpi.cloudpi.file_module.physical.services.FileService;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FilesystemRootInfo;
@@ -15,13 +14,14 @@ import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.Filesyst
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FilesystemRootInfoRepo;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FilesystemInfoService;
 import com.cloudpi.cloudpi.user.domain.entities.UserEntity;
 import com.cloudpi.cloudpi.user.domain.repositiories.UserRepo;
 import com.cloudpi.cloudpi.utils.AppService;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 @AppService
 public class FilesystemInfoServiceImp implements FilesystemInfoService {

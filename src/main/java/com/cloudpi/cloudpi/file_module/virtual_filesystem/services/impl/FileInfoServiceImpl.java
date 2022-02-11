@@ -1,6 +1,5 @@
-package com.cloudpi.cloudpi.file_module.virtual_filesystem.services;
+package com.cloudpi.cloudpi.file_module.virtual_filesystem.services.impl;
 
-import com.cloudpi.cloudpi.exception.file.CouldNotSaveFileException;
 import com.cloudpi.cloudpi.exception.file.NotEnoughSpaceException;
 import com.cloudpi.cloudpi.exception.path.PathNotEmptyException;
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
@@ -11,6 +10,7 @@ import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FilesystemRootInfoRepo;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FileInfoService;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.CreateFileInDB;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.dto.UpdateVFile;
 import com.cloudpi.cloudpi.utils.AppService;
