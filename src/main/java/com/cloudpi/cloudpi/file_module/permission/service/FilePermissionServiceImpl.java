@@ -1,5 +1,7 @@
 package com.cloudpi.cloudpi.file_module.permission.service;
 
+import com.cloudpi.cloudpi.exception.permissions.NoSuchPermissionException;
+import com.cloudpi.cloudpi.exception.permissions.PermissionAlreadyExistsException;
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.io.File;
 import java.util.*;
 
 @AppService
@@ -42,7 +45,7 @@ public class FilePermissionServiceImpl implements FilePermissionService {
         String username = getCurrentUserUsername();
 
         while(file != null) {
-            boolean canModify = checkPermission(file, PermissionType.MODIFY, username);
+            boolean canModify = modifyAllowed(file, username);
             if(canModify) {
                 return true;
             }
@@ -63,7 +66,7 @@ public class FilePermissionServiceImpl implements FilePermissionService {
         String username = getCurrentUserUsername();
 
         while(file != null) {
-            boolean canModify = checkPermission(file, PermissionType.MODIFY, username);
+            boolean canModify = modifyAllowed(file, username);
             if(canModify) {
                 return true;
             }
@@ -79,7 +82,7 @@ public class FilePermissionServiceImpl implements FilePermissionService {
         String username = getCurrentUserUsername();
 
         while(file != null) {
-            boolean canModify = checkPermission(file, PermissionType.READ, username);
+            boolean canModify = readAllowed(file, username);
             if(canModify) {
                 return true;
             }
@@ -95,7 +98,7 @@ public class FilePermissionServiceImpl implements FilePermissionService {
         String username = getCurrentUserUsername();
 
         while(file != null) {
-            boolean canModify = checkPermission(file, PermissionType.READ, username);
+            boolean canModify = readAllowed(file, username);
             if(canModify) {
                 return true;
             }
@@ -113,16 +116,14 @@ public class FilePermissionServiceImpl implements FilePermissionService {
     public void grantPermissions(Set<GrantPermission> permissions) {
         Set<FilePermission> filePers = new HashSet<>();
         permissions.forEach(per -> {
+            if(permissionExist(per.getFileUUID(), per.getUsername(), per.getPermissionType())) {
+                throw new PermissionAlreadyExistsException();
+            }
+
             var user = userRepo.findByUsername(per.getUsername())
                     .orElseThrow(ResourceNotExistException::new);
             var file = fileInfoRepo.findByPubId(per.getFileUUID())
                     .orElseThrow(ResourceNotExistException::new);
-            if(checkPermission(file, per.getPermissionType(), user.getUsername())) {
-                String errorMessage = String.format("User: %s, permission: %s, file: %s",
-                        user.getUsername(), per.getPermissionType().toString(), file.getName());
-                throw new IllegalArgumentException("One of the permissions currently exists. " +
-                        "Existing permission: " + errorMessage);
-            }
             filePers.add(new FilePermission(per.getPermissionType(), user, file));
         });
         filePermissionRepo.saveAll(filePers);
@@ -132,16 +133,14 @@ public class FilePermissionServiceImpl implements FilePermissionService {
     public void revokePermissions(Set<RevokePermission> permissions) {
         Set<FilePermission> filePers = new HashSet<>();
         permissions.forEach(per -> {
+            if(!permissionExist(per.getFileUUID(), per.getUsername(), per.getPermissionType())) {
+                throw new NoSuchPermissionException();
+            }
+
             var user = userRepo.findByUsername(per.getUsername())
                     .orElseThrow(ResourceNotExistException::new);
             var file = fileInfoRepo.findByPubId(per.getFileUUID())
                     .orElseThrow(ResourceNotExistException::new);
-            if(!checkPermission(file, per.getPermissionType(), user.getUsername())) {
-                String errorMessage = String.format("User: %s, permission: %s, file: %s",
-                        user.getUsername(), per.getPermissionType().toString(), file.getName());
-                throw new IllegalArgumentException("There is no such permission. " +
-                        "Not existing permission: " + errorMessage);
-            }
             filePers.add(new FilePermission(per.getPermissionType(), user, file));
         });
         filePermissionRepo.deleteAll(filePers);
@@ -163,13 +162,18 @@ public class FilePermissionServiceImpl implements FilePermissionService {
                 .getName();
     }
 
-    private boolean checkPermission(FileInfo file, PermissionType permission, String username) {
+    private boolean readAllowed(FileInfo file, String username) {
         return file.getPermissions()
                 .stream()
-                .anyMatch(per ->
-                per.getUser().getUsername().equals(username)
-                        && per.getType() == permission
-        );
+                .anyMatch(per -> per.getUser().getUsername().equals(username)
+                    && (per.getType() == PermissionType.MODIFY || per.getType() == PermissionType.READ));
+        }
+
+        private boolean modifyAllowed(FileInfo file, String username) {
+            return file.getPermissions()
+                    .stream()
+                    .anyMatch(per -> per.getUser().getUsername().equals(username)
+                            && per.getType() == PermissionType.MODIFY);
     }
 
 }

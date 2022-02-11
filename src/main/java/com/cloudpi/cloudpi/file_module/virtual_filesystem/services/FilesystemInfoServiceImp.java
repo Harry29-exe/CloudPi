@@ -102,7 +102,6 @@ public class FilesystemInfoServiceImp implements FilesystemInfoService {
 
     private List<FilePermission> grantPermissionsToRoot(UserEntity user, FileInfo rootDir) {
         List<FilePermission> permissions = new ArrayList<>();
-        permissions.add(new FilePermission(PermissionType.READ, user, rootDir));
         permissions.add(new FilePermission(PermissionType.MODIFY, user, rootDir));
         return permissions;
     }

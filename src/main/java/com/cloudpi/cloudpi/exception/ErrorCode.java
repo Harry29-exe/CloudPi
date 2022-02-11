@@ -32,7 +32,13 @@ public enum ErrorCode {
     MODIFY_FAILED,
     READ_FAILED,
     SAVE_FAILED,
-    NOT_ENOUGH_SPACE;
+    NOT_ENOUGH_SPACE,
+
+    /**
+     * permissions
+     */
+    PERMISSION_ALREADY_EXISTS,
+    NO_SUCH_PERMISSION;
 
     public ErrorBody toErrorBody() {
         return new ErrorBody(this);

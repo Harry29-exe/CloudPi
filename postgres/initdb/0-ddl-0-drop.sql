@@ -9,6 +9,9 @@ alter table if exists filesystems drop constraint if exists FKhf1rlrrl3r5qoewirr
 alter table if exists filesystems drop constraint if exists FKgdl0qxqsj86u4ec55pgcg7vl3;
 alter table if exists user_details drop constraint if exists FKicouhgavvmiiohc28mgk0kuj5;
 alter table if exists user_entity_roles drop constraint if exists FK80w28k99mayei90r6mycds2em;
+alter table if exists sharing drop constraint if exists FKuis3o68gqys8qvjo1lhtg4xbz;
+alter table if exists sharing drop constraint if exists FKpz2hwhvxo2y2i5khcllh2lhzz;
+drop table if exists sharing cascade;
 drop table if exists drive cascade;
 drop table if exists file_info cascade;
 drop table if exists file_info_details cascade;

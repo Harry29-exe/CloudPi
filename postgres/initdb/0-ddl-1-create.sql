@@ -71,6 +71,13 @@ create table users
     username varchar(255) not null,
     primary key (id)
 );
+create table sharing
+(
+    id              int8    not null,
+    owner_id        int8    not null,
+    permission_id   int8    not null,
+    primary key (id)
+);
 alter table if exists drive
     add constraint UK_jxrd4wbx6353wfridjbutg5i5 unique (path);
 alter table if exists file_info
@@ -105,3 +112,7 @@ alter table if exists user_details
     add constraint FKicouhgavvmiiohc28mgk0kuj5 foreign key (user_id) references users;
 alter table if exists user_entity_roles
     add constraint FK80w28k99mayei90r6mycds2em foreign key (user_entity_id) references users;
+alter table if exists sharing
+    add constraint FKuis3o68gqys8qvjo1lhtg4xbz foreign key (owner_id) references users;
+alter table if exists sharing
+    add constraint FKpz2hwhvxo2y2i5khcllh2lhzz foreign key (permission_id) references file_permission;

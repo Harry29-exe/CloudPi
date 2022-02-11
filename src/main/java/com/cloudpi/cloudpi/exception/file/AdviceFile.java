@@ -2,12 +2,14 @@ package com.cloudpi.cloudpi.exception.file;
 
 import com.cloudpi.cloudpi.exception.ErrorBody;
 import com.cloudpi.cloudpi.exception.ExceptionHandlerPrototype;
+import com.cloudpi.cloudpi.exception.ModuleExceptionHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import static com.cloudpi.cloudpi.exception.ErrorCode.*;
 
+@ModuleExceptionHandler
 public class AdviceFile extends ExceptionHandlerPrototype {
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
