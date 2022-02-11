@@ -32,6 +32,9 @@ public class FileInfoDetails {
     @Column
     private Boolean hasThumbnail = false;
 
+    @Column
+    private Boolean isFavourite = false;
+
     @MapsId
     @OneToOne
     @JoinColumn(name = "file_id")

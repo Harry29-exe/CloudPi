@@ -29,6 +29,7 @@ create table file_info_details
     has_thumbnail boolean,
     modified_at   timestamp not null,
     size          int8      not null,
+    is_favourite  boolean,
     primary key (file_id)
 );
 create table file_permission

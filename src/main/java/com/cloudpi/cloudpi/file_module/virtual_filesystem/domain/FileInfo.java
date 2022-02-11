@@ -152,7 +152,8 @@ public class FileInfo {
                 type,
                 details.getSize(),
                 details.getModifiedAt(),
-                details.getCreatedAt()
+                details.getCreatedAt(),
+                details.getIsFavourite()
         );
     }
 

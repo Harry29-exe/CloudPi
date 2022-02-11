@@ -23,6 +23,6 @@ public class FileInfoDTO {
     private Long size;
     private Date modifiedAt;
     private Date createdAt;
-
+    private Boolean isFavourite;
 
 }
