@@ -9,7 +9,7 @@ public class TestLogout extends AuthenticationApiTestTemplate {
 
     @BeforeEach
     void setUp() throws Exception {
-        initDB();
+        initTemplate();
     }
 
     //todo this returns 302 instead of 200

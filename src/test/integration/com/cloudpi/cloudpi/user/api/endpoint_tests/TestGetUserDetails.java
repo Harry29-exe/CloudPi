@@ -22,7 +22,7 @@ public class TestGetUserDetails extends UserAPITestTemplate {
 
     @BeforeEach
     void initUsersInDB() throws Exception {
-        this.addUsersToDB();
+        initTemplate();
     }
 
 

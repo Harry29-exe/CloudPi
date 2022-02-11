@@ -4,7 +4,6 @@ import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface FileInfoRepo extends JpaRepository<FileInfo, Long>, QuerydslPredicateExecutor<FileInfo> {
+public interface FileInfoRepo extends JpaRepository<FileInfo, Long> {
 
     Optional<FileInfo> findByPath(String path);
 

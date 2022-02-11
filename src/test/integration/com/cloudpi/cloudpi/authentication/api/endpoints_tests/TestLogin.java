@@ -17,7 +17,7 @@ public class TestLogin extends AuthenticationApiTestTemplate {
 
     @BeforeEach
     void setUp() throws Exception {
-        this.initDB();
+        this.initTemplate();
     }
 
     @Test
@@ -39,7 +39,7 @@ public class TestLogin extends AuthenticationApiTestTemplate {
     @Test
     void should_return_auth_tokens_for_user() throws Exception {
         //given
-        var user = this.userRequests.get(0);
+        var user = this.userRequestList.get(0);
         var requestBody = new LoginRequest(user.username(), user.password());
 
         //when
@@ -55,7 +55,7 @@ public class TestLogin extends AuthenticationApiTestTemplate {
     @Test
     void should_return_403_when_given_bad_password() throws Exception {
         //given
-        var user = this.userRequests.get(0);
+        var user = this.userRequestList.get(0);
         var requestBody = new LoginRequest(
                 user.username(),
                 "B@d_password123"

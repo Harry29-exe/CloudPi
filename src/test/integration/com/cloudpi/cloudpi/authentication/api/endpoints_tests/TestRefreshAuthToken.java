@@ -13,13 +13,13 @@ public class TestRefreshAuthToken extends AuthenticationApiTestTemplate {
 
     @BeforeEach
     void setUp() throws Exception {
-        initDB();
+        initTemplate();
     }
 
     @Test
     void should_return_new_auth_token() throws Exception {
         //given
-        var user = userRequests.get(0);
+        var user = userRequestList.get(0);
         var tokens = authAPI.login(new LoginRequest(
                 user.username(),
                 user.password()

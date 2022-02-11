@@ -1,21 +1,14 @@
 package com.cloudpi.cloudpi.user.api;
 
 import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPITestTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 //@ControllerTest
 public class UserAPITestTemplate extends AbstractAPITestTemplate {
-    @Autowired
-    protected UserAPIMockClient userAPI;
 
-    protected void addUsersToDB() throws Exception {
-        for (var createRequest : userRequestList) {
-            fetch.asAdmin(userAPI
-                            .createNewUserRequest(createRequest))
-                    .andExpect(status().is2xxSuccessful());
-        }
+
+    @Override
+    protected void initTemplate() throws Exception {
+        addUsersToDB();
     }
 
 //    protected void addUserToDB(PostUserRequest userRequest, String authToken) throws Exception {

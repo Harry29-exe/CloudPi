@@ -1,7 +1,6 @@
 package com.cloudpi.cloudpi.file_module.physical.api;
 
 import com.cloudpi.cloudpi.file_module.physical.api.requests.PostDriveRequest;
-import com.cloudpi.cloudpi.user.api.UserAPIMockClient;
 import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPITestTemplate;
 import com.cloudpi.cloudpi.utils.controller_tests.ControllerTest;
 import com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils;
@@ -26,8 +25,6 @@ public class FileAPITestTemplate extends AbstractAPITestTemplate {
 
     @Autowired
     protected FileAPIMockClient fileAPI;
-    @Autowired
-    protected UserAPIMockClient userAPI;
 
     protected final ObjectMapper jsonMapper = new JsonMapper();
 
@@ -35,13 +32,6 @@ public class FileAPITestTemplate extends AbstractAPITestTemplate {
         clearStorageDirectory();
         addDrive();
         addUsersToDB();
-    }
-
-    protected void addUsersToDB() throws Exception {
-        for (var userRequest : userRequestList) {
-            userAPI.performCreateNewUser(userRequest, "admin")
-                    .andExpect(status().is2xxSuccessful());
-        }
     }
 
     protected void addDrive() throws Exception {

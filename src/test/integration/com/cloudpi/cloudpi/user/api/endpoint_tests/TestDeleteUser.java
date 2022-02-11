@@ -14,7 +14,7 @@ public class TestDeleteUser extends UserAPITestTemplate {
 
     @BeforeEach
     void setUpUsers() throws Exception {
-        this.addUsersToDB();
+        initTemplate();
     }
 
     @Test

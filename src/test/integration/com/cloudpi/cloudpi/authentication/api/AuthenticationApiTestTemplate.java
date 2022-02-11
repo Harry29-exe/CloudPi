@@ -1,13 +1,9 @@
 package com.cloudpi.cloudpi.authentication.api;
 
 import com.cloudpi.cloudpi.user.api.UserAPIMockClient;
-import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
 import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPITestTemplate;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class AuthenticationApiTestTemplate extends AbstractAPITestTemplate {
 
@@ -19,16 +15,8 @@ public class AuthenticationApiTestTemplate extends AbstractAPITestTemplate {
     @Autowired
     protected AuthenticationAPIMockClient authAPI;
 
-    protected final ImmutableList<PostUserRequest> userRequests = ImmutableList.of(
-            new PostUserRequest("bob", "bob", null, "P@ssword123"),
-            new PostUserRequest("Alice", "Alice", null, "P@ssword321")
-    );
-
-    protected void initDB() throws Exception {
-        for (PostUserRequest request : userRequests) {
-            userAPI.performCreateNewUser(request, "admin")
-                    .andExpect(status().is2xxSuccessful());
-        }
+    protected void initTemplate() throws Exception {
+        addUsersToDB();
     }
 
 //    protected ResultActions fetchLogin(String username, String password) throws Exception {

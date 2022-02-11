@@ -15,7 +15,7 @@ class TestGetAllUsers extends UserAPITestTemplate {
 
     @BeforeEach
     void setPutUsers() throws Exception {
-        addUsersToDB();
+        initTemplate();
     }
 
     @Test

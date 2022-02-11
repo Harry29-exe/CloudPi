@@ -22,7 +22,7 @@ public class TestCreateNewUser extends UserAPITestTemplate {
 
     @BeforeEach
     void initUsersInDB() throws Exception {
-        this.addUsersToDB();
+        initTemplate();
     }
 
     @Test
