@@ -7,6 +7,7 @@ import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FilesystemInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.FileStructureDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FileInfoService;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FileSearchService;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FilesystemInfoService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,10 +19,12 @@ import java.util.UUID;
 public class FilesystemAPIController implements FilesystemAPI {
     private final FilesystemInfoService filesystemInfoService;
     private final FileInfoService fileInfoService;
+    private final FileSearchService fileSearchService;
 
-    public FilesystemAPIController(FilesystemInfoService filesystemInfoService, FileInfoService fileInfoService) {
+    public FilesystemAPIController(FilesystemInfoService filesystemInfoService, FileInfoService fileInfoService, FileSearchService fileSearchService) {
         this.filesystemInfoService = filesystemInfoService;
         this.fileInfoService = fileInfoService;
+        this.fileSearchService = fileSearchService;
     }
 
     @Override
@@ -61,7 +64,7 @@ public class FilesystemAPIController implements FilesystemAPI {
     }
 
     @Override
-    public List<FileInfoDTO> findInUserFiles(FileQueryDTO searchQuery, Authentication auth) {
-        return null;
+    public List<FileInfoDTO> searchInUserFiles(FileQueryDTO searchQuery, Authentication auth) {
+        return fileSearchService.find(searchQuery);
     }
 }

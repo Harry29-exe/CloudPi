@@ -77,7 +77,7 @@ public interface FilesystemAPI {
 
 
     @PostMapping("search")
-    List<FileInfoDTO> findInUserFiles(
+    List<FileInfoDTO> searchInUserFiles(
             @RequestBody FileQueryDTO searchQuery,
             Authentication auth);
 

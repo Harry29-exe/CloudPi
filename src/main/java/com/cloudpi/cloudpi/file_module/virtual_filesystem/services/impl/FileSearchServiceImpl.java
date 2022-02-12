@@ -19,8 +19,9 @@ public class FileSearchServiceImpl implements FileSearchService {
 
     @Override
     public List<FileInfoDTO> find(FileQueryDTO fileQuery) {
-        return fileSearchRepo
-                .findByQuery(fileQuery)
+        var results = fileSearchRepo
+                .findByQuery(fileQuery);
+        return results
                 .stream()
                 .map(FileInfo::mapToDTO)
                 .toList();

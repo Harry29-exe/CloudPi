@@ -15,6 +15,8 @@ public class FileSearchRepo {
     @PersistenceContext
     private EntityManager entityManager;
 
+    //todo !!! should take username to return only files that belong to user
+    //todo to jest wgl bezpieczne
     public List<FileInfo> findByQuery(FileQueryDTO queryDTO) {
         String queryStr =
                 "SELECT f " +
@@ -33,8 +35,9 @@ public class FileSearchRepo {
                         (queryDTO.getCreated() == null ?
                                 "" :
                                 " d.createdAt BETWEEN :createdFrom AND :createdTo");
+
         if (queryStr.endsWith("AND ")) {
-            queryStr = queryStr.substring(0, queryStr.length() - 3);
+            queryStr = queryStr.substring(0, queryStr.length() - "AND ".length());
         }
 
         TypedQuery<FileInfo> query = entityManager.createQuery(
@@ -42,14 +45,20 @@ public class FileSearchRepo {
                 FileInfo.class
         );
 
-        query.setParameter("name", queryDTO.getName());
-        query.setParameter("type", queryDTO.getType());
+        if (queryDTO.getName() != null)
+            query.setParameter("name", queryDTO.getName());
+        if (queryDTO.getType() != null)
+            query.setParameter("type", queryDTO.getType());
 
-        query.setParameter("createdFrom", queryDTO.getCreated().getFrom());
-        query.setParameter("createdTo", queryDTO.getCreated().getTo());
+        if (queryDTO.getCreated() != null) {
+            query.setParameter("createdFrom", queryDTO.getCreated().getFrom());
+            query.setParameter("createdTo", queryDTO.getCreated().getTo());
+        }
 
-        query.setParameter("modifiedFrom", queryDTO.getLastModified().getFrom());
-        query.setParameter("modifiedTo", queryDTO.getLastModified().getTo());
+        if (queryDTO.getLastModified() != null) {
+            query.setParameter("modifiedFrom", queryDTO.getLastModified().getFrom());
+            query.setParameter("modifiedTo", queryDTO.getLastModified().getTo());
+        }
 
         return query.getResultList();
     }
