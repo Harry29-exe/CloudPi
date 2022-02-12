@@ -7,6 +7,7 @@ import com.cloudpi.cloudpi.exception.file.CouldNotSaveFileException;
 import com.cloudpi.cloudpi.file_module.permission.service.dto.CreateFile;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FilesystemRootInfoRepo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FileInfoService;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FilesystemInfoService;
@@ -35,26 +36,31 @@ import java.util.UUID;
 public class FileServiceImpl implements FileService {
     private final DriveService driveService;
     private final FileInfoService fileInfoService;
+    private final FileInfoRepo fileInfoRepo;
 
-    public FileServiceImpl(DriveService driveService, FileInfoService fileInfoService) {
+    public FileServiceImpl(DriveService driveService, FileInfoService fileInfoService, FileInfoRepo fileInfoRepo) {
         this.driveService = driveService;
         this.fileInfoService = fileInfoService;
+        this.fileInfoRepo = fileInfoRepo;
     }
 
     @Override
     public FileInfoDTO create(CreateFile create, MultipartFile file) {
         var drive = driveService.getDriveForNewFile(file.getSize());
         var vPath = create.getPath();
+        FileInfoDTO newFile;
 
-        var newFile = fileInfoService.save(new CreateFileInDB(
-                vPath,
-                drive.getPubId(),
-                create.getFileType(),
-                file.getSize()
-        ));
-
-        saveFileToDisc(file, drive.getPath() + "/" + newFile.getPubId());
-
+        if(fileInfoRepo.existsByPath(vPath.getPath())) {
+            newFile = modify(fileInfoRepo.getPubIdByPath(vPath.getPath()), file);
+        } else {
+            newFile = fileInfoService.save(new CreateFileInDB(
+                    vPath,
+                    drive.getPubId(),
+                    create.getFileType(),
+                    file.getSize()
+            ));
+            saveFileToDisc(file, drive.getPath() + "/" + newFile.getPubId());
+        }
 
         return newFile;
     }

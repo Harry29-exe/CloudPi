@@ -44,4 +44,13 @@ public interface FileInfoRepo extends JpaRepository<FileInfo, Long> {
                 WHERE f.root.id = :rootId
             """)
     List<FileInfo> findByRootId(long rootId);
+
+    Boolean existsByPath(String path);
+
+    @Query("""
+                SELECT f.pubId
+                FROM FileInfo f
+                WHERE f.path = :path
+        """)
+    UUID getPubIdByPath(String path);
 }
