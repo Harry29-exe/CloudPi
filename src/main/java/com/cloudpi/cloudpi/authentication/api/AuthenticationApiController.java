@@ -11,7 +11,6 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.NoSuchAlgorithmException;
@@ -65,7 +64,7 @@ public class AuthenticationApiController implements AuthenticationApi {
     @Override
     public void refreshAuthToken(HttpServletRequest request, HttpServletResponse response) {
         var refreshToken = getRefreshToken(request);
-        var newAuthToken = jwtService.refreshAuthToken(refreshToken.getValue());
+        var newAuthToken = jwtService.refreshAuthToken(refreshToken);
 
         response.setHeader("Authorization", newAuthToken);
     }
@@ -73,12 +72,12 @@ public class AuthenticationApiController implements AuthenticationApi {
     @Override
     public void refreshRefreshToken(HttpServletRequest request, HttpServletResponse response) {
         var refreshToken = getRefreshToken(request);
-        var newRefreshToken = jwtService.refreshRefreshToken(refreshToken.getValue());
+        var newRefreshToken = jwtService.refreshRefreshToken(refreshToken);
 
         addRefreshTokenCookie(newRefreshToken, response, false);
     }
 
-    private Cookie getRefreshToken(HttpServletRequest request) {
+    private String getRefreshToken(HttpServletRequest request) {
         var cookies = request.getCookies();
         if (cookies == null) {
             throw new NoRequiredCookieException(REFRESH_TOKEN_COOKIE_NAME);
@@ -96,7 +95,7 @@ public class AuthenticationApiController implements AuthenticationApi {
             throw new NoRequiredCookieException(REFRESH_TOKEN_COOKIE_NAME);
         }
 
-        return refreshToken;
+        return refreshToken.getValue().substring("Bearer ".length());
     }
 
     private void addRefreshTokenCookie(

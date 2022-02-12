@@ -41,7 +41,7 @@ public class FileAPITestTemplate extends AbstractAPITestTemplate {
                 post("/drive/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonMapper.writeValueAsString(drive))
-                        .header("Authorization", authToken)
+                        .header("Authorization", "Bearer " + authToken)
         ).andExpect(status().is2xxSuccessful());
     }
 

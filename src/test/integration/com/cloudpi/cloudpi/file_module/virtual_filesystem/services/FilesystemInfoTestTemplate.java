@@ -70,7 +70,7 @@ public class FilesystemInfoTestTemplate extends AbstractAPITestTemplate {
                 post("/drive/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(drive))
-                        .header("Authorization", authToken)
+                        .header("Authorization", "Bearer " + authToken)
         ).andExpect(status().is2xxSuccessful());
     }
 

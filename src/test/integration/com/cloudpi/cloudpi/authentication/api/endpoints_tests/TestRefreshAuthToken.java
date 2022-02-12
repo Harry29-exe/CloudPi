@@ -27,7 +27,7 @@ public class TestRefreshAuthToken extends AuthenticationApiTestTemplate {
 
         //when
         var response = authAPI
-                .performRefreshAuthToken(tokens.refreshToken)
+                .performRefreshAuthToken("Bearer " + tokens.refreshToken)
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();

@@ -38,7 +38,7 @@ public class FetchUtils {
         }
 
         return mockMvc.perform(
-                request.header("Authorization", authTokenMap.get(username).authToken)
+                request.header("Authorization", "Bearer " + authTokenMap.get(username).authToken)
         );
     }
 
