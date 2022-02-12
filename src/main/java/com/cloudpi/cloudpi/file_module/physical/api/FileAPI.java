@@ -35,13 +35,12 @@ public interface FileAPI {
 
     //todo potrzebne?
     @PostMapping(
-            path = "image/{imageName}",
+            path = "image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "uploads new image",
             description = "Uploads new image to ~/images/ directory")
     FileInfoDTO uploadNewImage(
-            @PathVariable String imageName,
             @RequestParam MultipartFile file,
             Authentication auth);
 

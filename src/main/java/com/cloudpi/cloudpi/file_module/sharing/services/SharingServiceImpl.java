@@ -78,8 +78,11 @@ public class SharingServiceImpl implements SharingService {
         sharingRepo.getAllByPermission_User_Username(username)
                 .forEach(sharing -> {
                     String user = sharing.getOwner().getUsername();
+
                     if(!usersFiles.containsKey(user)) {
-                        usersFiles.put(user, new LinkedList<>());
+                        List<FileInfoDTO> filesList = new LinkedList<>();
+                        filesList.add(sharing.getPermission().getFile().mapToDTO());
+                        usersFiles.put(user, filesList);
                     } else {
                         var file = sharing.getPermission().getFile().mapToDTO();
                         var list = usersFiles.get(user);

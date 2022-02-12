@@ -45,14 +45,13 @@ public class FileAPIController implements FileAPI {
     @Override
     @Stability.EarlyDevelopment
     public FileInfoDTO uploadNewImage(
-            String imageName,
             MultipartFile file,
             Authentication auth
     ) {
         //todo raczej nie tak
         return fileService.create(
                 new CreateFile(
-                        new VirtualPath(auth.getName() + "/images/" + file.getName()),
+                        new VirtualPath(auth.getName() + "/images/" + file.getOriginalFilename()),
                         FileType.IMAGE
                 ),
                 file
