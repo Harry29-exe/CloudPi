@@ -20,7 +20,7 @@ import java.util.List;
                 " info and modify it.")
 public interface FilesystemAPI {
 
-
+    //todo fix it
     @GetMapping("file-structure")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "retrieves file structure",

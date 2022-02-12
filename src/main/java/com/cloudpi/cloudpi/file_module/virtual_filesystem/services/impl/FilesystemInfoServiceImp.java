@@ -78,6 +78,9 @@ public class FilesystemInfoServiceImp implements FilesystemInfoService {
         var rootDir = fileInfoRepo.findByPath(path)
                 .orElseThrow(ResourceNotExistException::new);
 
+        if (depth <= 0) {
+            depth = Integer.MAX_VALUE;
+        }
         FilesystemObjectDTO rootObj = rootDir.mapToFilesystemObjectDTO(depth);
         return new FileStructureDTO(entryPoint.getPath(), rootObj);
     }
