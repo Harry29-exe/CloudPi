@@ -170,6 +170,7 @@ public class FileInfo {
                 pubId,
                 name,
                 details.getSize(),
+                details.getModifiedAt(),
                 fileVersion,
                 type,
                 children
