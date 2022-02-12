@@ -169,6 +169,7 @@ public class FileInfo {
         return new FilesystemObjectDTO(
                 pubId,
                 name,
+                details.getSize(),
                 fileVersion,
                 type,
                 children

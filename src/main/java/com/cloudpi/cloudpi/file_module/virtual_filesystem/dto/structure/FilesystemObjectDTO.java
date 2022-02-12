@@ -14,6 +14,7 @@ public class FilesystemObjectDTO {
 
     private UUID pubId;
     private String name;
+    private Long size;
     private Integer version;
     private FileType type;
     private List<FilesystemObjectDTO> children;
