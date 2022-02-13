@@ -6,6 +6,7 @@ public enum FileType {
     IMAGE,
     VIDEO,
     TEXT_FILE,
+    PDF,
     MUSIC,
     COMPRESSED,
     UNDEFINED
