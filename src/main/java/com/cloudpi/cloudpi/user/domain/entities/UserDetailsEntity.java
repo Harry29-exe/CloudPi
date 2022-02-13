@@ -1,12 +1,15 @@
 package com.cloudpi.cloudpi.user.domain.entities;
 
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -22,9 +25,14 @@ public class UserDetailsEntity {
      * account being set to be deleted
      */
     @Column
-    private String email;
-    @Column
-    private String pathToProfilePicture;
+    private @Nullable
+    String email;
+
+    @OneToOne
+    @JoinColumn
+    private @Nullable
+    FileInfo profilePicture;
+
     @Id
     @Column(name = "user_id")
     private Long id;
@@ -34,11 +42,18 @@ public class UserDetailsEntity {
     private UserEntity user;
 
     public UserDetailsEntity(@NonNull String nickname,
-                             String email,
-                             String pathToProfilePicture) {
+                             @Nullable String email,
+                             @Nullable FileInfo profilePicture) {
         this.nickname = nickname;
         this.email = email;
-        this.pathToProfilePicture = pathToProfilePicture;
+        this.profilePicture = profilePicture;
+    }
+
+    public @Nullable
+    UUID getProfilePicturePubId() {
+        return profilePicture != null ?
+                profilePicture.getPubId() :
+                null;
     }
 
 }

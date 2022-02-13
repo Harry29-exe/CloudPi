@@ -1,7 +1,9 @@
 package com.cloudpi.cloudpi.user.service;
 
 import com.cloudpi.cloudpi.config.security.Role;
+import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.exception.user.UserNotExistException;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FilesystemInfoService;
 import com.cloudpi.cloudpi.user.api.requests.PatchUserRequest;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
@@ -27,11 +29,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
     private final FilesystemInfoService filesystemService;
+    private final FileInfoRepo fileInfoRepo;
 
-    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder, FilesystemInfoService filesystemService) {
+    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder, FilesystemInfoService filesystemService, FileInfoRepo fileInfoRepo) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.filesystemService = filesystemService;
+        this.fileInfoRepo = fileInfoRepo;
     }
 
     @Override
@@ -93,14 +97,16 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public void updateUserDetails(String username, PatchUserRequest request) {
         var user = userRepo.findByUsername(username)
                 .orElseThrow(UserNotExistException::new);
-        if(request.email() != null) {
+        if (request.email() != null) {
             user.getUserDetails().setEmail(request.email());
         }
-        if(request.nickname() != null) {
+        if (request.nickname() != null) {
             user.getUserDetails().setNickname(request.nickname());
         }
-        if(request.pathToProfilePicture() != null) {
-            user.getUserDetails().setPathToProfilePicture(request.pathToProfilePicture());
+        if (request.profilePicturePubId() != null) {
+            var file = fileInfoRepo.findByPubId(request.profilePicturePubId())
+                    .orElseThrow(ResourceNotExistException::new);
+            user.getUserDetails().setProfilePicture(file);
         }
 
         userRepo.save(user);

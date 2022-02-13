@@ -2,6 +2,8 @@ package com.cloudpi.cloudpi.user.dto;
 
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -10,6 +12,6 @@ public class UserIdDTO {
     private String username;
     private String pubId;
     private String nickname;
-    private String pathToProfilePicture;
+    private UUID profilePicturePubId;
 
 }
