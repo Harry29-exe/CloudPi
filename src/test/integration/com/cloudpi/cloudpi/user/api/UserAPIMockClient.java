@@ -54,31 +54,29 @@ public class UserAPIMockClient extends AbstractAPIMockClient {
     }
 
     //-----------------------getUsersDetails------------------------------------
-    public MockHttpServletRequestBuilder getUsersDetailsRequest(List<String> usernames) {
-        if (usernames.size() == 0)
-            throw new IllegalStateException();
+    public MockHttpServletRequestBuilder getUsersDetailsRequest(String username) {
 
-        return get(apiAddr + String.join(",", usernames) + "/details");
+        return get(apiAddr + username + "/details");
     }
 
-    public List<UserDetailsDTO> getUsersDetails(List<String> usernames) throws Exception {
+    public List<UserDetailsDTO> getUsersDetails(String username) throws Exception {
         var response = mockMvc.perform(
-                        getUsersDetailsRequest(usernames))
+                        getUsersDetailsRequest(username))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 
         return getBodyAsList(response, UserDetailsDTO.class);
     }
 
-    public ResultActions performGetUserDetails(List<String> usernames) throws Exception {
+    public ResultActions performGetUserDetails(String username) throws Exception {
         return perform(
-                getUsersDetailsRequest(usernames)
+                getUsersDetailsRequest(username)
         );
     }
 
-    public ResultActions performGetUserDetails(List<String> usernames, String asUsername) throws Exception {
+    public ResultActions performGetUserDetails(String username, String asUsername) throws Exception {
         return perform(
-                getUsersDetailsRequest(usernames),
+                getUsersDetailsRequest(username),
                 asUsername
         );
     }
