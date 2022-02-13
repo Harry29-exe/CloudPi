@@ -56,11 +56,19 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 .stream()
                 .map(UserEntity::toUserDetailsDTO)
                 .collect(ImmutableList.toImmutableList());
-        if(username.size() != users.size()) {
+        if (username.size() != users.size()) {
             throw new UserNotExistException();
         }
 
         return users;
+    }
+
+    @Override
+    public UserDetailsDTO getUserDetails(String username) {
+        var user = userRepo.findByUsername(username)
+                .orElseThrow();
+
+        return user.toUserDetailsDTO();
     }
 
     @Override

@@ -31,15 +31,15 @@ public interface UserAPI {
     List<UserIdDTO> getAllUsers();
 
 
-
+    //fixme
     @PreAuthorize("hasAnyRole('" + Role.admin + "', '" + Role.moderator + "') OR " +
-            "(#usernames.size() == 1 AND #usernames.get(0) == authentication.name)")
-    @GetMapping(value = "{usernames}/details")
+            "#username == authentication.name")
+    @GetMapping(value = "{username}/details")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "returns all details of user with provided username",
             description = "Returns all details of user whose username matches the one specified in the URI path",
             parameters = @Parameter(name = "usernames", description = "One or more usernames whose details you want to acquire"))
-    List<UserDetailsDTO> getUsersDetails(@PathVariable(name = "usernames") List<String> usernames);
+    UserDetailsDTO getUsersDetails(@PathVariable(name = "username") String username);
 
 
     @IsAdminOrMod
