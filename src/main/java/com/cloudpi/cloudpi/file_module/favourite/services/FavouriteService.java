@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface FavouriteService {
 
-    @PreAuthorize("@filePermissionService.canRead(#fileId)")
+    @PreAuthorize("@filePermissionVerifier.canRead(#fileId)")
     void changeFavour(UUID fileId);
 
     List<FileInfoDTO> getFavouriteFiles(String username);

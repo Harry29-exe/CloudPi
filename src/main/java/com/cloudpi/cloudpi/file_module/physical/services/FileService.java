@@ -8,27 +8,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface FileService {
 
-    @PreAuthorize("@filePermissionService.canModify(#create.path.parentPath)")
+    @PreAuthorize("@filePermissionVerifier.canModify(#create.path.parentPath)")
     FileInfoDTO create(CreateFile create, MultipartFile file);
 
-    @PreAuthorize("@filePermissionService.canModify(#path.parentPath)")
+    @PreAuthorize("@filePermissionVerifier.canModify(#path.parentPath)")
     FileInfoDTO createDir(VirtualPath path);
 
-    @PreAuthorize("@filePermissionService.canRead(#filePubId)")
+    @PreAuthorize("@filePermissionVerifier.canRead(#filePubId)")
     Resource read(UUID filePubId);
 
-    @PreAuthorize("@filePermissionService.canModify(#filePubId)")
+    @PreAuthorize("@filePermissionVerifier.canModify(#filePubId)")
     FileInfoDTO modify(UUID filePubId, MultipartFile file);
 
-    @PreAuthorize("@filePermissionService.canModify(#filePubId)")
+    @PreAuthorize("@filePermissionVerifier.canModify(#filePubId)")
     void delete(UUID filePubId);
 
-    @PreAuthorize("@filePermissionService.canRead(#imageId)")
+    @PreAuthorize("@filePermissionVerifier.canRead(#imageId)")
     ResponseEntity<byte[]> readPreview(Integer previewResolution, UUID imageId);
 
 }

@@ -1,179 +1,130 @@
 package com.cloudpi.cloudpi.file_module.permission.service;
 
-import com.cloudpi.cloudpi.exception.permissions.NoSuchPermissionException;
-import com.cloudpi.cloudpi.exception.permissions.PermissionAlreadyExistsException;
-import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
-import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
+import com.cloudpi.cloudpi.file_module.permission.dto.FilePermissionsDTO;
+import com.cloudpi.cloudpi.file_module.permission.dto.UserFilePermissionsDTO;
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
 import com.cloudpi.cloudpi.file_module.permission.repositories.FilePermissionRepo;
-import com.cloudpi.cloudpi.file_module.permission.service.dto.GrantPermission;
-import com.cloudpi.cloudpi.file_module.permission.service.dto.RevokePermission;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
-import com.cloudpi.cloudpi.user.domain.entities.UserEntity;
-import com.cloudpi.cloudpi.user.domain.repositiories.UserRepo;
+import com.cloudpi.cloudpi.file_module.permission.repositories.FilePermissionRepo.FilePermissionProjection;
 import com.cloudpi.cloudpi.utils.AppService;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
-import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.cloudpi.cloudpi.utils.CurrentRequestUtils.getCurrentUserUsername;
 
 @AppService
-@Transactional
-@Validated
-@Service(value = "filePermissionService")
 public class FilePermissionServiceImpl implements FilePermissionService {
     private final FilePermissionRepo filePermissionRepo;
-    private final FileInfoRepo fileInfoRepo;
-    private final UserRepo userRepo;
 
-    public FilePermissionServiceImpl(FilePermissionRepo filePermissionRepo, FileInfoRepo fileInfoRepo,
-                                     UserRepo userRepo) {
+    public FilePermissionServiceImpl(FilePermissionRepo filePermissionRepo) {
         this.filePermissionRepo = filePermissionRepo;
-        this.fileInfoRepo = fileInfoRepo;
-        this.userRepo = userRepo;
     }
+
 
     @Override
-    public boolean canModify(String path) {
-        FileInfo file = fileInfoRepo.findByPath(path)
-                .orElseThrow(ResourceNotExistException::new);
-        String username = getCurrentUserUsername();
+    public UserFilePermissionsDTO getUserPermissions(UUID filePubId) {
+        var username = getCurrentUserUsername()
+                .orElseThrow(IllegalStateException::new);
 
-        while(file != null) {
-            boolean canModify = modifyAllowed(file, username);
-            if(canModify) {
-                return true;
-            }
-            file = file.getParent();
-        }
-        return false;
-    }
+        var permissions = filePermissionRepo.
+                findAllByUser_UsernameAndFile_PubId(username, filePubId);
 
-    @Override
-    public boolean canModify(VirtualPath path) {
-        return canModify(path.getPath());
-    }
-
-    @Override
-    public boolean canModify(UUID filePubId) {
-        FileInfo file = fileInfoRepo.findByPubId(filePubId)
-                .orElseThrow(ResourceNotExistException::new);
-        String username = getCurrentUserUsername();
-
-        while(file != null) {
-            boolean canModify = modifyAllowed(file, username);
-            if(canModify) {
-                return true;
-            }
-            file = file.getParent();
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canRead(UUID filePubId) {
-        FileInfo file = fileInfoRepo.findByPubId(filePubId)
-                .orElseThrow(ResourceNotExistException::new);
-        String username = getCurrentUserUsername();
-
-        while(file != null) {
-            boolean canModify = readAllowed(file, username);
-            if(canModify) {
-                return true;
-            }
-            file = file.getParent();
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canRead(String path) {
-        FileInfo file = fileInfoRepo.findByPath(path)
-                .orElseThrow(ResourceNotExistException::new);
-        String username = getCurrentUserUsername();
-
-        while(file != null) {
-            boolean canModify = readAllowed(file, username);
-            if(canModify) {
-                return true;
-            }
-            file = file.getParent();
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canRead(VirtualPath path) {
-        return canRead(path.getPath());
-    }
-
-    @Override
-    public void grantPermissions(Set<GrantPermission> permissions) {
-        Set<FilePermission> filePers = new HashSet<>();
-        permissions.forEach(per -> {
-            if(permissionExist(per.getFileUUID(), per.getUsername(), per.getPermissionType())) {
-                throw new PermissionAlreadyExistsException();
-            }
-
-            var user = userRepo.findByUsername(per.getUsername())
-                    .orElseThrow(ResourceNotExistException::new);
-            var file = fileInfoRepo.findByPubId(per.getFileUUID())
-                    .orElseThrow(ResourceNotExistException::new);
-            filePers.add(new FilePermission(per.getPermissionType(), user, file));
-        });
-        filePermissionRepo.saveAll(filePers);
-    }
-
-    @Override
-    public void revokePermissions(Set<RevokePermission> permissions) {
-        Set<FilePermission> filePers = new HashSet<>();
-        permissions.forEach(per -> {
-            if(!permissionExist(per.getFileUUID(), per.getUsername(), per.getPermissionType())) {
-                throw new NoSuchPermissionException();
-            }
-
-            var user = userRepo.findByUsername(per.getUsername())
-                    .orElseThrow(ResourceNotExistException::new);
-            var file = fileInfoRepo.findByPubId(per.getFileUUID())
-                    .orElseThrow(ResourceNotExistException::new);
-            filePers.add(new FilePermission(per.getPermissionType(), user, file));
-        });
-        filePermissionRepo.deleteAll(filePers);
-    }
-
-    protected boolean permissionExist(UUID filePubId,
-                                      String username,
-                                      PermissionType type) {
-        return filePermissionRepo.hasPermission(
-                filePubId,
-                username,
-                type
+        return new UserFilePermissionsDTO(
+                permissions, username, filePubId
         );
     }
 
-    private String getCurrentUserUsername() {
-        return SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
+    @Override
+    public List<UserFilePermissionsDTO> getUserPermissions(List<UUID> filePubIds) {
+        var username = getCurrentUserUsername()
+                .orElseThrow(IllegalStateException::new);
+
+        var permissions = filePermissionRepo.
+                findAllByUser_UsernameAndFile_PubIdIn(username, filePubIds);
+
+        return mapToUserFilePermissions(permissions);
     }
 
-    private boolean readAllowed(FileInfo file, String username) {
-        return file.getPermissions()
-                .stream()
-                .anyMatch(per -> per.getUser().getUsername().equals(username)
-                    && (per.getType() == PermissionType.MODIFY || per.getType() == PermissionType.READ));
+    @Override
+    public FilePermissionsDTO getPermissionsToFile(UUID filePubId) {
+        return null;
+    }
+
+    @Override
+    public List<FilePermissionsDTO> getPermissionsToFiles(List<UUID> filePubId) {
+        return null;
+    }
+
+    @Override
+    public void grantPermission(PermissionType type, String username, UUID filePubId) {
+
+    }
+
+    @Override
+    public void removePermission(PermissionType type, String username, UUID filePubId) {
+
+    }
+
+    private List<FilePermissionsDTO> mapToFilePermissions(List<FilePermissionProjection> permissions) {
+        List<FilePermissionsDTO> allPermissions = new ArrayList<>();
+
+        var fileIdPermissionMap = permissions.stream()
+                .collect(Collectors.groupingBy(FilePermissionProjection::getFilePubId));
+
+        for (var filePermissions : fileIdPermissionMap.values()) {
+            FilePermissionsDTO filePermissionsDTO = new FilePermissionsDTO(
+                    filePermissions.get(0).getFilePubId(),
+                    new ArrayList<>()
+            );
+            allPermissions.add(filePermissionsDTO);
+
+            var userPermissionMap = filePermissions
+                    .stream()
+                    .collect(Collectors.groupingBy(FilePermissionProjection::getUsername));
+            for (var userPermissionList : userPermissionMap.values()) {
+                var userPermissions = new FilePermissionsDTO.PermissionDTO(
+                        userPermissionList.get(0).getUsername(),
+                        userPermissionList.stream()
+                                .map(FilePermissionProjection::getType)
+                                .collect(Collectors.toList())
+                );
+                filePermissionsDTO.getPermissions().add(userPermissions);
+            }
         }
 
-        private boolean modifyAllowed(FileInfo file, String username) {
-            return file.getPermissions()
-                    .stream()
-                    .anyMatch(per -> per.getUser().getUsername().equals(username)
-                            && per.getType() == PermissionType.MODIFY);
+        return allPermissions;
+    }
+
+    private List<UserFilePermissionsDTO> mapToUserFilePermissions(List<FilePermissionProjection> permissions) {
+        Map<UUID, UserFilePermissionsDTO> fileIdPermissionMap = new TreeMap<>();
+
+        for (var permission : permissions) {
+            if (!fileIdPermissionMap.containsKey(permission.getFilePubId())) {
+                fileIdPermissionMap.put(
+                        permission.getFilePubId(),
+                        mapToUserFilePermission(permission)
+                );
+            } else {
+                fileIdPermissionMap.get(permission.getFilePubId())
+                        .getTypes()
+                        .add(permission.getType());
+            }
+        }
+
+        return fileIdPermissionMap.values()
+                .stream()
+                .toList();
+    }
+
+    private UserFilePermissionsDTO mapToUserFilePermission(FilePermissionProjection permission) {
+        List<PermissionType> array = new ArrayList<>(20);
+        array.add(permission.getType());
+
+        return new UserFilePermissionsDTO(
+                array,
+                permission.getUsername(),
+                permission.getFilePubId()
+        );
     }
 
 }

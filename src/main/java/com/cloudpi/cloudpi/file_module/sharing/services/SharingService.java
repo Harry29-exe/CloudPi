@@ -9,6 +9,6 @@ import java.util.List;
 public interface SharingService {
     List<UserSharedFilesDTO> getSharedFiles(String username);
 
-    @PreAuthorize("@filePermissionService.canModify(#shareFileRequest.filePubId)")
+    @PreAuthorize("@filePermissionVerifier.canModify(#shareFileRequest.filePubId)")
     void shareFiles(ShareFileRequest shareFileRequest, String owner);
 }

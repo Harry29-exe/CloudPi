@@ -11,25 +11,25 @@ import java.util.UUID;
 
 public interface FileInfoService {
 
-    @PreAuthorize("@filePermissionService.canModify(#create.path.parentPath)")
+    @PreAuthorize("@filePermissionVerifier.canModify(#create.path.parentPath)")
     FileInfoDTO save(CreateFileInDB create);
 
-    @PreAuthorize("@filePermissionService.canModify(#path.parentPath)")
+    @PreAuthorize("@filePermissionVerifier.canModify(#path.parentPath)")
     FileInfoDTO saveDir(VirtualPath path);
 
-    @PreAuthorize("@filePermissionService.canRead(#filePubId)")
+    @PreAuthorize("@filePermissionVerifier.canRead(#filePubId)")
     FileInfoDTO get(UUID filePubId);
 
-    @PreAuthorize("@filePermissionService.canModify(#filePubId)")
+    @PreAuthorize("@filePermissionVerifier.canModify(#filePubId)")
     void move(UUID filePubId, String newPath);
 
-    @PreAuthorize("@filePermissionService.canModify(#update.pubId)")
+    @PreAuthorize("@filePermissionVerifier.canModify(#update.pubId)")
     FileInfoDTO update(UpdateVFile update);
 
-    @PreAuthorize("@filePermissionService.canModify(#path.path)")
+    @PreAuthorize("@filePermissionVerifier.canModify(#path.path)")
     void delete(VirtualPath path);
 
-    @PreAuthorize("@filePermissionService.canModify(#fileId)")
+    @PreAuthorize("@filePermissionVerifier.canModify(#fileId)")
     void delete(UUID fileId);
 
 }

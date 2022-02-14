@@ -4,8 +4,7 @@ import com.cloudpi.cloudpi.exception.file.ChangeDriveSizeException;
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
-import com.cloudpi.cloudpi.file_module.permission.service.FilePermissionService;
-import com.cloudpi.cloudpi.file_module.permission.service.dto.GrantPermission;
+import com.cloudpi.cloudpi.file_module.permission.service.FilePermissionVerifier;
 import com.cloudpi.cloudpi.file_module.physical.services.FileService;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FilesystemRootInfo;
@@ -20,8 +19,8 @@ import com.cloudpi.cloudpi.user.domain.repositiories.UserRepo;
 import com.cloudpi.cloudpi.utils.AppService;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 @AppService
 public class FilesystemInfoServiceImp implements FilesystemInfoService {
@@ -31,14 +30,14 @@ public class FilesystemInfoServiceImp implements FilesystemInfoService {
     private final FilesystemRootInfoRepo filesystemRootInfoRepo;
     private final FileService fileService;
     private final FileInfoRepo fileInfoRepo;
-    private final FilePermissionService filePermissionService;
+    private final FilePermissionVerifier filePermissionVerifier;
 
     public FilesystemInfoServiceImp(
             @Value("${cloud-pi.storage.default-space-on-virtual-drive}")
                     String spaceOnVD,
             UserRepo userRepo,
             FilesystemRootInfoRepo filesystemRootInfoRepo, FileService fileService, FileInfoRepo fileInfoRepo,
-            FilePermissionService filePermissionService) {
+            FilePermissionVerifier filePermissionVerifier) {
 
         this.defaultSpaceOnVirtualDrive =
                 Long.parseLong(spaceOnVD.replace("_", ""));
@@ -46,7 +45,7 @@ public class FilesystemInfoServiceImp implements FilesystemInfoService {
         this.filesystemRootInfoRepo = filesystemRootInfoRepo;
         this.fileService = fileService;
         this.fileInfoRepo = fileInfoRepo;
-        this.filePermissionService = filePermissionService;
+        this.filePermissionVerifier = filePermissionVerifier;
     }
 
     @Override

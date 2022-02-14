@@ -6,7 +6,6 @@ import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 public interface FilesystemInfoService {
 
@@ -14,16 +13,16 @@ public interface FilesystemInfoService {
 
     void createRoot(Long userId);
 
-    @PreAuthorize("@filePermissionService.canRead(#entryPoint)")
+    @PreAuthorize("@filePermissionVerifier.canRead(#entryPoint)")
     FileStructureDTO get(
             VirtualPath entryPoint,
             Integer depth,
             @NotNull String username);
 
-    @PreAuthorize("@filePermissionService.canRead(#username)")
+    @PreAuthorize("@filePermissionVerifier.canRead(#username)")
     FilesystemInfoDTO getUsersVirtualDrives(String username);
 
-    @PreAuthorize("@filePermissionService.canModify(#username)")
+    @PreAuthorize("@filePermissionVerifier.canModify(#username)")
     void changeVirtualDriveSize(String username, Long newAssignedSpace);
 
 }

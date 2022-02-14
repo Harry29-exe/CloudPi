@@ -1,41 +1,29 @@
 package com.cloudpi.cloudpi.file_module.permission.service;
 
-import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
-import com.cloudpi.cloudpi.file_module.permission.service.dto.GrantPermission;
-import com.cloudpi.cloudpi.file_module.permission.service.dto.RevokePermission;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
-import org.springframework.stereotype.Service;
+import com.cloudpi.cloudpi.file_module.permission.dto.FilePermissionsDTO;
+import com.cloudpi.cloudpi.file_module.permission.dto.UserFilePermissionsDTO;
+import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-@Service
 @Transactional
+@Validated
 public interface FilePermissionService {
 
-    boolean canModify(UUID filePubId);
+    UserFilePermissionsDTO getUserPermissions(UUID filePubId);
 
-//    boolean canModify(UUID filePubId, String username);
+    List<UserFilePermissionsDTO> getUserPermissions(List<UUID> filePubIds);
 
-    boolean canModify(String path);
+    FilePermissionsDTO getPermissionsToFile(UUID filePubId);
 
-    boolean canModify(VirtualPath path);
+    List<FilePermissionsDTO> getPermissionsToFiles(List<UUID> filePubId);
 
-//    boolean canModify(String path, String username);
+    void grantPermission(PermissionType type, String username, UUID filePubId);
 
-    boolean canRead(UUID filePubId);
+    void removePermission(PermissionType type, String username, UUID filePubId);
 
-//    boolean canRead(UUID filePubId, String username);
 
-    boolean canRead(String path);
-
-    boolean canRead(VirtualPath path);
-
-//    boolean canRead(String path, String username);
-
-    void grantPermissions(Set<GrantPermission> permissions);
-
-    void revokePermissions(Set<RevokePermission> permissions);
 }
