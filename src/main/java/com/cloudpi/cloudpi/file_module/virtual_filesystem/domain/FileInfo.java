@@ -16,7 +16,6 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -158,17 +157,25 @@ public class FileInfo {
     }
 
     public FilesystemObjectDTO mapToFilesystemObjectDTO(int depth) {
-        var file = new FilesystemObjectDTO();
-        file.setName(this.name);
-        file.setPubId(this.pubId);
-        file.setVersion(this.fileVersion);
-        if(depth > 0) {
-            file.setChildren(this.children.stream()
-                    .map(f -> f.mapToFilesystemObjectDTO(depth - 1)).toList());
-        } else {
-            file.setChildren(Collections.emptyList());
+        List<FilesystemObjectDTO> children = List.of();
+
+        if (depth > 0) {
+            children = this.children
+                    .stream()
+                    .map(f -> f.mapToFilesystemObjectDTO(depth - 1))
+                    .toList();
         }
-        return file;
+
+
+        return new FilesystemObjectDTO(
+                pubId,
+                name,
+                details.getSize(),
+                details.getModifiedAt(),
+                fileVersion,
+                type,
+                children
+        );
     }
 
     @PreUpdate

@@ -2,6 +2,7 @@ package com.cloudpi.cloudpi.authentication.api.endpoints_tests;
 
 import com.cloudpi.cloudpi.authentication.api.AuthenticationApiController;
 import com.cloudpi.cloudpi.authentication.api.AuthenticationApiTestTemplate;
+import com.cloudpi.cloudpi.authentication.api.dto.LoginRequest;
 import com.cloudpi.cloudpi.utils.controller_tests.ControllerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,17 +17,16 @@ public class TestLogin extends AuthenticationApiTestTemplate {
 
     @BeforeEach
     void setUp() throws Exception {
-        this.initDB();
+        this.initTemplate();
     }
 
     @Test
     void should_return_auth_tokens_for_admin() throws Exception {
         //given
-        var username = "admin";
-        var password = "P@ssword123";
+        var requestBody = new LoginRequest("admin", "P@ssword123");
 
         //when
-        var response = fetchLogin(username, password)
+        var response = authAPI.performLogin(requestBody)
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -39,12 +39,11 @@ public class TestLogin extends AuthenticationApiTestTemplate {
     @Test
     void should_return_auth_tokens_for_user() throws Exception {
         //given
-        var user = this.userRequests.get(0);
-        var username = user.username();
-        var password = user.password();
+        var user = this.userRequestList.get(0);
+        var requestBody = new LoginRequest(user.username(), user.password());
 
         //when
-        var response = fetchLogin(username, password)
+        var response = authAPI.performLogin(requestBody)
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -56,12 +55,14 @@ public class TestLogin extends AuthenticationApiTestTemplate {
     @Test
     void should_return_403_when_given_bad_password() throws Exception {
         //given
-        var user = this.userRequests.get(0);
-        var username = user.username();
-        var password = "bad_password";
+        var user = this.userRequestList.get(0);
+        var requestBody = new LoginRequest(
+                user.username(),
+                "B@d_password123"
+        );
 
         //when
-        fetchLogin(username, password)
+        authAPI.performLogin(requestBody)
                 //then
                 .andExpect(status().is(401));
 

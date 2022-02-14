@@ -74,18 +74,22 @@ public class UserEntity {
     }
 
     public UserIdDTO toUserIdDTO() {
-        return new UserIdDTO(username, pubId.toString(), userDetails.getNickname(),
-                userDetails.getPathToProfilePicture());
+        return new UserIdDTO(
+                username,
+                pubId.toString(),
+                userDetails.getNickname(),
+                userDetails.getProfilePicturePubId());
     }
 
     public UserDetailsDTO toUserDetailsDTO() {
         return new UserDetailsDTO(
                 username,
                 userDetails.getEmail(),
-                userDetails.getPathToProfilePicture(),
+                userDetails.getProfilePicturePubId(),
                 userDetails.getNickname(),
                 pubId.toString(),
                 roles);
     }
+
 
 }

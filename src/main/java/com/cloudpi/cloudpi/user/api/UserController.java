@@ -24,8 +24,8 @@ public class UserController implements UserAPI {
     }
 
     @Override
-    public List<UserDetailsDTO> getUserDetails(List<String> usernames) {
-        return userService.getUserDetails(usernames);
+    public UserDetailsDTO getUsersDetails(String username) {
+        return userService.getUserDetails(username);
     }
 
     @Override

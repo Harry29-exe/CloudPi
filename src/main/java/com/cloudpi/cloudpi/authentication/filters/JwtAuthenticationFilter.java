@@ -14,7 +14,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 
 @Component
 @Order(0)
@@ -41,6 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        authToken = authToken.substring("Bearer ".length());
         var validJwt = jwtService.validateAuthToken(authToken);
         var user = userDetailsService.loadUserByUsername(validJwt.getSubject());
         Authentication auth = new UsernamePasswordAuthenticationToken(

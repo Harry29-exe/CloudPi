@@ -1,8 +1,8 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.api;
 
-import com.cloudpi.cloudpi.config.springdoc.SpringDocUtils;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.api.request.MoveFileRequest;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileQueryDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FilesystemInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.FileStructureDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +20,7 @@ import java.util.List;
                 " info and modify it.")
 public interface FilesystemAPI {
 
-
+    //todo fix it
     @GetMapping("file-structure")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "retrieves file structure",
@@ -31,12 +31,14 @@ public interface FilesystemAPI {
             @RequestParam(defaultValue = "/") String fileStructureRoot,
             Authentication auth);
 
+
     @PutMapping("directory")
     @Operation(summary = "creates a directory",
             description = "Creates a new directory at directory provided as request parameter")
     FileInfoDTO createDirectory(
             @RequestParam String directoryPath,
             Authentication auth);
+
 
     @GetMapping("file/{fileId}")
     @Operation(summary = "retrieves information about requested file")
@@ -72,4 +74,12 @@ public interface FilesystemAPI {
             @PathVariable String username,
             @RequestParam Long newAssignedSpace
     );
+
+
+    @PostMapping("search")
+    List<FileInfoDTO> searchInUserFiles(
+            @RequestBody FileQueryDTO searchQuery,
+            Authentication auth);
+
+
 }

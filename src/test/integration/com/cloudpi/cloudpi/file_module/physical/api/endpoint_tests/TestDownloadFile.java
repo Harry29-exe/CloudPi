@@ -9,13 +9,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.cloudpi.cloudpi.file_module.physical.api.FileAPIUtils.downloadFileBuilder;
 import static com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils.getBody;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ControllerTest
 public class TestDownloadFile extends FileAPITestTemplate {
-    private final String endpointAddress = apiAddress + "file";
 
     @BeforeEach
     void setUp() throws Exception {
@@ -31,24 +29,40 @@ public class TestDownloadFile extends FileAPITestTemplate {
     @WithUser(username = "bob", authorities = Role.user)
     void should_download_save_file() throws Exception {
         //given
-        var response = fileAPIUtils.uploadTextfileAs("bob")
-                .andExpect(status().is2xxSuccessful())
-                .andReturn()
-                .getResponse();
-        var fileInfo = getBody(response, FileInfoDTO.class);
-
+        var fileInfo = uploadDefaultFileAsBob();
 
         //when
         var fileResponse = mockMvc.perform(
-                        downloadFileBuilder(fileInfo.getPubId()))
+                        fileAPI.downloadFileReqBuilder(fileInfo.getPubId()))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn()
                 .getResponse();
 
         //then
         assert fileResponse.getContentAsString()
-                .equals(fileAPIUtils.textfileContent);
+                .equals(fileAPI.textfileContent);
 
+    }
+
+    @Test
+    @WithUser(username = "Alice", authorities = Role.user)
+    void should_return_403_when_user_has_no_permission() throws Exception {
+        //given
+        var fileInfo = uploadDefaultFileAsBob();
+
+        //when
+//        fileAPI.
+        //todo
+    }
+
+
+    protected FileInfoDTO uploadDefaultFileAsBob() throws Exception {
+        var response = fileAPI.uploadTextfileAs("bob")
+                .andExpect(status().is2xxSuccessful())
+                .andReturn()
+                .getResponse();
+
+        return getBody(response, FileInfoDTO.class);
     }
 
 
