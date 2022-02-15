@@ -20,7 +20,7 @@ public class FileAncestor {
     @Column
     private Integer treeLevelDiff;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ancestor", insertable = false, updatable = false)
     private FileInfo ancestor;
 

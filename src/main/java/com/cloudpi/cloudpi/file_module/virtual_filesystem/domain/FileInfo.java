@@ -78,13 +78,12 @@ public class FileInfo {
     )
     private List<FileAncestor> ancestors;
 
-    //todo this should exist? (if so field parent must be recreated)
-//    @OneToMany(
-//            cascade = CascadeType.ALL,
-//            orphanRemoval = true,
-//            fetch = FetchType.LAZY,
-//            mappedBy = "parent")
-//    private List<FileInfo> children;
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY,
+            mappedBy = "ancestor")
+    private List<FileAncestor> children;
 
     /**
      * Is null only for directories

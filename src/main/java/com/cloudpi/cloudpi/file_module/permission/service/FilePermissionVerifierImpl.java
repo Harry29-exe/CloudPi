@@ -6,7 +6,7 @@ import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.user.domain.repositiories.UserRepo;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.cloudpi.cloudpi.utils.CurrentRequestUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -30,20 +30,7 @@ public class FilePermissionVerifierImpl implements FilePermissionVerifier {
 
     @Override
     public boolean canModify(String path) {
-//        FileInfo file = fileInfoRepo.findByPath(path)
-//                .orElseThrow(ResourceNotExistException::new);
-//        String username = getCurrentUserUsername();
-//
-//
-//
-//        while (file != null) {
-//            boolean canModify = modifyAllowed(file, username);
-//            if (canModify) {
-//                return true;
-//            }
-//            file = file.getParent();
-//        }
-        return false;
+        return filePermissionRepo.hasPermission(path, retrieveUsername(), PermissionType.MODIFY);
     }
 
     @Override
@@ -53,50 +40,18 @@ public class FilePermissionVerifierImpl implements FilePermissionVerifier {
 
     @Override
     public boolean canModify(UUID filePubId) {
-//        FileInfo file = fileInfoRepo.findByPubId(filePubId)
-//                .orElseThrow(ResourceNotExistException::new);
-//        String username = getCurrentUserUsername();
-//
-//        while (file != null) {
-//            boolean canModify = modifyAllowed(file, username);
-//            if (canModify) {
-//                return true;
-//            }
-//            file = file.getParent();
-//        }
-        return false;
+
+        return filePermissionRepo.hasPermission(filePubId, retrieveUsername(), PermissionType.MODIFY);
     }
 
     @Override
     public boolean canRead(UUID filePubId) {
-//        FileInfo file = fileInfoRepo.findByPubId(filePubId)
-//                .orElseThrow(ResourceNotExistException::new);
-//        String username = getCurrentUserUsername();
-//
-//        while (file != null) {
-//            boolean canModify = readAllowed(file, username);
-//            if (canModify) {
-//                return true;
-//            }
-//            file = file.getParent();
-//        }
-        return false;
+        return filePermissionRepo.hasPermission(filePubId, retrieveUsername(), PermissionType.READ);
     }
 
     @Override
     public boolean canRead(String path) {
-//        FileInfo file = fileInfoRepo.findByPath(path)
-//                .orElseThrow(ResourceNotExistException::new);
-//        String username = getCurrentUserUsername();
-//
-//        while (file != null) {
-//            boolean canModify = readAllowed(file, username);
-//            if (canModify) {
-//                return true;
-//            }
-//            file = file.getParent();
-//        }
-        return false;
+        return filePermissionRepo.hasPermission(path, retrieveUsername(), PermissionType.READ);
     }
 
     @Override
@@ -148,12 +103,6 @@ public class FilePermissionVerifierImpl implements FilePermissionVerifier {
         );
     }
 
-    private String getCurrentUserUsername() {
-        return SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
-    }
-
     private boolean readAllowed(FileInfo file, String username) {
         return file.getPermissions()
                 .stream()
@@ -166,6 +115,11 @@ public class FilePermissionVerifierImpl implements FilePermissionVerifier {
                 .stream()
                 .anyMatch(per -> per.getUser().getUsername().equals(username)
                         && per.getType() == PermissionType.MODIFY);
+    }
+
+    private String retrieveUsername() {
+        return CurrentRequestUtils.getCurrentUserUsername()
+                .orElseThrow(IllegalStateException::new);
     }
 
 }
