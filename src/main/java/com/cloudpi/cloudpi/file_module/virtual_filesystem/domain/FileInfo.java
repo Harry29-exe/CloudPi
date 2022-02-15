@@ -16,9 +16,11 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -63,22 +65,34 @@ public class FileInfo {
      * if it's null it means that the parents is root
      */
     @ManyToOne
-    @JoinColumn(name = "parent_id")
+    @JoinColumn(name = "parent_id", insertable = false, updatable = false)
     private FileInfo parent;
+
+    @Column(name = "parent_id")
+    private Long parentId;
 
     @OneToMany(
             cascade = CascadeType.ALL,
             orphanRemoval = true,
-            fetch = FetchType.LAZY,
-            mappedBy = "parent")
-    private List<FileInfo> children;
+            mappedBy = "file"
+    )
+    private List<FileAncestor> ancestors;
+
+    //todo this should exist? (if so field parent must be recreated)
+//    @OneToMany(
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true,
+//            fetch = FetchType.LAZY,
+//            mappedBy = "parent")
+//    private List<FileInfo> children;
 
     /**
      * Is null only for directories
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "drive_files")
-    private @Nullable Drive drive;
+    private @Nullable
+    Drive drive;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "root_id", nullable = false)
@@ -91,8 +105,8 @@ public class FileInfo {
     @JoinColumn(name = "permissions")
     private List<FilePermission> permissions;
 
+    //------Constructors------
     public FileInfo(
-            @NotBlank String path,
             @NotBlank String name,
             @NonNull FileInfo parent,
             @Nullable Drive drive,
@@ -103,12 +117,14 @@ public class FileInfo {
             throw new IllegalStateException("Drive can only be null if file is directory");
         }
         this.name = name;
-        this.path = path;
+        this.path = parent.getPath() + "/" + name;
         this.type = type;
         this.drive = drive;
-        this.parent = parent;
         this.root = parent.getRoot();
         this.details = new FileInfoDetails(size, this);
+
+        this.parentId = parent.getParentId();
+        this.createAncestors(parent);
     }
 
     private FileInfo(String name, String path, @NonNull FileType type, Long size) {
@@ -130,15 +146,33 @@ public class FileInfo {
     }
 
     public static FileInfo createDirectory(
-            @NotBlank String path,
             @NotBlank String name,
             @NotNull FileInfo parent
     ) {
-        return new FileInfo(path, name, parent, null, FileType.DIRECTORY, 0L);
+        return new FileInfo(name, parent, null, FileType.DIRECTORY, 0L);
     }
 
+
+    //------Methods------
     public void update(UpdateVFile updateVFile) {
         this.name = updateVFile.getNewName();
+    }
+
+    public void move(FileInfo newParent) {
+        ancestors.forEach(
+                ancestor -> ancestor.setFile(null)
+        );
+
+        ancestors = new ArrayList<>();
+        ancestors.add(
+                new FileAncestor(this, newParent.getId(), 1)
+        );
+
+        for (var parentAncestor : newParent.ancestors) {
+            ancestors.add(
+                    transformToThisFileAncestor(parentAncestor)
+            );
+        }
     }
 
     public FileInfoDTO mapToDTO() {
@@ -146,7 +180,6 @@ public class FileInfo {
                 pubId,
                 name,
                 path,
-                parent.getPubId(),
                 details.getHasThumbnail(),
                 type,
                 details.getSize(),
@@ -156,17 +189,7 @@ public class FileInfo {
         );
     }
 
-    public FilesystemObjectDTO mapToFilesystemObjectDTO(int depth) {
-        List<FilesystemObjectDTO> children = List.of();
-
-        if (depth > 0) {
-            children = this.children
-                    .stream()
-                    .map(f -> f.mapToFilesystemObjectDTO(depth - 1))
-                    .toList();
-        }
-
-
+    public FilesystemObjectDTO mapToFilesystemObjectDTO(List<FilesystemObjectDTO> children) {
         return new FilesystemObjectDTO(
                 pubId,
                 name,
@@ -186,6 +209,23 @@ public class FileInfo {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    private void createAncestors(FileInfo parent) {
+        var ancestors = parent.getAncestors()
+                .stream()
+                .map(parentAncestor ->
+                        new FileAncestor(this, parentAncestor.getAncestorId(), parentAncestor.getTreeLevelDiff() + 1))
+                .collect(Collectors.toCollection(ArrayList::new));
+        ancestors.add(
+                new FileAncestor(this, parent.getId(), 1)
+        );
+
+        this.ancestors = ancestors;
+    }
+
+    private FileAncestor transformToThisFileAncestor(FileAncestor parentAncestor) {
+        return new FileAncestor(this, parentAncestor.getAncestorId(), parentAncestor.getTreeLevelDiff() + 1);
     }
 
 }

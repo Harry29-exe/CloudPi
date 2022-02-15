@@ -1,6 +1,5 @@
 package com.cloudpi.cloudpi.file_module.permission.service;
 
-import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
 import com.cloudpi.cloudpi.file_module.permission.repositories.FilePermissionRepo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
@@ -31,17 +30,19 @@ public class FilePermissionVerifierImpl implements FilePermissionVerifier {
 
     @Override
     public boolean canModify(String path) {
-        FileInfo file = fileInfoRepo.findByPath(path)
-                .orElseThrow(ResourceNotExistException::new);
-        String username = getCurrentUserUsername();
-
-        while (file != null) {
-            boolean canModify = modifyAllowed(file, username);
-            if (canModify) {
-                return true;
-            }
-            file = file.getParent();
-        }
+//        FileInfo file = fileInfoRepo.findByPath(path)
+//                .orElseThrow(ResourceNotExistException::new);
+//        String username = getCurrentUserUsername();
+//
+//
+//
+//        while (file != null) {
+//            boolean canModify = modifyAllowed(file, username);
+//            if (canModify) {
+//                return true;
+//            }
+//            file = file.getParent();
+//        }
         return false;
     }
 
@@ -52,49 +53,49 @@ public class FilePermissionVerifierImpl implements FilePermissionVerifier {
 
     @Override
     public boolean canModify(UUID filePubId) {
-        FileInfo file = fileInfoRepo.findByPubId(filePubId)
-                .orElseThrow(ResourceNotExistException::new);
-        String username = getCurrentUserUsername();
-
-        while (file != null) {
-            boolean canModify = modifyAllowed(file, username);
-            if (canModify) {
-                return true;
-            }
-            file = file.getParent();
-        }
+//        FileInfo file = fileInfoRepo.findByPubId(filePubId)
+//                .orElseThrow(ResourceNotExistException::new);
+//        String username = getCurrentUserUsername();
+//
+//        while (file != null) {
+//            boolean canModify = modifyAllowed(file, username);
+//            if (canModify) {
+//                return true;
+//            }
+//            file = file.getParent();
+//        }
         return false;
     }
 
     @Override
     public boolean canRead(UUID filePubId) {
-        FileInfo file = fileInfoRepo.findByPubId(filePubId)
-                .orElseThrow(ResourceNotExistException::new);
-        String username = getCurrentUserUsername();
-
-        while (file != null) {
-            boolean canModify = readAllowed(file, username);
-            if (canModify) {
-                return true;
-            }
-            file = file.getParent();
-        }
+//        FileInfo file = fileInfoRepo.findByPubId(filePubId)
+//                .orElseThrow(ResourceNotExistException::new);
+//        String username = getCurrentUserUsername();
+//
+//        while (file != null) {
+//            boolean canModify = readAllowed(file, username);
+//            if (canModify) {
+//                return true;
+//            }
+//            file = file.getParent();
+//        }
         return false;
     }
 
     @Override
     public boolean canRead(String path) {
-        FileInfo file = fileInfoRepo.findByPath(path)
-                .orElseThrow(ResourceNotExistException::new);
-        String username = getCurrentUserUsername();
-
-        while (file != null) {
-            boolean canModify = readAllowed(file, username);
-            if (canModify) {
-                return true;
-            }
-            file = file.getParent();
-        }
+//        FileInfo file = fileInfoRepo.findByPath(path)
+//                .orElseThrow(ResourceNotExistException::new);
+//        String username = getCurrentUserUsername();
+//
+//        while (file != null) {
+//            boolean canModify = readAllowed(file, username);
+//            if (canModify) {
+//                return true;
+//            }
+//            file = file.getParent();
+//        }
         return false;
     }
 

@@ -5,53 +5,47 @@ import com.cloudpi.cloudpi.file_module.permission.dto.UserFilePermissionsDTO;
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
 import com.cloudpi.cloudpi.file_module.permission.repositories.FilePermissionRepo;
 import com.cloudpi.cloudpi.file_module.permission.repositories.FilePermissionRepo.FilePermissionProjection;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.utils.AppService;
+import org.hibernate.cfg.NotYetImplementedException;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.cloudpi.cloudpi.utils.CurrentRequestUtils.getCurrentUserUsername;
-
 @AppService
 public class FilePermissionServiceImpl implements FilePermissionService {
     private final FilePermissionRepo filePermissionRepo;
+    private final FileInfoRepo fileInfoRepo;
 
-    public FilePermissionServiceImpl(FilePermissionRepo filePermissionRepo) {
+    public FilePermissionServiceImpl(FilePermissionRepo filePermissionRepo, FileInfoRepo fileInfoRepo) {
         this.filePermissionRepo = filePermissionRepo;
+        this.fileInfoRepo = fileInfoRepo;
     }
 
 
     @Override
     public UserFilePermissionsDTO getUserPermissions(UUID filePubId) {
-        var username = getCurrentUserUsername()
-                .orElseThrow(IllegalStateException::new);
-
-        var permissions = filePermissionRepo.
-                findAllByUser_UsernameAndFile_PubId(username, filePubId);
-
-        return new UserFilePermissionsDTO(
-                permissions, username, filePubId
-        );
-    }
-
-    @Override
-    public List<UserFilePermissionsDTO> getUserPermissions(List<UUID> filePubIds) {
-        var username = getCurrentUserUsername()
-                .orElseThrow(IllegalStateException::new);
-
-        var permissions = filePermissionRepo.
-                findAllByUser_UsernameAndFile_PubIdIn(username, filePubIds);
-
-        return mapToUserFilePermissions(permissions);
+//        var username = getCurrentUserUsername()
+//                .orElseThrow(IllegalStateException::new);
+//
+//        var permissions = filePermissionRepo.
+//                findAllByUser_UsernameAndFile_PubId(username, filePubId);
+//
+//        return new UserFilePermissionsDTO(
+//                permissions, username, filePubId
+//        );
+        throw new NotYetImplementedException();
     }
 
     @Override
     public FilePermissionsDTO getPermissionsToFile(UUID filePubId) {
-        return null;
+        throw new NotYetImplementedException();
     }
 
     @Override
-    public List<FilePermissionsDTO> getPermissionsToFiles(List<UUID> filePubId) {
+    public List<FileInfoDTO> getFilesSharedToUser(String username) {
+
         return null;
     }
 

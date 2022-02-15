@@ -45,5 +45,35 @@ public interface FileInfoRepo extends JpaRepository<FileInfo, Long> {
             """)
     List<FileInfo> findByRootId(long rootId);
 
+    Boolean existsByPath(String path);
+
+    @Query("""
+                    SELECT f.pubId
+                    FROM FileInfo f
+                    WHERE f.path = :path
+            """)
+    UUID getPubIdByPath(String path);
+
+//    @Query("""
+//                SELECT DISTINCT f
+//                FROM FileInfo f
+//                JOIN f.permissions p
+//                WHERE
+//                    NOT p.user.username = :username AND
+//                    p.
+//    """)
+//    List<FileInfo> findAllSharedToUser(String username);
+
+    @Query("""
+                    SELECT f
+                    FROM FileInfo f
+                    JOIN f.ancestors a
+                    WHERE
+                        (a.ancestor.path = :entryPointPath AND
+                        a.treeLevelDiff <= :depth)
+                        OR
+                        f.path = :entryPointPath
+            """)
+    List<FileInfo> findAllByFilestructure(String entryPointPath, Integer depth);
 
 }

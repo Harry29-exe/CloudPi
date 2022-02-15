@@ -1,10 +1,12 @@
 package com.cloudpi.cloudpi.file_module.permission.api;
 
+import com.cloudpi.cloudpi.file_module.permission.api.requests.DeleteAllPermissionsRequest;
 import com.cloudpi.cloudpi.file_module.permission.api.requests.PostAddPermissionRequest;
 import com.cloudpi.cloudpi.file_module.permission.dto.FilePermissionsDTO;
 import com.cloudpi.cloudpi.file_module.permission.dto.UserFilePermissionsDTO;
-import com.cloudpi.cloudpi.file_module.permission.service.FilePermissionVerifier;
+import com.cloudpi.cloudpi.file_module.permission.service.FilePermissionService;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -12,35 +14,25 @@ import java.util.UUID;
 
 @RestController
 public class FilePermissionAPIImpl implements FilePermissionAPI {
-    private final FilePermissionVerifier filePermissionVerifier;
+    private final FilePermissionService filePermissionService;
 
-    public FilePermissionAPIImpl(FilePermissionVerifier filePermissionVerifier) {
-        this.filePermissionVerifier = filePermissionVerifier;
+    public FilePermissionAPIImpl(FilePermissionService filePermissionService) {
+        this.filePermissionService = filePermissionService;
     }
 
     @Override
     public UserFilePermissionsDTO getUsersPermissions(UUID filePubId) {
-        return null;
-    }
-
-    @Override
-    public List<UserFilePermissionsDTO> getUsersPermissions(List<UUID> filePubIds) {
-        return null;
+        throw new NotYetImplementedException();
     }
 
     @Override
     public FilePermissionsDTO getFilePermissions(String filePubId) {
-        return null;
-    }
-
-    @Override
-    public List<FilePermissionsDTO> getFilesPermissions(String filePubId) {
-        return null;
+        throw new NotYetImplementedException();
     }
 
     @Override
     public List<FileInfoDTO> getFilesSharedByUser() {
-        return null;
+        throw new NotYetImplementedException();
     }
 
     @Override
@@ -55,6 +47,11 @@ public class FilePermissionAPIImpl implements FilePermissionAPI {
 
     @Override
     public void revokePermissions(DeletePermissionsRequest request) {
+
+    }
+
+    @Override
+    public void revokeAllPermissions(DeleteAllPermissionsRequest request) {
 
     }
 }

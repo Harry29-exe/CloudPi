@@ -8,17 +8,25 @@ create table drive
     pub_id         uuid,
     primary key (id)
 );
+create table file_ancestor
+(
+    id              int8 not null,
+    ancestor        int8,
+    tree_level_diff int4,
+    file_id         int8,
+    primary key (id)
+);
 create table file_info
 (
     id                int8         not null,
     file_info_version int4,
     file_version      int4,
     name              varchar(255) not null,
+    parent_id         int8,
     path              varchar(255) not null,
     pub_id            uuid         not null,
     type              int4         not null,
     drive_files       int8,
-    parent_id         int8,
     root_id           int8         not null,
     primary key (id)
 );
@@ -27,9 +35,9 @@ create table file_info_details
     file_id       int8      not null,
     created_at    timestamp not null,
     has_thumbnail boolean,
+    is_favourite  boolean,
     modified_at   timestamp not null,
     size          int8      not null,
-    is_favourite  boolean,
     primary key (file_id)
 );
 create table file_permission
@@ -47,6 +55,13 @@ create table filesystems
     assigned_capacity int8 not null,
     user_id           int8,
     root_directory    int8,
+    primary key (id)
+);
+create table sharing
+(
+    id            int8 not null,
+    owner_id      int8,
+    permission_id int8 not null,
     primary key (id)
 );
 create table user_details
@@ -71,13 +86,6 @@ create table users
     username varchar(255) not null,
     primary key (id)
 );
-create table sharing
-(
-    id              int8    not null,
-    owner_id        int8    not null,
-    permission_id   int8    not null,
-    primary key (id)
-);
 alter table if exists drive
     add constraint UK_jxrd4wbx6353wfridjbutg5i5 unique (path);
 alter table if exists file_info
@@ -90,6 +98,10 @@ alter table if exists users
     add constraint UK_lfiagvamoj0k9pprynqpmi9i9 unique (pub_id);
 alter table if exists users
     add constraint UK_r43af9ap4edm43mmtq01oddj6 unique (username);
+alter table if exists file_ancestor
+    add constraint FK7173dv1t7m43v1scn47nbxksx foreign key (ancestor) references file_info;
+alter table if exists file_ancestor
+    add constraint FKegg1kearh0ieqi2fkfpgjsa8n foreign key (file_id) references file_info;
 alter table if exists file_info
     add constraint FKhiqhfxxph5u62xkqm243wgs4l foreign key (drive_files) references drive;
 alter table if exists file_info
@@ -108,13 +120,13 @@ alter table if exists filesystems
     add constraint FKhf1rlrrl3r5qoewirr7hagfb6 foreign key (user_id) references users;
 alter table if exists filesystems
     add constraint FKgdl0qxqsj86u4ec55pgcg7vl3 foreign key (root_directory) references file_info;
+alter table if exists sharing
+    add constraint FK1w3dc5djouoptxtbh8duwqe14 foreign key (owner_id) references users;
+alter table if exists sharing
+    add constraint FKe6u6mgr7nrlaqwy1f3pj5twx foreign key (permission_id) references file_permission;
 alter table if exists user_details
     add constraint FKdic9c3qbc8w2vp8humyr03m1m foreign key (profile_picture_id) references file_info;
 alter table if exists user_details
     add constraint FKicouhgavvmiiohc28mgk0kuj5 foreign key (user_id) references users;
 alter table if exists user_entity_roles
     add constraint FK80w28k99mayei90r6mycds2em foreign key (user_entity_id) references users;
-alter table if exists sharing
-    add constraint FKuis3o68gqys8qvjo1lhtg4xbz foreign key (owner_id) references users;
-alter table if exists sharing
-    add constraint FKpz2hwhvxo2y2i5khcllh2lhzz foreign key (permission_id) references file_permission;

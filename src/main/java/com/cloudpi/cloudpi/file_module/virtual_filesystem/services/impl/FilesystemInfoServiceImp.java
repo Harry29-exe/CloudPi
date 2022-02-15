@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @AppService
 public class FilesystemInfoServiceImp implements FilesystemInfoService {
@@ -75,14 +77,11 @@ public class FilesystemInfoServiceImp implements FilesystemInfoService {
     @Override
     public FileStructureDTO get(VirtualPath entryPoint, Integer depth, String username) {
         String path = entryPoint.getPath().isEmpty() ? username : entryPoint.getPath();
-        var rootDir = fileInfoRepo.findByPath(path)
-                .orElseThrow(ResourceNotExistException::new);
+        var files = fileInfoRepo.findAllByFilestructure(
+                path, depth
+        );
 
-        if (depth <= 0) {
-            depth = Integer.MAX_VALUE;
-        }
-        FilesystemObjectDTO rootObj = rootDir.mapToFilesystemObjectDTO(depth);
-        return new FileStructureDTO(entryPoint.getPath(), rootObj);
+        return transformToFileStructure(files, path);
     }
 
     @Override
@@ -120,4 +119,30 @@ public class FilesystemInfoServiceImp implements FilesystemInfoService {
         var files = fileInfoRepo.findByRootId(filesystem.getId());
         return files.stream().mapToLong(file -> file.getDetails().getSize()).sum();
     }
+
+    private FileStructureDTO transformToFileStructure(List<FileInfo> files, String entryPointPath) {
+        Map<Long, List<FileInfo>> pubIdFileInfoMap = files.stream()
+                .collect(Collectors.groupingBy(FileInfo::getParentId));
+
+
+        var fsEntryPoint = files.stream()
+                .filter(f -> f.getPath().equals(entryPointPath))
+                .findFirst()
+                .orElseThrow();
+
+        return new FileStructureDTO(
+                entryPointPath,
+                createFileStructureObject(fsEntryPoint, pubIdFileInfoMap)
+        );
+    }
+
+    private FilesystemObjectDTO createFileStructureObject(FileInfo entryPoint, Map<Long, List<FileInfo>> parentIdFileMap) {
+        return entryPoint.mapToFilesystemObjectDTO(
+                parentIdFileMap.get(entryPoint.getId())
+                        .stream()
+                        .map(fileInfo -> createFileStructureObject(fileInfo, parentIdFileMap))
+                        .collect(Collectors.toCollection(ArrayList::new))
+        );
+    }
+
 }

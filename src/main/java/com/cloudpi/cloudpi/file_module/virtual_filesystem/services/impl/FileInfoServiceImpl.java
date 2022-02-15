@@ -42,7 +42,6 @@ public class FileInfoServiceImpl implements FileInfoService {
         var path = create.getPath();
 
         var entity = new FileInfo(
-                path.getPath(),
                 path.getName(),
                 parent,
                 driveRepo.findByPubId(create.getDriveId())
@@ -62,7 +61,6 @@ public class FileInfoServiceImpl implements FileInfoService {
                 .orElseThrow(ResourceNotExistException::new);
 
         var entity = FileInfo.createDirectory(
-                path.getPath(),
                 path.getName(),
                 parent
         );
@@ -135,7 +133,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         VirtualPath newVirtualPath = new VirtualPath(newPath);
         var parent = fileInfoRepo.findByPath(newVirtualPath.getParentPath())
                 .orElseThrow(ResourceNotExistException::new);
-        file.setParent(parent);
+        file.move(parent);
         file.setName(newVirtualPath.getName());
     }
 
@@ -147,4 +145,5 @@ public class FileInfoServiceImpl implements FileInfoService {
                 .mapToLong(file -> file.getDetails().getSize()).sum();
         return freeSpace >= fileSize;
     }
+
 }
