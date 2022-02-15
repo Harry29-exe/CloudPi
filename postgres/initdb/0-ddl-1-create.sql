@@ -16,6 +16,16 @@ create table file_ancestor
     file_id         int8,
     primary key (id)
 );
+create table file_details
+(
+    file_id       int8      not null,
+    created_at    timestamp not null,
+    has_thumbnail boolean,
+    is_favourite  boolean,
+    modified_at   timestamp not null,
+    size          int8      not null,
+    primary key (file_id)
+);
 create table file_info
 (
     id                int8         not null,
@@ -29,16 +39,6 @@ create table file_info
     drive_files       int8,
     root_id           int8         not null,
     primary key (id)
-);
-create table file_info_details
-(
-    file_id       int8      not null,
-    created_at    timestamp not null,
-    has_thumbnail boolean,
-    is_favourite  boolean,
-    modified_at   timestamp not null,
-    size          int8      not null,
-    primary key (file_id)
 );
 create table file_permission
 (
@@ -102,14 +102,14 @@ alter table if exists file_ancestor
     add constraint FK7173dv1t7m43v1scn47nbxksx foreign key (ancestor) references file_info;
 alter table if exists file_ancestor
     add constraint FKegg1kearh0ieqi2fkfpgjsa8n foreign key (file_id) references file_info;
+alter table if exists file_details
+    add constraint FK175bqent5becveiqnop8t1r8v foreign key (file_id) references file_info;
 alter table if exists file_info
     add constraint FKhiqhfxxph5u62xkqm243wgs4l foreign key (drive_files) references drive;
 alter table if exists file_info
     add constraint FK4qoiilgpiu5qg5asnqgi84jnx foreign key (parent_id) references file_info;
 alter table if exists file_info
     add constraint FK35j0h3g2aiqlstxcefqc4jo6b foreign key (root_id) references filesystems;
-alter table if exists file_info_details
-    add constraint FKcidosbf2q6fipgial60vu4f2d foreign key (file_id) references file_info;
 alter table if exists file_permission
     add constraint FKn3kpjngwoce5euneoca0mdrpl foreign key (file_id) references file_info;
 alter table if exists file_permission

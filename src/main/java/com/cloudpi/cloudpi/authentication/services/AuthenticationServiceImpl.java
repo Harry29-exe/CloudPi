@@ -24,7 +24,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 password,
                 List.of()
         );
-        //TODO why in the name of god this takes 102ms
+
         return authManager.authenticate(auth);
     }
 
