@@ -2,9 +2,6 @@ package com.cloudpi.cloudpi.file_module.permission.repositories;
 
 import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -81,7 +78,7 @@ public interface FilePermissionRepo extends JpaRepository<FilePermission, Long> 
     List<PermissionType> findAllUserFilePermissions(String username, UUID filePubId);
 
     @Query("""
-            SELECT new com.cloudpi.cloudpi.file_module.permission.repositories.FilePermissionRepo.UserPermissionView(fp.type, u.username)
+            SELECT new com.cloudpi.cloudpi.file_module.permission.repositories.UserPermissionView(fp.type, u.username)
             FROM FilePermission fp
             JOIN fp.user u
             WHERE
@@ -89,14 +86,8 @@ public interface FilePermissionRepo extends JpaRepository<FilePermission, Long> 
             """)
     List<UserPermissionView> findAllFilePermissions(UUID filePubId);
 
-    void removeByUser_UsernameAndFile_PubIdAndType(String username, UUID filePubId, PermissionType type);
+    void removeByUser_UsernameAndFile_PubIdAndTypeIn(String username, UUID filePubId, List<PermissionType> type);
 
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    class UserPermissionView {
-        private PermissionType type;
-        private String username;
-    }
+    void removeByFile_PubId(UUID filePubId);
 
 }

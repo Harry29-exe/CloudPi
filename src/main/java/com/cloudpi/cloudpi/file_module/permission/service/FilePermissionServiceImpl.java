@@ -6,7 +6,7 @@ import com.cloudpi.cloudpi.file_module.permission.dto.UserFilePermissionsDTO;
 import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
 import com.cloudpi.cloudpi.file_module.permission.repositories.FilePermissionRepo;
-import com.cloudpi.cloudpi.file_module.permission.repositories.FilePermissionRepo.UserPermissionView;
+import com.cloudpi.cloudpi.file_module.permission.repositories.UserPermissionView;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.user.domain.repositiories.UserRepo;
@@ -33,7 +33,7 @@ public class FilePermissionServiceImpl implements FilePermissionService {
 
 
     @Override
-    public UserFilePermissionsDTO getUserPermissions(UUID filePubId) {
+    public UserFilePermissionsDTO get(UUID filePubId) {
         var username = CurrentRequestUtils.getCurrentUserUsername()
                 .orElseThrow(IllegalStateException::new);
 
@@ -76,24 +76,33 @@ public class FilePermissionServiceImpl implements FilePermissionService {
     }
 
     @Override
-    public void grantPermission(PermissionType type, String username, UUID filePubId) {
+    public void grant(String username, UUID filePubId, List<PermissionType> types) {
         var file = fileInfoRepo.findByPubId(filePubId)
                 .orElseThrow(ResourceNotExistException::new);
         var user = userRepo.findByUsername(username)
                 .orElseThrow(ResourceNotExistException::new);
 
-        var newPermission = new FilePermission(type, user, file);
-        filePermissionRepo.saveAndFlush(newPermission);
+        var newPermissions = new ArrayList<FilePermission>();
+        for (var type : types) {
+            newPermissions.add(
+                    new FilePermission(type, user, file)
+            );
+        }
+        filePermissionRepo.saveAllAndFlush(newPermissions);
     }
 
     @Override
-    public void removePermission(PermissionType type, String username, UUID filePubId) {
+    public void revoke(String username, UUID filePubId, List<PermissionType> types) {
 //        var permissionToRemove = filePermissionRepo.findAll()
-        filePermissionRepo.removeByUser_UsernameAndFile_PubIdAndType(
+        filePermissionRepo.removeByUser_UsernameAndFile_PubIdAndTypeIn(
                 username,
                 filePubId,
-                type
+                types
         );
     }
 
+    @Override
+    public void revokeAll(UUID filePubId) {
+        filePermissionRepo.removeByFile_PubId(filePubId);
+    }
 }

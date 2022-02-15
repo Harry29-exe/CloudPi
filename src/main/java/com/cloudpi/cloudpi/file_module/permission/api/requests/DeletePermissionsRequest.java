@@ -1,4 +1,4 @@
-package com.cloudpi.cloudpi.file_module.permission.api;
+package com.cloudpi.cloudpi.file_module.permission.api.requests;
 
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
 import io.swagger.v3.oas.annotations.media.Schema;

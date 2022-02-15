@@ -33,6 +33,18 @@ public class FilesystemAPIController implements FilesystemAPI {
     }
 
     @Override
+    public List<FileInfoDTO> getFilesSharedByUser() {
+        //todo
+        return null;
+    }
+
+    @Override
+    public List<FileInfoDTO> getFilesSharedToUser() {
+        //todo
+        return null;
+    }
+
+    @Override
     public FileInfoDTO createDirectory(String directoryPath, Authentication auth) {
         return fileInfoService.saveDir(new VirtualPath(directoryPath));
     }

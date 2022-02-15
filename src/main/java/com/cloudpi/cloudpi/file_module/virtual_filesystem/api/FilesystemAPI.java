@@ -1,5 +1,6 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.api;
 
+import com.cloudpi.cloudpi.config.springdoc.NotImplemented;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.api.request.MoveFileRequest;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileQueryDTO;
@@ -30,6 +31,20 @@ public interface FilesystemAPI {
             @RequestParam(defaultValue = "0") Integer structureLevels,
             @RequestParam(defaultValue = "/") String fileStructureRoot,
             Authentication auth);
+
+
+    @Operation(summary = NotImplemented.PRIORITY_MEDIUM + "Returns list of files that user shared",
+            description = "Returns list of files that belong to logged user and" +
+                    "can be accessed by someone else other that")
+    @GetMapping("files-shared-by-user")
+    List<FileInfoDTO> getFilesSharedByUser();
+
+
+    @GetMapping("files-shared-to-user")
+    @Operation(summary = "Returns list of files that was shared to user",
+            description = "Returns list of files that belong to other user but" +
+                    "can be accessed by currently logged user")
+    List<FileInfoDTO> getFilesSharedToUser();
 
 
     @PutMapping("directory")

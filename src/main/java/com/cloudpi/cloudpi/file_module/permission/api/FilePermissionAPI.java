@@ -2,16 +2,15 @@ package com.cloudpi.cloudpi.file_module.permission.api;
 
 import com.cloudpi.cloudpi.config.springdoc.NotImplemented;
 import com.cloudpi.cloudpi.file_module.permission.api.requests.DeleteAllPermissionsRequest;
+import com.cloudpi.cloudpi.file_module.permission.api.requests.DeletePermissionsRequest;
 import com.cloudpi.cloudpi.file_module.permission.api.requests.PostAddPermissionRequest;
 import com.cloudpi.cloudpi.file_module.permission.dto.FilePermissionsDTO;
 import com.cloudpi.cloudpi.file_module.permission.dto.UserFilePermissionsDTO;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "FilePermissionAPI",
@@ -30,19 +29,6 @@ public interface FilePermissionAPI {
             description = "Returns list of all permissions that users have to given file")
     @GetMapping("permissions/{filePubId}")
     FilePermissionsDTO getFilePermissions(@PathVariable String filePubId);
-
-    @Operation(summary = NotImplemented.PRIORITY_MEDIUM + "Returns list of files that user shared",
-            description = "Returns list of files that belong to logged user and" +
-                    "can be accessed by someone else other that")
-    @GetMapping("files-shared-by-user")
-    List<FileInfoDTO> getFilesSharedByUser();
-
-
-    @GetMapping("files-shared-to-user")
-    @Operation(summary = "Returns list of files that was shared to user",
-            description = "Returns list of files that belong to other user but" +
-                    "can be accessed by currently logged user")
-    List<FileInfoDTO> getFilesSharedToUser();
 
     @PostMapping("permissions")
     @Operation(summary = "Add given permission to given file and user")
