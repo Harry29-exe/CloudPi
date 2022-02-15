@@ -34,14 +34,12 @@ public class FilesystemAPIController implements FilesystemAPI {
 
     @Override
     public List<FileInfoDTO> getFilesSharedByUser() {
-        //todo
-        return null;
+        return filesystemInfoService.getSharedByUser();
     }
 
     @Override
     public List<FileInfoDTO> getFilesSharedToUser() {
-        //todo
-        return null;
+        return filesystemInfoService.getSharedToUser();
     }
 
     @Override

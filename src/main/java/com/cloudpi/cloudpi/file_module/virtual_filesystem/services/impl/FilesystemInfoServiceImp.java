@@ -4,10 +4,9 @@ import com.cloudpi.cloudpi.exception.file.ChangeDriveSizeException;
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
-import com.cloudpi.cloudpi.file_module.permission.service.FilePermissionService;
-import com.cloudpi.cloudpi.file_module.physical.services.FileService;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FilesystemRootInfo;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FilesystemInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.FileStructureDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.FilesystemObjectDTO;
@@ -19,11 +18,14 @@ import com.cloudpi.cloudpi.user.domain.entities.UserEntity;
 import com.cloudpi.cloudpi.user.domain.repositiories.UserRepo;
 import com.cloudpi.cloudpi.utils.AppService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.cloudpi.cloudpi.utils.CurrentRequestUtils.getCurrentUserUsernameOrThrow;
 
 @AppService
 public class FilesystemInfoServiceImp implements FilesystemInfoService {
@@ -31,24 +33,21 @@ public class FilesystemInfoServiceImp implements FilesystemInfoService {
     private final Long defaultSpaceOnVirtualDrive;
     private final UserRepo userRepository;
     private final FilesystemRootInfoRepo filesystemRootInfoRepo;
-    private final FileService fileService;
     private final FileInfoRepo fileInfoRepo;
-    private final FilePermissionService filePermissionService;
 
     public FilesystemInfoServiceImp(
             @Value("${cloud-pi.storage.default-space-on-virtual-drive}")
                     String spaceOnVD,
             UserRepo userRepo,
-            FilesystemRootInfoRepo filesystemRootInfoRepo, FileService fileService, FileInfoRepo fileInfoRepo,
-            FilePermissionService filePermissionService) {
+            FilesystemRootInfoRepo filesystemRootInfoRepo,
+            FileInfoRepo fileInfoRepo
+    ) {
 
         this.defaultSpaceOnVirtualDrive =
                 Long.parseLong(spaceOnVD.replace("_", ""));
         this.userRepository = userRepo;
         this.filesystemRootInfoRepo = filesystemRootInfoRepo;
-        this.fileService = fileService;
         this.fileInfoRepo = fileInfoRepo;
-        this.filePermissionService = filePermissionService;
     }
 
     @Override
@@ -82,6 +81,36 @@ public class FilesystemInfoServiceImp implements FilesystemInfoService {
         );
 
         return transformToFileStructure(files, path);
+    }
+
+    @Override
+    public List<FileInfoDTO> getSharedByUser() {
+        var username = getCurrentUserUsernameOrThrow();
+        var sharedFiles = fileInfoRepo.findAllSharedByUser(username);
+
+        return sharedFiles.stream()
+                .map(FileInfo::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FileInfoDTO> getSharedByUser(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public List<FileInfoDTO> getSharedToUser() {
+        var username = getCurrentUserUsernameOrThrow();
+        var sharedFiles = fileInfoRepo.findAllSharedToUser(username);
+
+        return sharedFiles.stream()
+                .map(FileInfo::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FileInfoDTO> getSharedToUser(Pageable pageable) {
+        return null;
     }
 
     @Override

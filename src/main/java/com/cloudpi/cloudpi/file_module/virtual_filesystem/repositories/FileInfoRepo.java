@@ -1,6 +1,7 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories;
 
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,16 +29,6 @@ public interface FileInfoRepo extends JpaRepository<FileInfo, Long> {
             """)
     void moveDirectory(String newPath, String oldPath);
 
-    //@Transactional
-    //@Modifying
-    //@Query("""
-    //        UPDATE FileEntity f
-    //        SET f.size = :newSize,
-    //            f.modifiedAt = :updateDate
-    //        WHERE f.id = :id
-    //        """)
-    //void updateFileSize(UUID id, Long newSize, Date updateDate);
-
     @Query("""
                 SELECT f
                 FROM FileInfo f
@@ -54,16 +45,6 @@ public interface FileInfoRepo extends JpaRepository<FileInfo, Long> {
             """)
     UUID getPubIdByPath(String path);
 
-//    @Query("""
-//                SELECT DISTINCT f
-//                FROM FileInfo f
-//                JOIN f.permissions p
-//                WHERE
-//                    NOT p.user.username = :username AND
-//                    p.
-//    """)
-//    List<FileInfo> findAllSharedToUser(String username);
-
     @Query("""
                     SELECT f
                     FROM FileInfo f
@@ -75,5 +56,43 @@ public interface FileInfoRepo extends JpaRepository<FileInfo, Long> {
                         f.path = :entryPointPath
             """)
     List<FileInfo> findAllByFilestructure(String entryPointPath, Integer depth);
+
+    @Query("""
+            SELECT DISTINCT f
+            FROM FileInfo f
+            JOIN f.permissions fp
+            WHERE
+                fp.user.username = :username
+            """)
+    List<FileInfo> findAllSharedToUser(String username);
+
+    @Query("""
+            SELECT DISTINCT f
+            FROM FileInfo f
+            JOIN f.permissions fp
+            WHERE
+                fp.user.username = :username
+            """)
+    List<FileInfo> findAllSharedToUser(String username, Pageable pageable);
+
+    @Query("""
+            SELECT DISTINCT f
+            FROM FileInfo f
+            JOIN f.permissions fp
+            WHERE
+                f.root.owner.username = :username AND
+                fp.user.username <> :username
+            """)
+    List<FileInfo> findAllSharedByUser(String username);
+
+    @Query("""
+            SELECT DISTINCT f
+            FROM FileInfo f
+            JOIN f.permissions fp
+            WHERE
+                f.root.owner.username = :username AND
+                fp.user.username <> :username
+            """)
+    List<FileInfo> findAllSharedByUser(String username, Pageable pageable);
 
 }

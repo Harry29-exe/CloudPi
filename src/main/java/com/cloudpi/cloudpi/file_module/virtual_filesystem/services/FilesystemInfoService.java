@@ -1,11 +1,15 @@
 package com.cloudpi.cloudpi.file_module.virtual_filesystem.services;
 
+import com.cloudpi.cloudpi.config.security.HasUserRole;
+import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FilesystemInfoDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.structure.FileStructureDTO;
 import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 public interface FilesystemInfoService {
 
@@ -18,6 +22,18 @@ public interface FilesystemInfoService {
             VirtualPath entryPoint,
             Integer depth,
             @NotNull String username);
+
+    @HasUserRole
+    List<FileInfoDTO> getSharedByUser();
+
+    @HasUserRole
+    List<FileInfoDTO> getSharedByUser(Pageable pageable);
+
+    @HasUserRole
+    List<FileInfoDTO> getSharedToUser();
+
+    @HasUserRole
+    List<FileInfoDTO> getSharedToUser(Pageable pageable);
 
     @PreAuthorize("@filePermissionVerifier.canRead(#username)")
     FilesystemInfoDTO getUsersVirtualDrives(String username);

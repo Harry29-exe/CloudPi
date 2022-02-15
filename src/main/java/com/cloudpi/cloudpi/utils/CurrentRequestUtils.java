@@ -1,5 +1,6 @@
 package com.cloudpi.cloudpi.utils;
 
+import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -50,6 +51,16 @@ public class CurrentRequestUtils {
         }
 
         return Optional.of(auth.getName());
+    }
+
+    public static String getCurrentUserUsernameOrThrow() {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth instanceof AnonymousAuthenticationToken || auth == null) {
+            throw new ResourceNotExistException();
+        }
+
+        return auth.getName();
     }
 
 }
