@@ -1,15 +1,14 @@
 package com.cloudpi.cloudpi.file_module.sharing.services;
 
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
+import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
+import com.cloudpi.cloudpi.file_module.filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
 import com.cloudpi.cloudpi.file_module.sharing.api.requests.ShareFileRequest;
-import com.cloudpi.cloudpi.file_module.sharing.api.requests.UserPermissionRequest;
 import com.cloudpi.cloudpi.file_module.sharing.domain.Sharing;
 import com.cloudpi.cloudpi.file_module.sharing.domain.SharingRepo;
 import com.cloudpi.cloudpi.file_module.sharing.dto.UserSharedFilesDTO;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
-import com.cloudpi.cloudpi.user.domain.repositiories.UserRepo;
+import com.cloudpi.cloudpi.user.repositiories.UserRepo;
 import com.cloudpi.cloudpi.utils.AppService;
 
 import java.util.*;

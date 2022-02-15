@@ -1,9 +1,9 @@
 package com.cloudpi.cloudpi.file_module.permission.service;
 
+import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.permission.dto.FilePermissionsDTO;
 import com.cloudpi.cloudpi.file_module.permission.dto.UserFilePermissionsDTO;
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 

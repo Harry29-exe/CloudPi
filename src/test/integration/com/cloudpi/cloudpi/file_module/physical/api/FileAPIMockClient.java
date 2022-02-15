@@ -1,7 +1,7 @@
 package com.cloudpi.cloudpi.file_module.physical.api;
 
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
+import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
+import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPIMockClient;
 import com.cloudpi.cloudpi.utils.controller_tests.FetchUtils;
 import org.springframework.context.annotation.Profile;

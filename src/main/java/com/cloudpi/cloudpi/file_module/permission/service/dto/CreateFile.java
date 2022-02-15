@@ -1,7 +1,7 @@
 package com.cloudpi.cloudpi.file_module.permission.service.dto;
 
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
+import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
+import com.cloudpi.cloudpi.file_module.filesystem.pojo.VirtualPath;
 import lombok.Value;
 import org.springframework.lang.Nullable;
 

@@ -1,9 +1,7 @@
 package com.cloudpi.cloudpi.file_module.sharing.domain;
 
 import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
-import com.cloudpi.cloudpi.file_module.sharing.api.requests.ShareFileRequest;
-import com.cloudpi.cloudpi.file_module.sharing.dto.UserSharedFilesDTO;
-import com.cloudpi.cloudpi.user.domain.entities.UserEntity;
+import com.cloudpi.cloudpi.user.domain.UserEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

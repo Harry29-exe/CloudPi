@@ -1,15 +1,15 @@
 package com.cloudpi.cloudpi.file_module.permission.service;
 
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
+import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
+import com.cloudpi.cloudpi.file_module.filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.permission.dto.FilePermissionsDTO;
 import com.cloudpi.cloudpi.file_module.permission.dto.UserFilePermissionsDTO;
 import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
 import com.cloudpi.cloudpi.file_module.permission.repositories.FilePermissionRepo;
 import com.cloudpi.cloudpi.file_module.permission.repositories.UserPermissionView;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
-import com.cloudpi.cloudpi.user.domain.repositiories.UserRepo;
+import com.cloudpi.cloudpi.user.repositiories.UserRepo;
 import com.cloudpi.cloudpi.utils.AppService;
 import com.cloudpi.cloudpi.utils.CurrentRequestUtils;
 

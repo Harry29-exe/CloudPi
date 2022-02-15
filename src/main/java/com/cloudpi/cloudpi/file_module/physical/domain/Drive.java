@@ -1,7 +1,7 @@
 package com.cloudpi.cloudpi.file_module.physical.domain;
 
+import com.cloudpi.cloudpi.file_module.filesystem.domain.FileInfo;
 import com.cloudpi.cloudpi.file_module.physical.dto.DriveDTO;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

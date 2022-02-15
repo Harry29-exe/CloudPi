@@ -1,6 +1,6 @@
 package com.cloudpi.cloudpi.file_module.favourite.services;
 
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
+import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;

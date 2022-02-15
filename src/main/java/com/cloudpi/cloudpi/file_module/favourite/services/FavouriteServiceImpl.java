@@ -2,8 +2,8 @@ package com.cloudpi.cloudpi.file_module.favourite.services;
 
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.file_module.favourite.repository.FavouriteRepo;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
+import com.cloudpi.cloudpi.file_module.filesystem.domain.FileInfo;
+import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.utils.AppService;
 
 import java.util.List;

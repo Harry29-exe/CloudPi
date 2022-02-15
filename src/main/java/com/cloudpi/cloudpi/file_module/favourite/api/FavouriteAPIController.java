@@ -1,7 +1,7 @@
 package com.cloudpi.cloudpi.file_module.favourite.api;
 
 import com.cloudpi.cloudpi.file_module.favourite.services.FavouriteService;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
+import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 

@@ -3,15 +3,15 @@ package com.cloudpi.cloudpi.user.service;
 import com.cloudpi.cloudpi.config.security.Role;
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.exception.user.UserNotExistException;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.repositories.FileInfoRepo;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.services.FilesystemInfoService;
+import com.cloudpi.cloudpi.file_module.filesystem.repositories.FileInfoRepo;
+import com.cloudpi.cloudpi.file_module.filesystem.services.FilesystemService;
 import com.cloudpi.cloudpi.user.api.requests.PatchUserRequest;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
-import com.cloudpi.cloudpi.user.domain.entities.UserDetailsEntity;
-import com.cloudpi.cloudpi.user.domain.entities.UserEntity;
-import com.cloudpi.cloudpi.user.domain.repositiories.UserRepo;
+import com.cloudpi.cloudpi.user.domain.UserDetailsEntity;
+import com.cloudpi.cloudpi.user.domain.UserEntity;
 import com.cloudpi.cloudpi.user.dto.UserDetailsDTO;
 import com.cloudpi.cloudpi.user.dto.UserIdDTO;
+import com.cloudpi.cloudpi.user.repositiories.UserRepo;
 import com.cloudpi.cloudpi.utils.AppService;
 import com.google.common.collect.ImmutableList;
 import org.springframework.security.core.userdetails.User;
@@ -28,10 +28,10 @@ import java.util.Set;
 public class UserServiceImpl implements UserDetailsService, UserService {
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
-    private final FilesystemInfoService filesystemService;
+    private final FilesystemService filesystemService;
     private final FileInfoRepo fileInfoRepo;
 
-    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder, FilesystemInfoService filesystemService, FileInfoRepo fileInfoRepo) {
+    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder, FilesystemService filesystemService, FileInfoRepo fileInfoRepo) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.filesystemService = filesystemService;

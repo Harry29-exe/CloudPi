@@ -1,10 +1,10 @@
 package com.cloudpi.cloudpi.file_module.physical.api;
 
+import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
+import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
+import com.cloudpi.cloudpi.file_module.filesystem.pojo.VirtualPath;
 import com.cloudpi.cloudpi.file_module.permission.service.dto.CreateFile;
 import com.cloudpi.cloudpi.file_module.physical.services.FileService;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.FileType;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.pojo.VirtualPath;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.Authentication;

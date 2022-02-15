@@ -1,6 +1,6 @@
 package com.cloudpi.cloudpi.file_module.sharing.dto;
 
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.dto.FileInfoDTO;
+import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

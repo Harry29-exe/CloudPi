@@ -2,7 +2,6 @@ package com.cloudpi.cloudpi.file_module.sharing.api;
 
 import com.cloudpi.cloudpi.file_module.sharing.api.requests.ShareFileRequest;
 import com.cloudpi.cloudpi.file_module.sharing.dto.UserSharedFilesDTO;
-import com.cloudpi.cloudpi.file_module.virtual_filesystem.domain.FileInfo;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
