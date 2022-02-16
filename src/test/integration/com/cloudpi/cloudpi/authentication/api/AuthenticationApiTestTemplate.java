@@ -16,7 +16,7 @@ public class AuthenticationApiTestTemplate extends AbstractAPITestTemplate {
     protected AuthenticationAPIMockClient authAPI;
 
     protected void initTemplate() throws Exception {
-        addUsersToDB();
+        initUsersToDB();
     }
 
 //    protected ResultActions fetchLogin(String username, String password) throws Exception {

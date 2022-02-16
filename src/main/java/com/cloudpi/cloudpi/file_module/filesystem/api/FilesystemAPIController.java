@@ -48,9 +48,8 @@ public class FilesystemAPIController implements FilesystemAPI {
     }
 
     @Override
-    public FileInfoDTO getFileInfo(String fileId, Boolean getWithPermissions) {
-        UUID fileUUID = UUID.fromString(fileId);
-        return fileInfoService.get(fileUUID);
+    public FileInfoDTO getFileInfo(UUID fileId, Boolean getWithPermissions) {
+        return fileInfoService.get(fileId);
     }
 
     @Override
@@ -64,12 +63,12 @@ public class FilesystemAPIController implements FilesystemAPI {
     }
 
     @Override
-    public FilesystemInfoDTO getUsersVirtualDrivesInfo(String username) {
+    public FilesystemInfoDTO getUsersFilesystemInfo(String username) {
         return filesystemService.getUsersVirtualDrives(username);
     }
 
     @Override
-    public void changeVirtualDriveMaxSize(String username, Long newAssignedSpace) {
+    public void changeUserFilesystemMaxSize(String username, Long newAssignedSpace) {
         filesystemService.changeVirtualDriveSize(username, newAssignedSpace);
     }
 

@@ -1,6 +1,7 @@
 package com.cloudpi.cloudpi.utils.controller_tests;
 
 import com.cloudpi.cloudpi.authentication.api.dto.LoginRequest;
+import com.cloudpi.cloudpi.utils.IllegalTestStateException;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,52 +19,74 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class MockMvcUtils {
 
-    public static String getAuthToken(MockMvc mockMvc, String username, String password) throws Exception {
+    public static String getAuthToken(MockMvc mockMvc, String username, String password) {
         var objectMapper = new JsonMapper();
         var loginRequest = new LoginRequest(username, password);
-        String body = objectMapper.writeValueAsString(loginRequest);
+
+        try {
+
+            String body = objectMapper.writeValueAsString(loginRequest);
+
+            var result = mockMvc.perform(
+                            post("/login")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(body)
+                    ).andExpect(status().isOk())
+                    .andReturn();
+
+            return result.getResponse().getHeader("Authorization");
 
 
-        var result = mockMvc.perform(
-                        post("/login")
-                                .contentType(MediaType.APPLICATION_JSON)
-                        .content(body)
-                ).andExpect(status().isOk())
-                .andReturn();
-
-        return result.getResponse().getHeader("Authorization");
+        } catch (Exception ex) {
+            throw new IllegalTestStateException(ex);
+        }
     }
 
-    public static String getAdminAuthToken(MockMvc mockMvc) throws Exception {
+    public static String getAdminAuthToken(MockMvc mockMvc) {
         return getAuthToken(mockMvc, "admin", "P@ssword123");
     }
 
-    public static <T> T getBody(MvcResult result, Class<T> tClass) throws Exception {
+    public static <T> T getBody(MvcResult result, Class<T> tClass) {
         ObjectMapper objectMapper = new JsonMapper();
-        return objectMapper.readValue(
-                result.getResponse().getContentAsByteArray(),
-                tClass
-        );
+
+        try {
+            return objectMapper.readValue(
+                    result.getResponse().getContentAsByteArray(),
+                    tClass
+            );
+        } catch (Exception ex) {
+            throw new IllegalTestStateException(ex);
+        }
     }
 
-    public static <T> T getBody(MockHttpServletResponse response, Class<T> tClass) throws Exception {
+    public static <T> T getBody(MockHttpServletResponse response, Class<T> tClass) {
         ObjectMapper objectMapper = new JsonMapper();
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        return objectMapper.readValue(
-                response.getContentAsByteArray(),
-                tClass
-        );
+
+        try {
+            return objectMapper.readValue(
+                    response.getContentAsByteArray(),
+                    tClass
+            );
+        } catch (Exception ex) {
+            throw new IllegalTestStateException(ex);
+        }
     }
 
-    public static <T> List<T> getBodyAsList(MvcResult result, Class<T> tClass) throws Exception {
+    public static <T> List<T> getBodyAsList(MvcResult result, Class<T> tClass) {
         ObjectMapper objectMapper = new JsonMapper();
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        var array = (T[]) objectMapper.readValue(
-                result.getResponse().getContentAsByteArray(),
-                tClass.arrayType()
-        );
 
-        return Arrays.asList(array);
+        try {
+            var array = (T[]) objectMapper.readValue(
+                    result.getResponse().getContentAsByteArray(),
+                    tClass.arrayType()
+            );
+
+            return Arrays.asList(array);
+        } catch (Exception ex) {
+            throw new IllegalTestStateException(ex);
+        }
     }
 
 }

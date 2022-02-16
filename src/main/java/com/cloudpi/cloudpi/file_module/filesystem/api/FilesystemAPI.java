@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 @RequestMapping("/filesystem/")
 @Tag(name = "Filesystem API",
@@ -58,7 +59,7 @@ public interface FilesystemAPI {
     @GetMapping("file/{fileId}")
     @Operation(summary = "retrieves information about requested file")
     FileInfoDTO getFileInfo(
-            @PathVariable("fileId") String fileId,
+            @PathVariable("fileId") UUID fileId,
             @RequestParam(name = "with-permissions", defaultValue = "false")
                     Boolean getWithPermissions);
 
@@ -77,7 +78,7 @@ public interface FilesystemAPI {
     @GetMapping("{username}")
     @Operation(summary = "retrieves info about virtual drive for specified user",
             description = "Return information about filesystem for user with username provided in path")
-    FilesystemInfoDTO getUsersVirtualDrivesInfo(
+    FilesystemInfoDTO getUsersFilesystemInfo(
             @PathVariable String username);
 
 
@@ -85,7 +86,7 @@ public interface FilesystemAPI {
     @Operation(summary = "changes max space for virtual drive",
             description = "Changes max space for filesystem for user with provided username - " +
                     "new assigned space has to be greater or equal to the space filled by all files")
-    void changeVirtualDriveMaxSize(
+    void changeUserFilesystemMaxSize(
             @PathVariable String username,
             @RequestParam Long newAssignedSpace
     );

@@ -8,7 +8,7 @@ public class UserAPITestTemplate extends AbstractAPITestTemplate {
 
     @Override
     protected void initTemplate() throws Exception {
-        addUsersToDB();
+        initUsersToDB();
     }
 
 //    protected void addUserToDB(PostUserRequest userRequest, String authToken) throws Exception {

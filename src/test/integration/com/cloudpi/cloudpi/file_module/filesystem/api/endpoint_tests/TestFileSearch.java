@@ -1,6 +1,6 @@
 package com.cloudpi.cloudpi.file_module.filesystem.api.endpoint_tests;
 
-import com.cloudpi.cloudpi.file_module.filesystem.api.FilesystemInfoTestTemplate;
+import com.cloudpi.cloudpi.file_module.filesystem.api.FilesystemTestTemplate;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileQueryDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
@@ -13,7 +13,7 @@ import static com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils.getBodyAsL
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ControllerTest
-public class TestFileSearch extends FilesystemInfoTestTemplate {
+public class TestFileSearch extends FilesystemTestTemplate {
 
     @BeforeEach
     void setUp() throws Exception {
@@ -32,7 +32,7 @@ public class TestFileSearch extends FilesystemInfoTestTemplate {
         );
 
         //when
-        var response = filesystemInfoAPI
+        var response = filesystemAPI
                 .performSearchInUserFiles(query)
                 .andExpect(status().isOk())
                 .andReturn();
