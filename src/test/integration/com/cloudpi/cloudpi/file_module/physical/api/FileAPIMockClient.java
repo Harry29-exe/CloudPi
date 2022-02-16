@@ -12,9 +12,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -57,17 +54,6 @@ public class FileAPIMockClient extends AbstractAPIMockClient {
         return mockMvc.perform(
                 uploadNewFileRequest(file, path, FileType.TEXT_FILE)
         );
-    }
-
-    //-------------utils---------------------
-    public MockMultipartFile readFileFromResources(String pathInResources) throws Exception {
-        URL resources = getClass().getClassLoader().getResource(pathInResources);
-        if (resources == null)
-            throw new IllegalStateException("No such file in resources");
-
-        var file = new File(resources.toURI());
-
-        return new MockMultipartFile("file", new FileInputStream(file));
     }
 
     //-------------uploadNewFile-------------

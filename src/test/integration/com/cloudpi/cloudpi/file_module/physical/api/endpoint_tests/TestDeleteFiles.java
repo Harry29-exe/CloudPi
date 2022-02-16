@@ -4,6 +4,7 @@ import com.cloudpi.cloudpi.file_module.physical.api.FileAPITestTemplate;
 import com.cloudpi.cloudpi.utils.controller_tests.ControllerTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @ControllerTest
 public class TestDeleteFiles extends FileAPITestTemplate {
@@ -16,6 +17,11 @@ public class TestDeleteFiles extends FileAPITestTemplate {
     @AfterAll
     void clearDir() throws Exception {
         clearStorageDirectory();
+    }
+
+    @Test
+    void should_delete_single_file() throws Exception {
+
     }
 
 

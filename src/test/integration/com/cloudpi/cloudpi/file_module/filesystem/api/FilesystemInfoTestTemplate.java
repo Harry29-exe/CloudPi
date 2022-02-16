@@ -1,5 +1,6 @@
 package com.cloudpi.cloudpi.file_module.filesystem.api;
 
+import com.cloudpi.cloudpi.file_module.FileTestUtils;
 import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.file_module.physical.api.FileAPIMockClient;
 import com.cloudpi.cloudpi.file_module.physical.api.requests.PostDriveRequest;
@@ -26,6 +27,8 @@ public class FilesystemInfoTestTemplate extends AbstractAPITestTemplate {
     protected FileAPIMockClient fileAPI;
     @Autowired
     protected FilesystemInfoAPIMockClient filesystemInfoAPI;
+    @Autowired
+    protected FileTestUtils fileUtils;
     protected List<FileRequestData> initFiles = new ArrayList<>();
 
     protected void initTemplate() throws Exception {
@@ -48,16 +51,16 @@ public class FilesystemInfoTestTemplate extends AbstractAPITestTemplate {
                 new FileRequestData(
                         "bob/img.jpg",
                         FileType.IMAGE,
-                        fileAPI.readFileFromResources("./test_files/example-image.jpg")),
+                        fileUtils.readFileFromResources("./test_files/example-image.jpg")),
                 new FileRequestData(
                         "bob/text.pdf",
                         FileType.UNDEFINED,
-                        fileAPI.readFileFromResources("./test_files/text.pdf")
+                        fileUtils.readFileFromResources("./test_files/text.pdf")
                 ),
                 new FileRequestData(
                         "bob/text.txt",
                         FileType.TEXT_FILE,
-                        fileAPI.readFileFromResources("./test_files/text.txt")
+                        fileUtils.readFileFromResources("./test_files/text.txt")
                 )
         );
 
