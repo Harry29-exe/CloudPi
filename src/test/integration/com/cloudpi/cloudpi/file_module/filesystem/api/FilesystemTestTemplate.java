@@ -7,7 +7,7 @@ public class FilesystemTestTemplate extends FileModuleAPITestTemplate {
     protected void initTemplate() throws Exception {
         initUsersToDB();
         initDrive();
-        initBasicFileStructure();
+        initBobBasicFileStructure();
     }
 
 }

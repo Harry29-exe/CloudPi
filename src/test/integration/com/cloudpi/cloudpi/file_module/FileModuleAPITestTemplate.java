@@ -32,45 +32,37 @@ public abstract class FileModuleAPITestTemplate extends AbstractAPITestTemplate 
     @Value("${cloud-pi.storage.mock.save-files-dir}")
     private String storageMockPath;
 
-    protected List<UploadFileParams> _filesToUpload = ImmutableList.of(
-            new UploadFileParams(
-                    "bob/dir1/dir11/img.jpg",
-                    FileType.IMAGE,
-                    fileTestUtils.readFileFromResources("./test_files/example-image.jpg")),
-            new UploadFileParams(
-                    "bob/text.pdf",
-                    FileType.UNDEFINED,
-                    fileTestUtils.readFileFromResources("./test_files/text.pdf")
-            ),
-            new UploadFileParams(
-                    "bob/dir1/text.txt",
-                    FileType.TEXT_FILE,
-                    fileTestUtils.readFileFromResources("./test_files/text.txt")
-            ),
-            new UploadFileParams(
-                    "bob/hello world.txt",
-                    FileType.TEXT_FILE,
-                    new MockMultipartFile("file", "Hello world in txt".getBytes(StandardCharsets.UTF_8))
-            )
-    );
+    protected ImmutableList<UploadFileParams> _bobFilesToUpload;
 
-    protected List<CreateDirParams> _directoriesToUpload = ImmutableList.of(
-            new CreateDirParams("bob/dir1"),
-            new CreateDirParams("bob/dir2"),
-            new CreateDirParams("bob/dir1/dir11")
-    );
+    protected List<CreateDirParams> _bobDirectoriesToUpload;
 
-    protected void initBasicFileStructure() throws Exception {
-        for (var dir : _directoriesToUpload) {
+    /**
+     * <h3>By default adds following file structure for user bob</h3>
+     * bob<br/>
+     * &emsp;dir1<br/>
+     * &emsp;&emsp;dir11<br/>
+     * &emsp;&emsp;&emsp;img.jpg<br/>
+     * &emsp;&emsp;text.txt<br/>
+     * &emsp;dir2<br/>
+     * &emsp;hello world.txt<br/>
+     * &emsp;text.pdf<br/>
+     *
+     * @see FileModuleAPITestTemplate#_bobFilesToUpload
+     * @see FileModuleAPITestTemplate#_bobDirectoriesToUpload
+     */
+    protected void initBobBasicFileStructure() throws Exception {
+        initBobDirList();
+        initBobFileList();
+        for (var dir : _bobDirectoriesToUpload) {
             filesystemAPI.performCreateDirectory(dir.dirPath, "bob")
                     .andExpect(status().is2xxSuccessful());
         }
 
-        for (var file : _filesToUpload) {
+        for (var file : _bobFilesToUpload) {
             fileAPI.performUploadNewFile(
-                            file.file,
                             file.filepath,
                             file.fileType,
+                            file.file,
                             "bob"
                     )
                     .andExpect(status().is2xxSuccessful());
@@ -88,6 +80,39 @@ public abstract class FileModuleAPITestTemplate extends AbstractAPITestTemplate 
         ).andExpect(status().is2xxSuccessful());
     }
 
+    protected void initBobFileList() {
+        _bobDirectoriesToUpload = ImmutableList.of(
+                new CreateDirParams("bob/dir1"),
+                new CreateDirParams("bob/dir2"),
+                new CreateDirParams("bob/dir1/dir11")
+        );
+    }
+
+    protected void initBobDirList() {
+        _bobFilesToUpload = ImmutableList.of(
+                new UploadFileParams(
+                        "bob/dir1/dir11/img.jpg",
+                        FileType.IMAGE,
+                        _loadImageFileExampleImageJpg()
+                ),
+                new UploadFileParams(
+                        "bob/dir1/text.txt",
+                        FileType.TEXT_FILE,
+                        _loadTextFileTextTxt()
+                ),
+                new UploadFileParams(
+                        "bob/hello world.txt",
+                        FileType.TEXT_FILE,
+                        new MockMultipartFile("file", "Hello world in txt".getBytes(StandardCharsets.UTF_8))
+                ),
+                new UploadFileParams(
+                        "bob/text.pdf",
+                        FileType.UNDEFINED,
+                        _loadPdfFileTextPdf()
+                )
+        );
+    }
+
     protected Path _getStoragePath() {
         if (storageMockPath.startsWith("~")) {
             var path = System.getProperty("user.home") + storageMockPath.substring(1);
@@ -95,6 +120,20 @@ public abstract class FileModuleAPITestTemplate extends AbstractAPITestTemplate 
         }
 
         return Paths.get(storageMockPath);
+    }
+
+    protected MockMultipartFile _loadTextFileTextTxt() {
+        return fileTestUtils.readFileFromResources("./test_files/text.txt");
+    }
+
+    protected MockMultipartFile _loadPdfFileTextPdf() {
+        return fileTestUtils
+                .readFileFromResources("./test_files/text.pdf");
+    }
+
+    protected MockMultipartFile _loadImageFileExampleImageJpg() {
+        return fileTestUtils
+                .readFileFromResources("./test_files/example-image.jpg");
     }
 
     @lombok.Value

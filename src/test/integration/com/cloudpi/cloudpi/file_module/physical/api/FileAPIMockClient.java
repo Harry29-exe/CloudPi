@@ -12,7 +12,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import static com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils.getBody;
@@ -23,50 +22,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Component
 public class FileAPIMockClient extends AbstractAPIMockClient {
 
-    public final String textfileContent = "This is test textfile";
-
     public FileAPIMockClient(MockMvc mockMvc, FetchUtils fetchUtils) {
         this.mockMvc = mockMvc;
         this.fetchUtils = fetchUtils;
     }
 
-
-    public ResultActions uploadTextfileAs(String asUsername) throws Exception {
-        var file = new MockMultipartFile(
-                "file",
-                "text.txt",
-                null,
-                textfileContent.getBytes(StandardCharsets.UTF_8));
-
-        return fetchUtils.as(
-                asUsername,
-                uploadNewFileRequest(file, asUsername + "/text.txt", FileType.TEXT_FILE)
-        );
-    }
-
-    public ResultActions uploadTextfileTo(String path) throws Exception {
-        var file = new MockMultipartFile(
-                "file",
-                "text.txt",
-                null,
-                textfileContent.getBytes(StandardCharsets.UTF_8));
-
-        return mockMvc.perform(
-                uploadNewFileRequest(file, path, FileType.TEXT_FILE)
-        );
-    }
-
     //-------------uploadNewFile-------------
-    public MockHttpServletRequestBuilder uploadNewFileRequest(MockMultipartFile file, String path, FileType type) {
+    public MockHttpServletRequestBuilder uploadNewFileRequest(String path, FileType type, MockMultipartFile file) {
         return multipart("/files/file")
                 .file(file)
                 .param("filepath", path)
                 .param("fileType", type.name());
     }
 
-    public FileInfoDTO uploadNewFile(MockMultipartFile file, String path, FileType type) throws Exception {
+    public FileInfoDTO uploadNewFile(String path, FileType type, MockMultipartFile file) throws Exception {
         var response = perform(
-                uploadNewFileRequest(file, path, type)
+                uploadNewFileRequest(path, type, file)
         )
                 .andExpect(status().is2xxSuccessful())
                 .andReturn()
@@ -75,15 +46,15 @@ public class FileAPIMockClient extends AbstractAPIMockClient {
         return getBody(response, FileInfoDTO.class);
     }
 
-    public ResultActions performUploadNewFile(MockMultipartFile file, String path, FileType type) throws Exception {
+    public ResultActions performUploadNewFile(String path, FileType type, MockMultipartFile file) throws Exception {
         return perform(
-                uploadNewFileRequest(file, path, type)
+                uploadNewFileRequest(path, type, file)
         );
     }
 
-    public ResultActions performUploadNewFile(MockMultipartFile file, String path, FileType type, String asUsername) throws Exception {
+    public ResultActions performUploadNewFile(String path, FileType type, MockMultipartFile file, String asUsername) throws Exception {
         return perform(
-                uploadNewFileRequest(file, path, type),
+                uploadNewFileRequest(path, type, file),
                 asUsername
         );
     }

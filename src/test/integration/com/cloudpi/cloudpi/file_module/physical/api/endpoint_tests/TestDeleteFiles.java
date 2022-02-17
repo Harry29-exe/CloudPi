@@ -16,7 +16,7 @@ public class TestDeleteFiles extends FileAPITestTemplate {
 
     @AfterAll
     void clearDir() throws Exception {
-        clearStorageDirectory();
+        _clearStorageDirectory();
     }
 
     @Test

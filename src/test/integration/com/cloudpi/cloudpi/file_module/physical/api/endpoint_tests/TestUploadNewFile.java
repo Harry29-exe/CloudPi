@@ -9,7 +9,6 @@ import com.cloudpi.cloudpi.utils.mock_mvc_users.WithUser;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockMultipartFile;
 
 import static com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils.getBody;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -24,18 +23,18 @@ public class TestUploadNewFile extends FileAPITestTemplate {
 
     @AfterAll
     void clearStorage() throws Exception {
-        clearStorageDirectory();
+        _clearStorageDirectory();
     }
 
     @Test
     @WithUser(username = "bob", authorities = Role.user)
     void should_save_given_file() throws Exception {
         //given
-        var file = getTextFile();
+        var file = _loadTextFileTextTxt();
 
         //when
         var response = fileAPI
-                .performUploadNewFile(file, "bob/text.txt", FileType.TEXT_FILE)
+                .performUploadNewFile("bob/text1.txt", FileType.TEXT_FILE, file)
                 .andExpect(status().is2xxSuccessful())
                 .andReturn()
                 .getResponse();
@@ -44,46 +43,53 @@ public class TestUploadNewFile extends FileAPITestTemplate {
 
 
         //then
-        assert fileExist(fileInfo.getPubId());
+        assert _fileExist(fileInfo.getPubId());
+    }
+
+    @Test
+    @WithUser(username = "bob", authorities = Role.user)
+    void should_return_409_when_file_in_path_already_exist() throws Exception {
+        //given
+        var file = _loadTextFileTextTxt();
+
+        //when
+        fileAPI.performUploadNewFile("bob/text.txt", FileType.TEXT_FILE, file)
+                //then
+                .andExpect(status().is(409));
     }
 
     @Test
     @WithUser(username = "bob", authorities = Role.user)
     void should_return_409_when_not_enough_space() throws Exception {
-
+        //todo
     }
 
     @Test
     @WithUser(username = "Alice", authorities = Role.user)
     void should_return_403_when_saving_without_permissions() throws Exception {
         //given
+        var file = _loadTextFileTextTxt();
+
         //when
-        fileAPI.uploadTextfileTo("bob/text.txt")
+        fileAPI.performUploadNewFile("bob/text1.txt", FileType.TEXT_FILE, file)
                 //then
                 .andExpect(status().is(403));
 
-        assert fileStorageEmpty();
+        assert _fileStorageEmpty();
     }
 
     @Test
     @WithUser(username = "admin", authorities = Role.admin)
     void should_return_403_to_admin_without_permissions() throws Exception {
         //given
+        var file = _loadTextFileTextTxt();
+
         //when
-        fileAPI.uploadTextfileTo("bob/text.txt")
+        fileAPI.performUploadNewFile("bob/text1.txt", FileType.TEXT_FILE, file)
                 //then
                 .andExpect(status().is(403));
 
-        assert fileStorageEmpty();
-    }
-
-
-    MockMultipartFile getTextFile() {
-        return new MockMultipartFile(
-                "file",
-                "text.txt",
-                "text/plan",
-                "Hello, World!".getBytes());
+        assert _fileStorageEmpty();
     }
 
 }

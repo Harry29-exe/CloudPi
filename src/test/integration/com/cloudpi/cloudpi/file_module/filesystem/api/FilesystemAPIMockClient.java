@@ -148,7 +148,7 @@ public class FilesystemAPIMockClient extends AbstractAPIMockClient {
 
     //--------createDirectory---------
     public MockHttpServletRequestBuilder createDirectoryRequest(String directoryPath) {
-        return put("directory")
+        return put(apiAddr + "directory")
                 .param("directoryPath", directoryPath);
     }
 
