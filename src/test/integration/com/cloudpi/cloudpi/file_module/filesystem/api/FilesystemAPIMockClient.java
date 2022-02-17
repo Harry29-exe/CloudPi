@@ -80,9 +80,10 @@ public class FilesystemAPIMockClient extends AbstractAPIMockClient {
     }
 
 
+
     //--------getFilesSharedByUser---------
     public MockHttpServletRequestBuilder getFilesSharedByUserRequest() {
-        return get("files-shared-by-user");
+        return get(apiAddr + "files-shared-by-user");
     }
 
     public List<FileInfoDTO> getFilesSharedByUser() throws Exception {
@@ -113,9 +114,10 @@ public class FilesystemAPIMockClient extends AbstractAPIMockClient {
     }
 
 
+
     //--------getFilesSharedToUser---------
     public MockHttpServletRequestBuilder getFilesSharedToUserRequest() {
-        return get("files-shared-to-user");
+        return get(apiAddr + "files-shared-to-user");
     }
 
     public List<FileInfoDTO> getFilesSharedToUser() throws Exception {
@@ -182,11 +184,62 @@ public class FilesystemAPIMockClient extends AbstractAPIMockClient {
 
 
     //--------getFileInfo---------
+    public MockHttpServletRequestBuilder getFileInfoByPathRequest(
+            String filePath,
+            @Nullable Boolean getWithPermissions
+    ) {
+        var requestBuilder = get(apiAddr + "file/" + filePath + "/by-path");
+
+        if (getWithPermissions != null)
+            requestBuilder = requestBuilder
+                    .param("getWithPermissions", getWithPermissions.toString());
+
+        return requestBuilder;
+    }
+
+    public FileInfoDTO getFileInfoByPath(
+            String filePath,
+            @Nullable Boolean getWithPermissions
+    ) throws Exception {
+
+        var response = perform(
+                getFileInfoByPathRequest(filePath, getWithPermissions)
+        )
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        return getBody(response, FileInfoDTO.class);
+    }
+
+    public ResultActions performGetFileInfoByPath(
+            String filePath,
+            @Nullable Boolean getWithPermissions
+    ) throws Exception {
+
+        return perform(
+                getFileInfoByPathRequest(filePath, getWithPermissions)
+        );
+    }
+
+    public ResultActions performGetFileInfoByPath(
+            String filePath,
+            @Nullable Boolean getWithPermissions,
+            String asUsername
+    ) throws Exception {
+
+        return perform(
+                getFileInfoByPathRequest(filePath, getWithPermissions),
+                asUsername
+        );
+    }
+
+
+    //--------getFileInfo---------
     public MockHttpServletRequestBuilder getFileInfoRequest(
             UUID fileId,
             @Nullable Boolean getWithPermissions
     ) {
-        var requestBuilder = get("file/" + fileId.toString());
+        var requestBuilder = get(apiAddr + "file/" + fileId.toString());
 
         if (getWithPermissions != null)
             requestBuilder = requestBuilder

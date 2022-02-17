@@ -1,8 +1,10 @@
 package com.cloudpi.cloudpi.file_module.physical.api;
 
 import com.cloudpi.cloudpi.file_module.FileModuleAPITestTemplate;
+import com.cloudpi.cloudpi.utils.IllegalTestStateException;
 import com.cloudpi.cloudpi.utils.controller_tests.ControllerTest;
 
+import java.io.FileInputStream;
 import java.nio.file.Paths;
 import java.util.UUID;
 
@@ -51,6 +53,42 @@ public class FileAPITestTemplate extends FileModuleAPITestTemplate {
     protected boolean _fileExist(UUID fileId) {
         var storagePath = Paths.get(_getStoragePath() + "/" + fileId);
         return storagePath.toFile().exists();
+    }
+
+    protected byte[] _getFileContent(UUID fileId) {
+        var storagePath = Paths.get(_getStoragePath() + "/" + fileId);
+        var file = storagePath.toFile();
+
+        try {
+            var inputStream = new FileInputStream(file);
+            return inputStream.readAllBytes();
+
+        } catch (Exception ex) {
+            throw new IllegalTestStateException(ex);
+        }
+    }
+
+    protected boolean _fileContentEqual(UUID fileId, byte[] fileContent) {
+        var content = _getFileContent(fileId);
+
+        if (content.length != fileContent.length) {
+            return false;
+        }
+
+        for (int i = 0; i < fileContent.length; i++) {
+            if (content[i] != fileContent[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    protected boolean _textFileContentEqual(UUID fileId, String fileContent) {
+        var content = _getFileContent(fileId);
+        var fileContentStr = new String(content);
+
+        return fileContentStr.equals(fileContent);
     }
 
     protected boolean _fileStorageEmpty() {

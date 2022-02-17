@@ -77,6 +77,14 @@ public class FileInfoServiceImpl implements FileInfoService {
     }
 
     @Override
+    public FileInfoDTO get(String filePath) {
+        return fileInfoRepo
+                .findByPath(filePath)
+                .orElseThrow(ResourceNotExistException::new)
+                .mapToDTO();
+    }
+
+    @Override
     public void move(UUID filePubId, String newPath) {
         if (!isPathEmpty(newPath)) {
             throw new PathNotEmptyException();

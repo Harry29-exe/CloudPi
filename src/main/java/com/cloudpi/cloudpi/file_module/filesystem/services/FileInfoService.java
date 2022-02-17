@@ -20,6 +20,9 @@ public interface FileInfoService {
     @PreAuthorize("@filePermissionVerifier.canRead(#filePubId)")
     FileInfoDTO get(UUID filePubId);
 
+    @PreAuthorize("@filePermissionVerifier.canRead(#filePath)")
+    FileInfoDTO get(String filePath);
+
     @PreAuthorize("@filePermissionVerifier.canModify(#filePubId)")
     void move(UUID filePubId, String newPath);
 

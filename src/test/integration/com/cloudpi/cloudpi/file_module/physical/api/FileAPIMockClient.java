@@ -5,6 +5,8 @@ import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPIMockClient;
 import com.cloudpi.cloudpi.utils.controller_tests.FetchUtils;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,9 +29,11 @@ public class FileAPIMockClient extends AbstractAPIMockClient {
         this.fetchUtils = fetchUtils;
     }
 
+    private final String apiAddr = "/files/";
+
     //-------------uploadNewFile-------------
     public MockHttpServletRequestBuilder uploadNewFileRequest(String path, FileType type, MockMultipartFile file) {
-        return multipart("/files/file")
+        return multipart(apiAddr + "file")
                 .file(file)
                 .param("filepath", path)
                 .param("fileType", type.name());
@@ -62,7 +66,7 @@ public class FileAPIMockClient extends AbstractAPIMockClient {
 
     //-------------uploadNewImage-------------
     public MockMultipartHttpServletRequestBuilder uploadNewImageRequest(MockMultipartFile image, String imageName) {
-        return multipart("/files/image/" + imageName);
+        return multipart(apiAddr + "image/" + imageName);
     }
 
     public FileInfoDTO uploadNewImage(MockMultipartFile image, String imageName) throws Exception {
@@ -90,9 +94,49 @@ public class FileAPIMockClient extends AbstractAPIMockClient {
     }
 
 
-    //-------------downloadFile-------------
-    public MockHttpServletRequestBuilder downloadFileReqBuilder(UUID filePubId) {
-        return get("/files/file/" + filePubId);
+    //--------downloadFile---------
+    public MockHttpServletRequestBuilder downloadFileRequest(
+            UUID filePubId
+    ) throws Exception {
+        var requestBuilder = get(apiAddr + "file/" + filePubId);
+
+        return requestBuilder;
+    }
+
+    public Resource downloadFile(
+            UUID filePubId
+    ) throws Exception {
+
+        var response = perform(
+                downloadFileRequest(filePubId)
+        )
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        return new ByteArrayResource(response
+                .getResponse()
+                .getContentAsByteArray()
+        );
+    }
+
+    public ResultActions performDownloadFile(
+            UUID filePubId
+    ) throws Exception {
+
+        return perform(
+                downloadFileRequest(filePubId)
+        );
+    }
+
+    public ResultActions performDownloadFile(
+            UUID filePubId,
+            String asUsername
+    ) throws Exception {
+
+        return perform(
+                downloadFileRequest(filePubId),
+                asUsername
+        );
     }
 
     //-------------deleteFile-------------

@@ -57,9 +57,17 @@ public interface FilesystemAPI {
 
 
     @GetMapping("file/{fileId}")
-    @Operation(summary = "retrieves information about requested file")
+    @Operation(summary = "Retrieves information about requested file")
     FileInfoDTO getFileInfo(
             @PathVariable("fileId") UUID fileId,
+            @RequestParam(name = "with-permissions", defaultValue = "false")
+                    Boolean getWithPermissions);
+
+
+    @GetMapping("file/{filePath}/by-path")
+    @Operation(summary = "Retrieves information about requested file")
+    FileInfoDTO getFileInfoByPath(
+            @PathVariable("filePath") String filePath,
             @RequestParam(name = "with-permissions", defaultValue = "false")
                     Boolean getWithPermissions);
 

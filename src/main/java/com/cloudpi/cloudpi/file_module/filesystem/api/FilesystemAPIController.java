@@ -53,6 +53,11 @@ public class FilesystemAPIController implements FilesystemAPI {
     }
 
     @Override
+    public FileInfoDTO getFileInfoByPath(String filePath, Boolean getWithPermissions) {
+        return fileInfoService.get(filePath);
+    }
+
+    @Override
     public void moveFile(MoveFileRequest requestBody) {
         fileInfoService.move(requestBody.filePubId(), requestBody.newPath());
     }

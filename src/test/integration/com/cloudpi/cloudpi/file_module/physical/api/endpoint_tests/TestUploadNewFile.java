@@ -44,18 +44,26 @@ public class TestUploadNewFile extends FileAPITestTemplate {
 
         //then
         assert _fileExist(fileInfo.getPubId());
+        assert _fileContentEqual(fileInfo.getPubId(), file.getBytes());
     }
 
     @Test
     @WithUser(username = "bob", authorities = Role.user)
-    void should_return_409_when_file_in_path_already_exist() throws Exception {
+    void should_modify_file_when_file_in_path_already_exist() throws Exception {
         //given
-        var file = _loadTextFileTextTxt();
+        var file = fileTestUtils.multipartFileFromString("New file content");
 
         //when
-        fileAPI.performUploadNewFile("bob/text.txt", FileType.TEXT_FILE, file)
+        var response = fileAPI.performUploadNewFile("bob/dir1/text.txt", FileType.TEXT_FILE, file)
                 //then
-                .andExpect(status().is(409));
+                .andExpect(status().is(201))
+                .andReturn();
+
+        var fileInfo = getBody(response, FileInfoDTO.class);
+        var filePubId = fileInfo.getPubId();
+
+        assert _fileExist(filePubId);
+        assert _fileContentEqual(filePubId, file.getBytes());
     }
 
     @Test
@@ -69,13 +77,17 @@ public class TestUploadNewFile extends FileAPITestTemplate {
     void should_return_403_when_saving_without_permissions() throws Exception {
         //given
         var file = _loadTextFileTextTxt();
+        var fileType = FileType.TEXT_FILE;
+        var filePath = "bob/text1.txt";
 
         //when
-        fileAPI.performUploadNewFile("bob/text1.txt", FileType.TEXT_FILE, file)
+        fileAPI.performUploadNewFile(filePath, fileType, file)
                 //then
                 .andExpect(status().is(403));
 
-        assert _fileStorageEmpty();
+        //then
+        filesystemAPI.performGetFileInfoByPath(filePath, null, "bob")
+                .andExpect(status().is(404));
     }
 
     @Test
@@ -89,7 +101,9 @@ public class TestUploadNewFile extends FileAPITestTemplate {
                 //then
                 .andExpect(status().is(403));
 
-        assert _fileStorageEmpty();
+        //then
+        filesystemAPI.performGetFileInfoByPath("bob/text1.txt", null, "bob")
+                .andExpect(status().is(404));
     }
 
 }

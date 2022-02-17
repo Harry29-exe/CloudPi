@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 @Profile("test")
 @Component
@@ -32,6 +33,10 @@ public class FileTestUtils {
         } catch (Exception ex) {
             throw new IllegalStateException("Exception: " + ex.getMessage() + " has been thrown.", ex);
         }
+    }
+
+    public MockMultipartFile multipartFileFromString(String content) {
+        return new MockMultipartFile("file", content.getBytes(StandardCharsets.UTF_8));
     }
 
 }
