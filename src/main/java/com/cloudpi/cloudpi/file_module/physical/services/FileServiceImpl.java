@@ -118,8 +118,8 @@ public class FileServiceImpl implements FileService {
         var file = path.toFile();
         try {
             BufferedImage bufferedImage = ImageIO.read(file);
-            Image image = bufferedImage.getScaledInstance(previewResolution, previewResolution, Image.SCALE_SMOOTH);
-            BufferedImage outputImage = new BufferedImage(previewResolution, previewResolution, BufferedImage.TYPE_INT_RGB);
+            Image image = bufferedImage.getScaledInstance(previewResolution, previewResolution, Image.SCALE_FAST);
+            BufferedImage outputImage = new BufferedImage(previewResolution, previewResolution, BufferedImage.TYPE_INT_ARGB);
             outputImage.getGraphics().drawImage(image, 0, 0, null);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             ImageIO.write(outputImage, "jpg", os);

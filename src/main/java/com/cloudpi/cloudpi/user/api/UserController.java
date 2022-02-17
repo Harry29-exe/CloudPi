@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-// TODO lepsza obsluga wyjatkow, np przy tworzeniu uzytkownika przy walidacji
 public class UserController implements UserAPI {
     private final UserService userService;
 

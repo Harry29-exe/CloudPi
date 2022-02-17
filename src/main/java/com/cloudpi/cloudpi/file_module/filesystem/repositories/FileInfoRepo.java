@@ -1,6 +1,7 @@
 package com.cloudpi.cloudpi.file_module.filesystem.repositories;
 
 import com.cloudpi.cloudpi.file_module.filesystem.domain.FileInfo;
+import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -95,4 +96,13 @@ public interface FileInfoRepo extends JpaRepository<FileInfo, Long> {
             """)
     List<FileInfo> findAllSharedByUser(String username, Pageable pageable);
 
+    void deleteAllByRoot_Owner_Username(String username);
+
+    @Query("""
+                SELECT f.pubId
+                FROM FileInfo f
+                WHERE f.root.owner.username = :username
+                AND f.type <> :directory
+            """)
+    List<UUID> getUsersFilesIds(String username, FileType directory);
 }

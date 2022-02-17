@@ -1,5 +1,9 @@
 package com.cloudpi.cloudpi.file_module.physical.services;
 
+import com.cloudpi.cloudpi.exception.drive.IncorrectPathException;
+import com.cloudpi.cloudpi.exception.drive.NoDrivesException;
+import com.cloudpi.cloudpi.exception.file.NotEnoughSpaceException;
+import com.cloudpi.cloudpi.exception.path.IncorrectPathingException;
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.file_module.physical.domain.Drive;
 import com.cloudpi.cloudpi.file_module.physical.domain.DriveRepo;
@@ -13,7 +17,6 @@ import java.util.Comparator;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-//todo change exceptions
 @AppService
 public class DriveServiceImpl implements DriveService {
     private final DriveRepo driveRepo;
@@ -26,7 +29,7 @@ public class DriveServiceImpl implements DriveService {
     public DriveDTO getDriveForNewFile(Long fileSize) {
         var drives = driveRepo.findAll();
         if (drives.isEmpty()) {
-            throw new IllegalStateException("There are not any drives, please create drive");
+            throw new NoDrivesException();
         }
 
         var drivesWithEnoughSpace = drives.stream()
@@ -34,7 +37,7 @@ public class DriveServiceImpl implements DriveService {
                 .collect(Collectors.toList());
 
         if (drivesWithEnoughSpace.isEmpty()) {
-            throw new IllegalStateException("No drive big enough for file of size: " + fileSize);
+            throw new NotEnoughSpaceException();
         }
 
         drivesWithEnoughSpace
@@ -47,7 +50,7 @@ public class DriveServiceImpl implements DriveService {
     public DriveDTO add(CreateDrive createDrive) {
         var path = Paths.get(createDrive.getPath());
         if (!path.toFile().exists()) {
-            throw new IllegalStateException("Path to drive does not exists");
+            throw new IncorrectPathException();
         }
 
         var drive = new Drive(

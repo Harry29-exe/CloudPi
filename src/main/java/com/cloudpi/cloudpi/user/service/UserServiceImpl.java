@@ -3,8 +3,10 @@ package com.cloudpi.cloudpi.user.service;
 import com.cloudpi.cloudpi.config.security.Role;
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.exception.user.UserNotExistException;
+import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.file_module.filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.filesystem.services.FilesystemService;
+import com.cloudpi.cloudpi.file_module.physical.services.FileService;
 import com.cloudpi.cloudpi.user.api.requests.PatchUserRequest;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
 import com.cloudpi.cloudpi.user.domain.UserDetailsEntity;
@@ -30,12 +32,15 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final PasswordEncoder passwordEncoder;
     private final FilesystemService filesystemService;
     private final FileInfoRepo fileInfoRepo;
+    private final FileService fileService;
 
-    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder, FilesystemService filesystemService, FileInfoRepo fileInfoRepo) {
+    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder, FilesystemService filesystemService, FileInfoRepo fileInfoRepo,
+                           FileService fileService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.filesystemService = filesystemService;
         this.fileInfoRepo = fileInfoRepo;
+        this.fileService = fileService;
     }
 
     @Override
@@ -114,7 +119,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public void deleteUser(String username) {
-        //todo add deleting files
+        for(var id : fileInfoRepo.getUsersFilesIds(username, FileType.DIRECTORY)) {
+            fileService.delete(id);
+        }
         var user = userRepo.findByUsername(username)
                 .orElseThrow(UserNotExistException::new);
         userRepo.delete(user);

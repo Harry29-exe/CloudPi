@@ -25,7 +25,6 @@ public class SharingServiceImpl implements SharingService {
         this.userRepo = userRepo;
     }
 
-    // todo znalezc optymalniejsze rozwiazanie
     /*
      * zlozonosc (ignorujac gettery)
      * forEach O(n)
@@ -47,7 +46,6 @@ public class SharingServiceImpl implements SharingService {
         return sharedFiles;
     }
 
-    // todo tez pomyslec nad mniej idiotycznym rozwiazaniem, chociaz nie jest zle
     @Override
     public void shareFiles(ShareFileRequest shareFileRequest, String owner) {
         List<Sharing> sharingList = new LinkedList<>();

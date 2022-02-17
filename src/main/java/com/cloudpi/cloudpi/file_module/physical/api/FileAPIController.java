@@ -42,7 +42,6 @@ public class FileAPIController implements FileAPI {
             MultipartFile file,
             Authentication auth
     ) {
-        //todo raczej nie tak
         return fileService.create(
                 new CreateFile(
                         new VirtualPath(auth.getName() + "/images/" + file.getOriginalFilename()),

@@ -131,6 +131,11 @@ public class FilesystemServiceImp implements FilesystemService {
         filesystemRootInfoRepo.save(filesystem);
     }
 
+    @Override
+    public void deleteRoot(String username) {
+        filesystemRootInfoRepo.deleteByOwner_Username(username);
+    }
+
     private List<FilePermission> grantPermissionsToRoot(UserEntity user, FileInfo rootDir) {
         List<FilePermission> permissions = new ArrayList<>();
         permissions.add(new FilePermission(PermissionType.READ, user, rootDir));

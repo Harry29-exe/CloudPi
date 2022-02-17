@@ -41,4 +41,7 @@ public interface FilesystemService {
     @PreAuthorize("@filePermissionVerifier.canModify(#username)")
     void changeVirtualDriveSize(String username, Long newAssignedSpace);
 
+    @PreAuthorize("@filePermissionVerifier.canModify(#username)")
+    void deleteRoot(String username);
+
 }

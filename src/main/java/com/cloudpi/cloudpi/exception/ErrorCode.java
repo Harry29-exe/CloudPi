@@ -38,7 +38,14 @@ public enum ErrorCode {
      * permissions
      */
     PERMISSION_ALREADY_EXISTS,
-    NO_SUCH_PERMISSION;
+    NO_SUCH_PERMISSION,
+
+    /**
+     * drive
+     */
+    NO_DRIVES,
+    NOT_ENOUGH_DRIVE_SPACE,
+    INCORRECT_PATH;
 
     public ErrorBody toErrorBody() {
         return new ErrorBody(this);

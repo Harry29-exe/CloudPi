@@ -33,7 +33,6 @@ public interface FileAPI {
             @RequestParam MultipartFile file,
             Authentication auth);
 
-    //todo potrzebne?
     @PostMapping(
             path = "image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

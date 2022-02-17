@@ -1,5 +1,6 @@
 package com.cloudpi.cloudpi.file_module.filesystem.pojo;
 
+import com.cloudpi.cloudpi.exception.path.IncorrectPathingException;
 import com.google.common.collect.ImmutableList;
 
 import javax.validation.constraints.NotBlank;
@@ -22,8 +23,7 @@ public class VirtualPath {
             path = path.substring(0, path.length() - 1);
         }
         if (incorrectIndex >= 0) {
-            //TODO change exception
-            throw new IllegalArgumentException("Incorrect path");
+            throw new IncorrectPathingException("Path cannot contain double slashes.");
         }
         this.path = path;
         int fileNameIndex = path.indexOf('/');

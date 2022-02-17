@@ -16,4 +16,5 @@ public interface FilesystemRootInfoRepo extends JpaRepository<FilesystemInfo, Lo
 
     List<FilesystemInfo> findAllByOwner_Username(String username);
 
+    void deleteByOwner_Username(String username);
 }
