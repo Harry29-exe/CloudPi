@@ -21,36 +21,50 @@ public class AdviceFile extends ExceptionHandlerPrototype {
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler({CouldNotModifyFileException.class})
-    public ErrorBody handleDeleteException(CouldNotModifyFileException ex) {
+    public ErrorBody handleModifyException(CouldNotModifyFileException ex) {
         logException(ex);
         return MODIFY_FAILED.toErrorBody();
     }
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler({CouldNotSaveFileException.class})
-    public ErrorBody handleDeleteException(CouldNotSaveFileException ex) {
+    public ErrorBody handleSaveException(CouldNotSaveFileException ex) {
         logException(ex);
         return SAVE_FAILED.toErrorBody();
     }
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler({CouldNotReadFileException.class})
-    public ErrorBody handleDeleteException(CouldNotReadFileException ex) {
+    public ErrorBody handleReadException(CouldNotReadFileException ex) {
         logException(ex);
         return READ_FAILED.toErrorBody();
     }
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler({NotEnoughSpaceException.class})
-    public ErrorBody handleDeleteException(NotEnoughSpaceException ex) {
+    public ErrorBody handleNotEnoughSpace(NotEnoughSpaceException ex) {
         logException(ex);
         return NOT_ENOUGH_SPACE.toErrorBody();
     }
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ChangeDriveSizeException.class})
-    public ErrorBody handleDeleteException(ChangeDriveSizeException ex) {
+    public ErrorBody handleChangeSizeException(ChangeDriveSizeException ex) {
         logException(ex);
         return NOT_ENOUGH_SPACE.toErrorBody();
+    }
+
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({NotDirectoryException.class})
+    public ErrorBody handleNotADirectory(NotDirectoryException ex) {
+        logException(ex);
+        return NOT_DIRECTORY.toErrorBody();
+    }
+
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({DirectoryCompressionException.class})
+    public ErrorBody handleCompressionException(DirectoryCompressionException ex) {
+        logException(ex);
+        return COMPRESSION_FAILED.toErrorBody();
     }
 }

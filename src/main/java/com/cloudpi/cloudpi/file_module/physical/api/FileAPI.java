@@ -52,6 +52,8 @@ public interface FileAPI {
 
 
     @GetMapping("directory/{directoryId}")
+    @Operation(summary = "compresses and returns a selected directory",
+            description = "compresses a directory with provided public id and returns a byte stream of it")
     Resource compressAndDownloadDirectory(@PathVariable String directoryId);
 
 

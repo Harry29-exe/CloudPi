@@ -12,6 +12,8 @@ import com.cloudpi.cloudpi.file_module.filesystem.services.dto.CreateFileInDB;
 import com.cloudpi.cloudpi.file_module.filesystem.services.dto.UpdateVFile;
 import com.cloudpi.cloudpi.file_module.permission.service.dto.CreateFile;
 import com.cloudpi.cloudpi.utils.AppService;
+import com.fasterxml.jackson.databind.deser.std.StringArrayDeserializer;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -179,21 +181,19 @@ public class FileServiceImpl implements FileService {
 
     private void createAndCompressChildFiles(FileInfo currentDirectory, ZipOutputStream zos, Set<String> pathSet)
             throws IOException {
-        String zipPath = currentDirectory.getPath();
-        Files.createDirectories(Paths.get(zipPath));
+        String allPath = currentDirectory.getPath();
+        String zipPath = allPath.substring(allPath.indexOf(currentDirectory.getName()));
         zos.putNextEntry(new ZipEntry(zipPath + "/"));
         zos.closeEntry();
 
         for(var child : currentDirectory.getChildren()) {
             FileInfo currentFile = child.getFile();
-            Path currentPath = Paths.get(currentFile.getPath());
-            if(!pathSet.contains(currentFile.getPath())) {
-                pathSet.add(currentFile.getPath());
-                if (currentFile.getType() == FileType.DIRECTORY) {
-                    Files.createDirectories(currentPath);
-                    //todo sprawdzic relacje roota z dziecmi
-                    //createAndCompressChildFiles(currentFile, zos, pathSet);
-                } else {
+            allPath = currentFile.getPath();
+            zipPath = allPath.substring(allPath.indexOf(currentDirectory.getName()));
+            Path currentPath = Paths.get(zipPath);
+            if(!pathSet.contains(allPath)) {
+                pathSet.add(allPath);
+                if (currentFile.getType() != FileType.DIRECTORY) {
                     Path filePath = Paths.get(currentFile.getDrive().getPath() + "/" + currentFile.getPubId());
                     compressFile(filePath, currentPath, zos);
                 }
@@ -206,7 +206,6 @@ public class FileServiceImpl implements FileService {
         FileInputStream fis = new FileInputStream(sourceFilePath.toFile());
         ZipEntry zipEntry = new ZipEntry(targetFilePath.toString());
         zos.putNextEntry(zipEntry);
-        // o co w tym chodzi
         byte[] bytes = new byte[1024];
         int length;
         while ((length = fis.read(bytes)) >= 0) {
