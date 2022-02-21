@@ -155,8 +155,13 @@ public class FilesystemServiceImp implements FilesystemService {
     }
 
     private FileStructureDTO transformToFileStructure(List<FileInfo> files, String entryPointPath) {
-        Map<Long, List<FileInfo>> pubIdFileInfoMap = files.stream()
-                .collect(Collectors.groupingBy(FileInfo::getParentId));
+        Map<Long, List<FileInfo>> parentIdFileInfoMap =
+                files.stream()
+                        .collect(Collectors.groupingBy(f ->
+                                f.getParentId() != null ?
+                                        f.getParentId()
+                                        : -1
+                        ));
 
 
         var fsEntryPoint = files.stream()
@@ -166,16 +171,23 @@ public class FilesystemServiceImp implements FilesystemService {
 
         return new FileStructureDTO(
                 entryPointPath,
-                createFileStructureObject(fsEntryPoint, pubIdFileInfoMap)
+                createFileStructureObject(fsEntryPoint, parentIdFileInfoMap)
         );
     }
 
     private FilesystemObjectDTO createFileStructureObject(FileInfo entryPoint, Map<Long, List<FileInfo>> parentIdFileMap) {
+        var childrenFiles = parentIdFileMap.get(entryPoint.getId());
+        if (childrenFiles == null || childrenFiles.isEmpty()) {
+            return entryPoint.mapToFilesystemObjectDTO(new ArrayList<>());
+        }
+
+        var children = childrenFiles
+                .stream()
+                .map(child -> createFileStructureObject(child, parentIdFileMap))
+                .toList();
+
         return entryPoint.mapToFilesystemObjectDTO(
-                parentIdFileMap.get(entryPoint.getId())
-                        .stream()
-                        .map(fileInfo -> createFileStructureObject(fileInfo, parentIdFileMap))
-                        .collect(Collectors.toCollection(ArrayList::new))
+                children
         );
     }
 

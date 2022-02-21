@@ -49,12 +49,13 @@ public interface FileInfoRepo extends JpaRepository<FileInfo, Long> {
     @Query("""
                     SELECT f
                     FROM FileInfo f
-                    JOIN f.ancestors a
-                    WHERE
-                        (a.ancestor.path = :entryPointPath AND
+                    LEFT JOIN f.ancestors a
+                    LEFT JOIN a.ancestor parent_file
+                    WHERE (
+                        (parent_file.path = :entryPointPath AND
                         a.treeLevelDiff <= :depth)
                         OR
-                        f.path = :entryPointPath
+                        f.path = :entryPointPath)
             """)
     List<FileInfo> findAllByFilestructure(String entryPointPath, Integer depth);
 

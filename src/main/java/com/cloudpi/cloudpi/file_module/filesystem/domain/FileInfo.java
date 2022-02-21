@@ -117,12 +117,13 @@ public class FileInfo {
         }
         this.name = name;
         this.path = parent.getPath() + "/" + name;
+        this.parentId = parent.getId();
         this.type = type;
         this.drive = drive;
         this.root = parent.getRoot();
         this.details = new FileDetails(size, this);
 
-        this.parentId = parent.getParentId();
+
         this.createAncestors(parent);
     }
 
