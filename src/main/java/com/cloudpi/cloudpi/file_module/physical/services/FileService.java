@@ -30,4 +30,7 @@ public interface FileService {
     @PreAuthorize("@filePermissionVerifier.canRead(#imageId)")
     ResponseEntity<byte[]> readPreview(Integer previewResolution, UUID imageId);
 
+    @PreAuthorize("@filePermissionVerifier.canRead(#directoryID)")
+    Resource downloadCompressedDirectory(UUID directoryID);
+
 }
