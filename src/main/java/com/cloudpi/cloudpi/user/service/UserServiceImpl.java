@@ -6,12 +6,12 @@ import com.cloudpi.cloudpi.exception.user.UserNotExistException;
 import com.cloudpi.cloudpi.file_module.filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.filesystem.services.FilesystemService;
 import com.cloudpi.cloudpi.user.api.requests.PatchUserRequest;
-import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
 import com.cloudpi.cloudpi.user.domain.UserDetailsEntity;
 import com.cloudpi.cloudpi.user.domain.UserEntity;
 import com.cloudpi.cloudpi.user.dto.UserDetailsDTO;
 import com.cloudpi.cloudpi.user.dto.UserIdDTO;
 import com.cloudpi.cloudpi.user.repositiories.UserRepo;
+import com.cloudpi.cloudpi.user.service.dto.CreateUser;
 import com.cloudpi.cloudpi.utils.AppService;
 import com.google.common.collect.ImmutableList;
 import org.springframework.security.core.userdetails.User;
@@ -76,17 +76,17 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void createNewUser(PostUserRequest user) {
+    public void createNewUser(CreateUser user) {
         Set<Role> roles = new HashSet<>();
         roles.add(Role.USER);
-        String password = passwordEncoder.encode(user.password());
+        String password = passwordEncoder.encode(user.getPassword());
 
         UserEntity userEntity = new UserEntity(
-                user.username(),
+                user.getUsername(),
                 password,
                 new UserDetailsEntity(
-                        user.nickname(),
-                        user.email(),
+                        user.getNickname(),
+                        user.getEmail(),
                         null),
                 roles);
         UserEntity createdUser = userRepo.saveAndFlush(userEntity);

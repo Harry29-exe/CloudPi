@@ -4,7 +4,7 @@ import com.cloudpi.cloudpi.file_module.filesystem.api.request.MoveFileRequest;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileQueryDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FilesystemInfoDTO;
-import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPIMockClient;
+import com.cloudpi.cloudpi.utils.api_tests.AbstractAPIMockClient;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
@@ -15,8 +15,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.util.List;
 import java.util.UUID;
 
-import static com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils.getBody;
-import static com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils.getBodyAsList;
+import static com.cloudpi.cloudpi.utils.api_tests.MockMvcUtils.getBody;
+import static com.cloudpi.cloudpi.utils.api_tests.MockMvcUtils.getBodyAsList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

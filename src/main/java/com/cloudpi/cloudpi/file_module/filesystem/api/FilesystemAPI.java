@@ -1,6 +1,7 @@
 package com.cloudpi.cloudpi.file_module.filesystem.api;
 
 import com.cloudpi.cloudpi.config.springdoc.NotImplemented;
+import com.cloudpi.cloudpi.file_module.filesystem.api.request.GetFileByPathRequest;
 import com.cloudpi.cloudpi.file_module.filesystem.api.request.MoveFileRequest;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileQueryDTO;
@@ -64,12 +65,9 @@ public interface FilesystemAPI {
                     Boolean getWithPermissions);
 
 
-    @GetMapping("file/{filePath}/by-path")
-    @Operation(summary = "Retrieves information about requested file")
-    FileInfoDTO getFileInfoByPath(
-            @PathVariable("filePath") String filePath,
-            @RequestParam(name = "with-permissions", defaultValue = "false")
-                    Boolean getWithPermissions);
+    @PostMapping("get-by-path")
+    @Operation(summary = "Not implemented: Retrieves information about requested file")
+    FileInfoDTO getFileInfoByPath(@RequestBody GetFileByPathRequest request);
 
 
     @PatchMapping("move")

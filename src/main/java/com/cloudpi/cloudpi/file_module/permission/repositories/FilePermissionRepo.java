@@ -66,7 +66,66 @@ public interface FilePermissionRepo extends JpaRepository<FilePermission, Long> 
                 )
                 )
             """)
-    Boolean hasPermission(String filePath, String username, PermissionType type);
+    Boolean hasPermissionByPath(String filePath, String username, PermissionType type);
+
+    @Query("""
+            SELECT COUNT(f) = LENGTH(:filePubIds)
+            FROM FileInfo f
+            WHERE
+                f.pubId = :filePubId
+                AND
+                (
+                f.root.owner.username = :username
+                OR
+                EXISTS (
+                    SELECT TRUE
+                    FROM f.permissions p
+                    WHERE
+                        p.user.username = :username AND
+                        p.type = :type
+                )
+                OR
+                EXISTS (
+                    SELECT TRUE
+                    FROM f.ancestors a
+                    JOIN a.file.permissions ap
+                    WHERE
+                        ap.user.username = :username AND
+                        ap.type = :type
+                )
+                )
+            GROUP BY f
+            """)
+    Boolean hasPermission(List<UUID> filePubIds, String username, PermissionType type);
+
+    @Query("""
+            SELECT COUNT(f) > 0
+            FROM FileInfo f
+            WHERE
+                f.path = :filePath
+                AND
+                (
+                f.root.owner.username = :username
+                OR
+                EXISTS (
+                    SELECT TRUE
+                    FROM f.permissions p
+                    WHERE
+                        p.user.username = :username AND
+                        p.type = :type
+                )
+                OR
+                EXISTS (
+                    SELECT TRUE
+                    FROM f.ancestors a
+                    JOIN a.file.permissions ap
+                    WHERE
+                        ap.user.username = :username AND
+                        ap.type = :type
+                )
+                )
+            """)
+    Boolean hasPermissionByPath(List<String> filePath, String username, PermissionType type);
 
     @Query("""
             SELECT fp.type

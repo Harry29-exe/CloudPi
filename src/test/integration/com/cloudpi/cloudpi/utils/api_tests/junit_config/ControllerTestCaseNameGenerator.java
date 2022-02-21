@@ -1,4 +1,4 @@
-package com.cloudpi.cloudpi.utils.controller_tests.junit_config;
+package com.cloudpi.cloudpi.utils.api_tests.junit_config;
 
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.platform.commons.util.ClassUtils;

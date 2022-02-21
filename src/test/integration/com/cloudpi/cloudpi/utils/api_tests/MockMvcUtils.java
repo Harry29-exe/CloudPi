@@ -1,4 +1,4 @@
-package com.cloudpi.cloudpi.utils.controller_tests;
+package com.cloudpi.cloudpi.utils.api_tests;
 
 import com.cloudpi.cloudpi.authentication.api.dto.LoginRequest;
 import com.cloudpi.cloudpi.utils.IllegalTestStateException;

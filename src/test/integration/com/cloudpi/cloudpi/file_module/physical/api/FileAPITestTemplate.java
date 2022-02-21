@@ -2,13 +2,13 @@ package com.cloudpi.cloudpi.file_module.physical.api;
 
 import com.cloudpi.cloudpi.file_module.FileModuleAPITestTemplate;
 import com.cloudpi.cloudpi.utils.IllegalTestStateException;
-import com.cloudpi.cloudpi.utils.controller_tests.ControllerTest;
+import com.cloudpi.cloudpi.utils.api_tests.APITest;
 
 import java.io.FileInputStream;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-@ControllerTest
+@APITest
 public class FileAPITestTemplate extends FileModuleAPITestTemplate {
 
     /**
@@ -54,6 +54,12 @@ public class FileAPITestTemplate extends FileModuleAPITestTemplate {
         var storagePath = Paths.get(_getStoragePath() + "/" + fileId);
         return storagePath.toFile().exists();
     }
+
+    protected boolean _fileDontExist(UUID fileId) {
+        var storagePath = Paths.get(_getStoragePath() + "/" + fileId);
+        return !storagePath.toFile().exists();
+    }
+
 
     protected byte[] _getFileContent(UUID fileId) {
         var storagePath = Paths.get(_getStoragePath() + "/" + fileId);

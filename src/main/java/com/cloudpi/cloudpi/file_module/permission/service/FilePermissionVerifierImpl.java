@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
 import java.util.UUID;
 
 @Transactional
@@ -22,7 +23,7 @@ public class FilePermissionVerifierImpl implements FilePermissionVerifier {
 
     @Override
     public boolean canModify(String path) {
-        return filePermissionRepo.hasPermission(path, retrieveUsername(), PermissionType.MODIFY);
+        return filePermissionRepo.hasPermissionByPath(path, retrieveUsername(), PermissionType.MODIFY);
     }
 
     @Override
@@ -43,12 +44,27 @@ public class FilePermissionVerifierImpl implements FilePermissionVerifier {
 
     @Override
     public boolean canRead(String path) {
-        return filePermissionRepo.hasPermission(path, retrieveUsername(), PermissionType.READ);
+        return filePermissionRepo.hasPermissionByPath(path, retrieveUsername(), PermissionType.READ);
     }
 
     @Override
     public boolean canRead(VirtualPath path) {
         return canRead(path.getPath());
+    }
+
+    @Override
+    public boolean canReadAllByPubId(List<UUID> filePubId) {
+        return false;
+    }
+
+    @Override
+    public boolean canReadAllByPath(List<String> path) {
+        return false;
+    }
+
+    @Override
+    public boolean canReadAllByVirtualPath(List<VirtualPath> path) {
+        return false;
     }
 
     private String retrieveUsername() {

@@ -1,5 +1,6 @@
 package com.cloudpi.cloudpi.file_module.filesystem.api;
 
+import com.cloudpi.cloudpi.file_module.filesystem.api.request.GetFileByPathRequest;
 import com.cloudpi.cloudpi.file_module.filesystem.api.request.MoveFileRequest;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileQueryDTO;
@@ -53,8 +54,8 @@ public class FilesystemAPIController implements FilesystemAPI {
     }
 
     @Override
-    public FileInfoDTO getFileInfoByPath(String filePath, Boolean getWithPermissions) {
-        return fileInfoService.get(filePath);
+    public FileInfoDTO getFileInfoByPath(GetFileByPathRequest request) {
+        return fileInfoService.getAll(request.filePaths());
     }
 
     @Override

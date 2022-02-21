@@ -1,8 +1,8 @@
 package com.cloudpi.cloudpi.authentication.api;
 
 import com.cloudpi.cloudpi.authentication.api.dto.LoginRequest;
-import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPIMockClient;
-import com.cloudpi.cloudpi.utils.controller_tests.pojo.AuthTokens;
+import com.cloudpi.cloudpi.utils.api_tests.AbstractAPIMockClient;
+import com.cloudpi.cloudpi.utils.api_tests.pojo.AuthTokens;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;

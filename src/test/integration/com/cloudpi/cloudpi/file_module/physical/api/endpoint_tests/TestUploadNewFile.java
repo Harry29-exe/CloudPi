@@ -4,16 +4,16 @@ import com.cloudpi.cloudpi.config.security.Role;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.file_module.physical.api.FileAPITestTemplate;
-import com.cloudpi.cloudpi.utils.controller_tests.ControllerTest;
+import com.cloudpi.cloudpi.utils.api_tests.APITest;
 import com.cloudpi.cloudpi.utils.mock_mvc_users.WithUser;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils.getBody;
+import static com.cloudpi.cloudpi.utils.api_tests.MockMvcUtils.getBody;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ControllerTest
+@APITest
 public class TestUploadNewFile extends FileAPITestTemplate {
 
     @BeforeEach

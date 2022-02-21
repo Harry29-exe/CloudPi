@@ -1,4 +1,4 @@
-package com.cloudpi.cloudpi.utils.controller_tests;
+package com.cloudpi.cloudpi.utils.api_tests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;

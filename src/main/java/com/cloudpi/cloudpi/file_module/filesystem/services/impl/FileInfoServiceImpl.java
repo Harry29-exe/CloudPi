@@ -15,6 +15,7 @@ import com.cloudpi.cloudpi.file_module.filesystem.services.dto.UpdateVFile;
 import com.cloudpi.cloudpi.file_module.physical.domain.DriveRepo;
 import com.cloudpi.cloudpi.utils.AppService;
 
+import java.util.List;
 import java.util.UUID;
 
 @AppService
@@ -82,6 +83,12 @@ public class FileInfoServiceImpl implements FileInfoService {
                 .findByPath(filePath)
                 .orElseThrow(ResourceNotExistException::new)
                 .mapToDTO();
+    }
+
+    @Override
+    public FileInfoDTO getAll(List<String> filePaths) {
+        //todo
+        return null;
     }
 
     @Override

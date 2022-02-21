@@ -1,8 +1,8 @@
-package com.cloudpi.cloudpi.utils.controller_tests;
+package com.cloudpi.cloudpi.utils.api_tests;
 
 import com.cloudpi.cloudpi.authentication.api.dto.LoginRequest;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
-import com.cloudpi.cloudpi.utils.controller_tests.pojo.AuthTokens;
+import com.cloudpi.cloudpi.utils.api_tests.pojo.AuthTokens;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;

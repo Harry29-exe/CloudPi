@@ -4,7 +4,7 @@ import com.cloudpi.cloudpi.user.api.requests.PatchUserRequest;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
 import com.cloudpi.cloudpi.user.dto.UserDetailsDTO;
 import com.cloudpi.cloudpi.user.dto.UserIdDTO;
-import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPIMockClient;
+import com.cloudpi.cloudpi.utils.api_tests.AbstractAPIMockClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.util.List;
 
-import static com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils.getBodyAsList;
+import static com.cloudpi.cloudpi.utils.api_tests.MockMvcUtils.getBodyAsList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

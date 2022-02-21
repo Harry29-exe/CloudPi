@@ -1,14 +1,16 @@
 package com.cloudpi.cloudpi.file_module;
 
 import com.cloudpi.cloudpi.file_module.filesystem.api.FilesystemAPIMockClient;
+import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.file_module.physical.api.FileAPIMockClient;
 import com.cloudpi.cloudpi.file_module.physical.api.requests.PostDriveRequest;
-import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPITestTemplate;
-import com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils;
+import com.cloudpi.cloudpi.utils.api_tests.AbstractAPITestTemplate;
+import com.cloudpi.cloudpi.utils.api_tests.MockMvcUtils;
 import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -17,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static com.cloudpi.cloudpi.utils.api_tests.MockMvcUtils.getBody;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -120,6 +123,28 @@ public abstract class FileModuleAPITestTemplate extends AbstractAPITestTemplate 
         }
 
         return Paths.get(storageMockPath);
+    }
+
+    /**
+     * uploads file from method _loadTextFileTextTxt as bob
+     * to bob/text.txt path
+     *
+     * @see FileModuleAPITestTemplate#_loadTextFileTextTxt()
+     */
+    protected Pair<FileInfoDTO, MockMultipartFile> _uploadTextTxtFileToBobAsBob() throws Exception {
+        var file = _loadTextFileTextTxt();
+
+        var response = fileAPI.performUploadNewFile(
+                        "bob/text.txt",
+                        FileType.TEXT_FILE,
+                        file,
+                        "bob"
+                )
+                .andExpect(status().is2xxSuccessful())
+                .andReturn()
+                .getResponse();
+
+        return Pair.of(getBody(response, FileInfoDTO.class), file);
     }
 
     protected MockMultipartFile _loadTextFileTextTxt() {

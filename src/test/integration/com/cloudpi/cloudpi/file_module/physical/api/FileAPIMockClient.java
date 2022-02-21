@@ -2,11 +2,12 @@ package com.cloudpi.cloudpi.file_module.physical.api;
 
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
-import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPIMockClient;
-import com.cloudpi.cloudpi.utils.controller_tests.FetchUtils;
+import com.cloudpi.cloudpi.utils.api_tests.AbstractAPIMockClient;
+import com.cloudpi.cloudpi.utils.api_tests.FetchUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
@@ -14,9 +15,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
+import java.util.List;
 import java.util.UUID;
 
-import static com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils.getBody;
+import static com.cloudpi.cloudpi.utils.api_tests.MockMvcUtils.getBody;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -95,17 +97,12 @@ public class FileAPIMockClient extends AbstractAPIMockClient {
 
 
     //--------downloadFile---------
-    public MockHttpServletRequestBuilder downloadFileRequest(
-            UUID filePubId
-    ) throws Exception {
-        var requestBuilder = get(apiAddr + "file/" + filePubId);
+    public MockHttpServletRequestBuilder downloadFileRequest(UUID filePubId) throws Exception {
 
-        return requestBuilder;
+        return get(apiAddr + "file/" + filePubId);
     }
 
-    public Resource downloadFile(
-            UUID filePubId
-    ) throws Exception {
+    public Resource downloadFile(UUID filePubId) throws Exception {
 
         var response = perform(
                 downloadFileRequest(filePubId)
@@ -119,19 +116,14 @@ public class FileAPIMockClient extends AbstractAPIMockClient {
         );
     }
 
-    public ResultActions performDownloadFile(
-            UUID filePubId
-    ) throws Exception {
+    public ResultActions performDownloadFile(UUID filePubId) throws Exception {
 
         return perform(
                 downloadFileRequest(filePubId)
         );
     }
 
-    public ResultActions performDownloadFile(
-            UUID filePubId,
-            String asUsername
-    ) throws Exception {
+    public ResultActions performDownloadFile(UUID filePubId, String asUsername) throws Exception {
 
         return perform(
                 downloadFileRequest(filePubId),
@@ -139,9 +131,115 @@ public class FileAPIMockClient extends AbstractAPIMockClient {
         );
     }
 
-    //-------------deleteFile-------------
-    public MockHttpServletRequestBuilder deleteFileReqBuilder(UUID filePubId) {
-        return delete("/files/file/" + filePubId);
+
+    //--------compressAndDownloadDirectory---------
+    public MockHttpServletRequestBuilder compressAndDownloadDirectoryRequest(
+            String directoryId
+    ) throws Exception {
+        var requestBuilder = get(apiAddr + "directory/" + directoryId);
+
+        return requestBuilder;
+    }
+
+    public Resource compressAndDownloadDirectory(
+            String directoryId
+    ) throws Exception {
+
+        var response = perform(
+                compressAndDownloadDirectoryRequest(directoryId)
+        )
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        return new ByteArrayResource(
+                response
+                        .getResponse()
+                        .getContentAsByteArray()
+        );
+    }
+
+    public ResultActions performCompressAndDownloadDirectory(
+            String directoryId
+    ) throws Exception {
+
+        return perform(
+                compressAndDownloadDirectoryRequest(directoryId)
+        );
+    }
+
+    public ResultActions performCompressAndDownloadDirectory(
+            String directoryId,
+            String asUsername
+    ) throws Exception {
+
+        return perform(
+                compressAndDownloadDirectoryRequest(directoryId),
+                asUsername
+        );
+    }
+
+    //--------deleteFile---------
+    public MockHttpServletRequestBuilder deleteFileRequest(UUID filePubId) throws Exception {
+
+        return delete(apiAddr + "file/" + filePubId);
+    }
+
+    public void deleteFile(UUID filePubId) throws Exception {
+
+        var response = perform(
+                deleteFileRequest(filePubId)
+        )
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+    }
+
+    public ResultActions performDeleteFile(UUID filePubId) throws Exception {
+
+        return perform(
+                deleteFileRequest(filePubId)
+        );
+    }
+
+    public ResultActions performDeleteFile(UUID filePubId, String asUsername) throws Exception {
+
+        return perform(
+                deleteFileRequest(filePubId),
+                asUsername
+        );
+    }
+
+
+    //--------deleteFiles---------
+    public MockHttpServletRequestBuilder deleteFilesRequest(List<UUID> fileIds) throws Exception {
+        var requestBuilder = delete(apiAddr + "file")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(fileIds));
+
+        return requestBuilder;
+    }
+
+    public void deleteFiles(List<UUID> fileIds) throws Exception {
+
+        var response = perform(
+                deleteFilesRequest(fileIds)
+        )
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+    }
+
+    public ResultActions performDeleteFiles(List<UUID> fileIds) throws Exception {
+
+        return perform(
+                deleteFilesRequest(fileIds)
+        );
+    }
+
+    public ResultActions performDeleteFiles(List<UUID> fileIds, String asUsername) throws Exception {
+
+        return perform(
+                deleteFilesRequest(fileIds),
+                asUsername
+        );
     }
 
 }
