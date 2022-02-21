@@ -1,9 +1,9 @@
 package com.cloudpi.cloudpi.user.service;
 
 import com.cloudpi.cloudpi.user.api.requests.PatchUserRequest;
-import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
 import com.cloudpi.cloudpi.user.dto.UserDetailsDTO;
 import com.cloudpi.cloudpi.user.dto.UserIdDTO;
+import com.cloudpi.cloudpi.user.service.dto.CreateUser;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public interface UserService {
 
     UserDetailsDTO getUserDetails(String username);
 
-    void createNewUser(PostUserRequest user);
+    void createNewUser(CreateUser user);
 
     void updateUserDetails(String username, PatchUserRequest request);
 

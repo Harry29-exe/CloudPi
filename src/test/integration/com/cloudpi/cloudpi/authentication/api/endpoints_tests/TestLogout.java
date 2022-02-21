@@ -1,10 +1,10 @@
 package com.cloudpi.cloudpi.authentication.api.endpoints_tests;
 
 import com.cloudpi.cloudpi.authentication.api.AuthenticationApiTestTemplate;
-import com.cloudpi.cloudpi.utils.controller_tests.ControllerTest;
+import com.cloudpi.cloudpi.utils.api_tests.APITest;
 import org.junit.jupiter.api.BeforeEach;
 
-@ControllerTest
+@APITest
 public class TestLogout extends AuthenticationApiTestTemplate {
 
     @BeforeEach

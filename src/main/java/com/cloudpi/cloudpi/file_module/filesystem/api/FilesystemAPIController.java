@@ -1,5 +1,6 @@
 package com.cloudpi.cloudpi.file_module.filesystem.api;
 
+import com.cloudpi.cloudpi.file_module.filesystem.api.request.GetFileByPathRequest;
 import com.cloudpi.cloudpi.file_module.filesystem.api.request.MoveFileRequest;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileQueryDTO;
@@ -48,9 +49,13 @@ public class FilesystemAPIController implements FilesystemAPI {
     }
 
     @Override
-    public FileInfoDTO getFileInfo(String fileId, Boolean getWithPermissions) {
-        UUID fileUUID = UUID.fromString(fileId);
-        return fileInfoService.get(fileUUID);
+    public FileInfoDTO getFileInfo(UUID fileId, Boolean getWithPermissions) {
+        return fileInfoService.get(fileId);
+    }
+
+    @Override
+    public FileInfoDTO getFileInfoByPath(GetFileByPathRequest request) {
+        return fileInfoService.getAll(request.filePaths());
     }
 
     @Override
@@ -64,12 +69,12 @@ public class FilesystemAPIController implements FilesystemAPI {
     }
 
     @Override
-    public FilesystemInfoDTO getUsersVirtualDrivesInfo(String username) {
+    public FilesystemInfoDTO getUsersFilesystemInfo(String username) {
         return filesystemService.getUsersVirtualDrives(username);
     }
 
     @Override
-    public void changeVirtualDriveMaxSize(String username, Long newAssignedSpace) {
+    public void changeUserFilesystemMaxSize(String username, Long newAssignedSpace) {
         filesystemService.changeVirtualDriveSize(username, newAssignedSpace);
     }
 

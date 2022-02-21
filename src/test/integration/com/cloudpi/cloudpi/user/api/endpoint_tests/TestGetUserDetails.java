@@ -3,15 +3,15 @@ package com.cloudpi.cloudpi.user.api.endpoint_tests;
 import com.cloudpi.cloudpi.config.security.Role;
 import com.cloudpi.cloudpi.user.api.UserAPITestTemplate;
 import com.cloudpi.cloudpi.user.dto.UserDetailsDTO;
-import com.cloudpi.cloudpi.utils.controller_tests.ControllerTest;
+import com.cloudpi.cloudpi.utils.api_tests.APITest;
 import com.cloudpi.cloudpi.utils.mock_mvc_users.WithUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils.getBody;
+import static com.cloudpi.cloudpi.utils.api_tests.MockMvcUtils.getBody;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ControllerTest
+@APITest
 public class TestGetUserDetails extends UserAPITestTemplate {
 
     @BeforeEach

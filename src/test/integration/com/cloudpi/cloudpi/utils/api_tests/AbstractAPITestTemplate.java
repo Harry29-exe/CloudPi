@@ -1,9 +1,8 @@
-package com.cloudpi.cloudpi.utils.controller_tests;
+package com.cloudpi.cloudpi.utils.api_tests;
 
 import com.cloudpi.cloudpi.user.api.UserAPIMockClient;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -15,18 +14,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public abstract class AbstractAPITestTemplate {
 
-
-    @Autowired
-    protected MockMvc mockMvc;
-    protected ObjectMapper mapper = new JsonMapper();
-    @Autowired
-    protected FetchUtils fetch;
     @Autowired
     protected List<PostUserRequest> userRequestList;
     @Autowired
+    protected MockMvc mockMvc;
+    @Autowired
+    protected ObjectMapper mapper;
+    @Autowired
+    protected FetchUtils fetch;
+    @Autowired
     protected UserAPIMockClient userAPI;
 
-    protected void addUsersToDB() throws Exception {
+
+    protected void initUsersToDB() throws Exception {
         for (var userRequest : userRequestList) {
             userAPI.performCreateNewUser(userRequest, "admin")
                     .andExpect(status().is2xxSuccessful());

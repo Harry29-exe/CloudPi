@@ -6,6 +6,7 @@ import com.cloudpi.cloudpi.file_module.filesystem.services.dto.CreateFileInDB;
 import com.cloudpi.cloudpi.file_module.filesystem.services.dto.UpdateVFile;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -19,6 +20,12 @@ public interface FileInfoService {
 
     @PreAuthorize("@filePermissionVerifier.canRead(#filePubId)")
     FileInfoDTO get(UUID filePubId);
+
+    @PreAuthorize("@filePermissionVerifier.canRead(#filePath)")
+    FileInfoDTO get(String filePath);
+
+    @PreAuthorize("@filePermissionVerifier.canRead(#filePath)")
+    FileInfoDTO getAll(List<String> filePaths);
 
     @PreAuthorize("@filePermissionVerifier.canModify(#filePubId)")
     void move(UUID filePubId, String newPath);

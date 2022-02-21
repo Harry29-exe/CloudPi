@@ -1,6 +1,6 @@
-package com.cloudpi.cloudpi.utils.controller_tests;
+package com.cloudpi.cloudpi.utils.api_tests;
 
-import com.cloudpi.cloudpi.utils.controller_tests.junit_config.ControllerTestCaseNameGenerator;
+import com.cloudpi.cloudpi.utils.api_tests.junit_config.ControllerTestCaseNameGenerator;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,5 +20,5 @@ import java.lang.annotation.RetentionPolicy;
 @DisplayNameGeneration(ControllerTestCaseNameGenerator.class)
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ControllerTest {
+public @interface APITest {
 }

@@ -25,8 +25,8 @@ public interface FileAPI {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "uploads new file",
-            description = "Uploads new file to the filesystem basing on provided path and filetype")
+    @Operation(summary = "uploads new file, or modify it if exist",
+            description = "Uploads new file to the filesystem, if file exist it's modified")
     FileInfoDTO uploadNewFile(
             @RequestParam(defaultValue = "UNDEFINED") FileType fileType,
             @RequestParam String filepath,

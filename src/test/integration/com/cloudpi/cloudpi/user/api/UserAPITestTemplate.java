@@ -1,6 +1,6 @@
 package com.cloudpi.cloudpi.user.api;
 
-import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPITestTemplate;
+import com.cloudpi.cloudpi.utils.api_tests.AbstractAPITestTemplate;
 
 //@ControllerTest
 public class UserAPITestTemplate extends AbstractAPITestTemplate {
@@ -8,7 +8,7 @@ public class UserAPITestTemplate extends AbstractAPITestTemplate {
 
     @Override
     protected void initTemplate() throws Exception {
-        addUsersToDB();
+        initUsersToDB();
     }
 
 //    protected void addUserToDB(PostUserRequest userRequest, String authToken) throws Exception {

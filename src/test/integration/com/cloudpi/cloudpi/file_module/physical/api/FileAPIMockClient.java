@@ -2,9 +2,12 @@ package com.cloudpi.cloudpi.file_module.physical.api;
 
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
-import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPIMockClient;
-import com.cloudpi.cloudpi.utils.controller_tests.FetchUtils;
+import com.cloudpi.cloudpi.utils.api_tests.AbstractAPIMockClient;
+import com.cloudpi.cloudpi.utils.api_tests.FetchUtils;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
@@ -12,13 +15,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.UUID;
 
-import static com.cloudpi.cloudpi.utils.controller_tests.MockMvcUtils.getBody;
+import static com.cloudpi.cloudpi.utils.api_tests.MockMvcUtils.getBody;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,61 +26,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Component
 public class FileAPIMockClient extends AbstractAPIMockClient {
 
-    public final String textfileContent = "This is test textfile";
-
     public FileAPIMockClient(MockMvc mockMvc, FetchUtils fetchUtils) {
         this.mockMvc = mockMvc;
         this.fetchUtils = fetchUtils;
     }
 
-
-    public ResultActions uploadTextfileAs(String asUsername) throws Exception {
-        var file = new MockMultipartFile(
-                "file",
-                "text.txt",
-                null,
-                textfileContent.getBytes(StandardCharsets.UTF_8));
-
-        return fetchUtils.as(
-                asUsername,
-                uploadNewFileRequest(file, asUsername + "/text.txt", FileType.TEXT_FILE)
-        );
-    }
-
-    public ResultActions uploadTextfileTo(String path) throws Exception {
-        var file = new MockMultipartFile(
-                "file",
-                "text.txt",
-                null,
-                textfileContent.getBytes(StandardCharsets.UTF_8));
-
-        return mockMvc.perform(
-                uploadNewFileRequest(file, path, FileType.TEXT_FILE)
-        );
-    }
-
-    //-------------utils---------------------
-    public MockMultipartFile readFileFromResources(String pathInResources) throws Exception {
-        URL resources = getClass().getClassLoader().getResource(pathInResources);
-        if (resources == null)
-            throw new IllegalStateException("No such file in resources");
-
-        var file = new File(resources.toURI());
-
-        return new MockMultipartFile("file", new FileInputStream(file));
-    }
+    private final String apiAddr = "/files/";
 
     //-------------uploadNewFile-------------
-    public MockHttpServletRequestBuilder uploadNewFileRequest(MockMultipartFile file, String path, FileType type) {
-        return multipart("/files/file")
+    public MockHttpServletRequestBuilder uploadNewFileRequest(String path, FileType type, MockMultipartFile file) {
+        return multipart(apiAddr + "file")
                 .file(file)
                 .param("filepath", path)
                 .param("fileType", type.name());
     }
 
-    public FileInfoDTO uploadNewFile(MockMultipartFile file, String path, FileType type) throws Exception {
+    public FileInfoDTO uploadNewFile(String path, FileType type, MockMultipartFile file) throws Exception {
         var response = perform(
-                uploadNewFileRequest(file, path, type)
+                uploadNewFileRequest(path, type, file)
         )
                 .andExpect(status().is2xxSuccessful())
                 .andReturn()
@@ -89,15 +52,15 @@ public class FileAPIMockClient extends AbstractAPIMockClient {
         return getBody(response, FileInfoDTO.class);
     }
 
-    public ResultActions performUploadNewFile(MockMultipartFile file, String path, FileType type) throws Exception {
+    public ResultActions performUploadNewFile(String path, FileType type, MockMultipartFile file) throws Exception {
         return perform(
-                uploadNewFileRequest(file, path, type)
+                uploadNewFileRequest(path, type, file)
         );
     }
 
-    public ResultActions performUploadNewFile(MockMultipartFile file, String path, FileType type, String asUsername) throws Exception {
+    public ResultActions performUploadNewFile(String path, FileType type, MockMultipartFile file, String asUsername) throws Exception {
         return perform(
-                uploadNewFileRequest(file, path, type),
+                uploadNewFileRequest(path, type, file),
                 asUsername
         );
     }
@@ -105,7 +68,7 @@ public class FileAPIMockClient extends AbstractAPIMockClient {
 
     //-------------uploadNewImage-------------
     public MockMultipartHttpServletRequestBuilder uploadNewImageRequest(MockMultipartFile image, String imageName) {
-        return multipart("/files/image/" + imageName);
+        return multipart(apiAddr + "image/" + imageName);
     }
 
     public FileInfoDTO uploadNewImage(MockMultipartFile image, String imageName) throws Exception {
@@ -133,14 +96,150 @@ public class FileAPIMockClient extends AbstractAPIMockClient {
     }
 
 
-    //-------------downloadFile-------------
-    public MockHttpServletRequestBuilder downloadFileReqBuilder(UUID filePubId) {
-        return get("/files/file/" + filePubId);
+    //--------downloadFile---------
+    public MockHttpServletRequestBuilder downloadFileRequest(UUID filePubId) throws Exception {
+
+        return get(apiAddr + "file/" + filePubId);
     }
 
-    //-------------deleteFile-------------
-    public MockHttpServletRequestBuilder deleteFileReqBuilder(UUID filePubId) {
-        return delete("/files/file/" + filePubId);
+    public Resource downloadFile(UUID filePubId) throws Exception {
+
+        var response = perform(
+                downloadFileRequest(filePubId)
+        )
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        return new ByteArrayResource(response
+                .getResponse()
+                .getContentAsByteArray()
+        );
+    }
+
+    public ResultActions performDownloadFile(UUID filePubId) throws Exception {
+
+        return perform(
+                downloadFileRequest(filePubId)
+        );
+    }
+
+    public ResultActions performDownloadFile(UUID filePubId, String asUsername) throws Exception {
+
+        return perform(
+                downloadFileRequest(filePubId),
+                asUsername
+        );
+    }
+
+
+    //--------compressAndDownloadDirectory---------
+    public MockHttpServletRequestBuilder compressAndDownloadDirectoryRequest(
+            String directoryId
+    ) throws Exception {
+        var requestBuilder = get(apiAddr + "directory/" + directoryId);
+
+        return requestBuilder;
+    }
+
+    public Resource compressAndDownloadDirectory(
+            String directoryId
+    ) throws Exception {
+
+        var response = perform(
+                compressAndDownloadDirectoryRequest(directoryId)
+        )
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        return new ByteArrayResource(
+                response
+                        .getResponse()
+                        .getContentAsByteArray()
+        );
+    }
+
+    public ResultActions performCompressAndDownloadDirectory(
+            String directoryId
+    ) throws Exception {
+
+        return perform(
+                compressAndDownloadDirectoryRequest(directoryId)
+        );
+    }
+
+    public ResultActions performCompressAndDownloadDirectory(
+            String directoryId,
+            String asUsername
+    ) throws Exception {
+
+        return perform(
+                compressAndDownloadDirectoryRequest(directoryId),
+                asUsername
+        );
+    }
+
+    //--------deleteFile---------
+    public MockHttpServletRequestBuilder deleteFileRequest(UUID filePubId) throws Exception {
+
+        return delete(apiAddr + "file/" + filePubId);
+    }
+
+    public void deleteFile(UUID filePubId) throws Exception {
+
+        var response = perform(
+                deleteFileRequest(filePubId)
+        )
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+    }
+
+    public ResultActions performDeleteFile(UUID filePubId) throws Exception {
+
+        return perform(
+                deleteFileRequest(filePubId)
+        );
+    }
+
+    public ResultActions performDeleteFile(UUID filePubId, String asUsername) throws Exception {
+
+        return perform(
+                deleteFileRequest(filePubId),
+                asUsername
+        );
+    }
+
+
+    //--------deleteFiles---------
+    public MockHttpServletRequestBuilder deleteFilesRequest(List<UUID> fileIds) throws Exception {
+        var requestBuilder = delete(apiAddr + "file")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(fileIds));
+
+        return requestBuilder;
+    }
+
+    public void deleteFiles(List<UUID> fileIds) throws Exception {
+
+        var response = perform(
+                deleteFilesRequest(fileIds)
+        )
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+    }
+
+    public ResultActions performDeleteFiles(List<UUID> fileIds) throws Exception {
+
+        return perform(
+                deleteFilesRequest(fileIds)
+        );
+    }
+
+    public ResultActions performDeleteFiles(List<UUID> fileIds, String asUsername) throws Exception {
+
+        return perform(
+                deleteFilesRequest(fileIds),
+                asUsername
+        );
     }
 
 }

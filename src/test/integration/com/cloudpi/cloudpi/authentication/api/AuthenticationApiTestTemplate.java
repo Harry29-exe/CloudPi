@@ -1,7 +1,7 @@
 package com.cloudpi.cloudpi.authentication.api;
 
 import com.cloudpi.cloudpi.user.api.UserAPIMockClient;
-import com.cloudpi.cloudpi.utils.controller_tests.AbstractAPITestTemplate;
+import com.cloudpi.cloudpi.utils.api_tests.AbstractAPITestTemplate;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,7 +16,7 @@ public class AuthenticationApiTestTemplate extends AbstractAPITestTemplate {
     protected AuthenticationAPIMockClient authAPI;
 
     protected void initTemplate() throws Exception {
-        addUsersToDB();
+        initUsersToDB();
     }
 
 //    protected ResultActions fetchLogin(String username, String password) throws Exception {
