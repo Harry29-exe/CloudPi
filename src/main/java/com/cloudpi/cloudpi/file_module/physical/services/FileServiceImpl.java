@@ -111,15 +111,14 @@ public class FileServiceImpl implements FileService {
         fileInfoService.delete(filePubId);
     }
 
-    // todo dokladnie przetestowac i zoptymalizowac te metode
     @Override
     public ResponseEntity<byte[]> readPreview(Integer previewResolution, UUID imageId) {
         var path = driveService.getPathToFile(imageId);
         var file = path.toFile();
         try {
             BufferedImage bufferedImage = ImageIO.read(file);
-            Image image = bufferedImage.getScaledInstance(previewResolution, previewResolution, Image.SCALE_FAST);
-            BufferedImage outputImage = new BufferedImage(previewResolution, previewResolution, BufferedImage.TYPE_INT_ARGB);
+            Image image = bufferedImage.getScaledInstance(previewResolution, previewResolution, Image.SCALE_DEFAULT);
+            BufferedImage outputImage = new BufferedImage(previewResolution, previewResolution, BufferedImage.TYPE_INT_RGB);
             outputImage.getGraphics().drawImage(image, 0, 0, null);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             ImageIO.write(outputImage, "jpg", os);
