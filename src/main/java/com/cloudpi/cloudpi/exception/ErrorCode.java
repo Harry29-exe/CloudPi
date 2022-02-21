@@ -33,6 +33,8 @@ public enum ErrorCode {
     READ_FAILED,
     SAVE_FAILED,
     NOT_ENOUGH_SPACE,
+    NOT_DIRECTORY,
+    COMPRESSION_FAILED,
 
     /**
      * permissions

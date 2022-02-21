@@ -59,7 +59,7 @@ public class FileAPIController implements FileAPI {
 
     @Override
     public Resource compressAndDownloadDirectory(String directoryId) {
-        throw new NotYetImplementedException();
+        return fileService.downloadCompressedDirectory(UUID.fromString(directoryId));
     }
 
     @Override

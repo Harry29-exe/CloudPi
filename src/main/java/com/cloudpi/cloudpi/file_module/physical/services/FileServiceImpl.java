@@ -1,10 +1,10 @@
 package com.cloudpi.cloudpi.file_module.physical.services;
 
-import com.cloudpi.cloudpi.exception.file.CouldNotDeleteFileException;
-import com.cloudpi.cloudpi.exception.file.CouldNotModifyFileException;
-import com.cloudpi.cloudpi.exception.file.CouldNotReadFileException;
-import com.cloudpi.cloudpi.exception.file.CouldNotSaveFileException;
+import com.cloudpi.cloudpi.exception.file.*;
+import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
+import com.cloudpi.cloudpi.file_module.filesystem.domain.FileInfo;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
+import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.file_module.filesystem.pojo.VirtualPath;
 import com.cloudpi.cloudpi.file_module.filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.filesystem.services.FileInfoService;
@@ -12,6 +12,9 @@ import com.cloudpi.cloudpi.file_module.filesystem.services.dto.CreateFileInDB;
 import com.cloudpi.cloudpi.file_module.filesystem.services.dto.UpdateVFile;
 import com.cloudpi.cloudpi.file_module.permission.service.dto.CreateFile;
 import com.cloudpi.cloudpi.utils.AppService;
+import com.fasterxml.jackson.databind.deser.std.StringArrayDeserializer;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -21,16 +24,20 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @AppService
 public class FileServiceImpl implements FileService {
+    @Value("${cloud-pi.compression.storage}")
+    private String compressionDirectory;
     private final DriveService driveService;
     private final FileInfoService fileInfoService;
     private final FileInfoRepo fileInfoRepo;
@@ -128,6 +135,28 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    @Override
+    public Resource downloadCompressedDirectory(UUID directoryID) {
+        var rootDirectory = fileInfoRepo.findByPubId(directoryID)
+                .orElseThrow(ResourceNotExistException::new);
+        if(rootDirectory.getType() != FileType.DIRECTORY) {
+            throw new NotDirectoryException();
+        }
+
+        String compressedPath = compressionDirectory + rootDirectory.getName() + ".zip";
+
+        try {
+            FileOutputStream fos = new FileOutputStream(compressedPath);
+            ZipOutputStream zos = new ZipOutputStream(fos);
+            createAndCompressChildFiles(rootDirectory, zos, new HashSet<>());
+            Resource resource = new InputStreamResource(new FileInputStream(Paths.get(compressedPath).toFile()));
+            Files.delete(Paths.get(compressedPath));
+            return resource;
+        } catch (IOException ioex) {
+            throw new DirectoryCompressionException();
+        }
+    }
+
     protected void saveFileToDisc(MultipartFile inFile, String newFilePath) {
         var path = Paths.get(newFilePath);
         try {
@@ -149,7 +178,40 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    private void createAndCompressChildFiles(FileInfo currentDirectory, ZipOutputStream zos, Set<String> pathSet)
+            throws IOException {
+        String allPath = currentDirectory.getPath();
+        String zipPath = allPath.substring(allPath.indexOf(currentDirectory.getName()));
+        zos.putNextEntry(new ZipEntry(zipPath + "/"));
+        zos.closeEntry();
+
+        for(var child : currentDirectory.getChildren()) {
+            FileInfo currentFile = child.getFile();
+            allPath = currentFile.getPath();
+            zipPath = allPath.substring(allPath.indexOf(currentDirectory.getName()));
+            Path currentPath = Paths.get(zipPath);
+            if(!pathSet.contains(allPath)) {
+                pathSet.add(allPath);
+                if (currentFile.getType() != FileType.DIRECTORY) {
+                    Path filePath = Paths.get(currentFile.getDrive().getPath() + "/" + currentFile.getPubId());
+                    compressFile(filePath, currentPath, zos);
+                }
+            }
+        }
+    }
+
+    private void compressFile(Path sourceFilePath, Path targetFilePath, ZipOutputStream zos)
+            throws IOException {
+        FileInputStream fis = new FileInputStream(sourceFilePath.toFile());
+        ZipEntry zipEntry = new ZipEntry(targetFilePath.toString());
+        zos.putNextEntry(zipEntry);
+        byte[] bytes = new byte[1024];
+        int length;
+        while ((length = fis.read(bytes)) >= 0) {
+            zos.write(bytes, 0, length);
+        }
+        fis.close();
+        zos.closeEntry();
+    }
+
 }
-
-
-
