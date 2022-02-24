@@ -12,10 +12,10 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
-@Getter
 @Setter
 @NoArgsConstructor
 @Entity
@@ -58,9 +58,13 @@ public class UserEntity {
     )
     private FilesystemInfo userDrive;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<Role> roles;
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
+    private Set<RoleEntity> roles;
 
+    //---------------Constructors---------------
     public UserEntity(@NonNull String username,
                       @NonNull String password,
                       @NonNull UserDetailsEntity userDetails,
@@ -70,9 +74,22 @@ public class UserEntity {
         this.password = password;
         this.userDetails = userDetails;
         this.userDetails.setUser(this);
-        this.roles = roles;
+        this.roles = roles.stream()
+                .map(r -> new RoleEntity(this, r))
+                .collect(Collectors.toSet());
     }
 
+    //---------------Public---------------
+    public void addRole(Role role) {
+        var roleExist = roles.stream()
+                .anyMatch(r -> r.getRole().equals(role));
+
+        if(!roleExist) {
+            roles.add(new RoleEntity(this, role));
+        }
+    }
+
+    //---------------Mappers---------------
     public UserIdDTO toUserIdDTO() {
         return new UserIdDTO(
                 username,
@@ -88,8 +105,46 @@ public class UserEntity {
                 userDetails.getProfilePicturePubId(),
                 userDetails.getNickname(),
                 pubId.toString(),
-                roles);
+                roles.stream()
+                        .map(RoleEntity::getRole)
+                        .collect(Collectors.toCollection(HashSet::new))
+        );
     }
 
+    //---------------Getters---------------
+    public Long getId() {
+        return id;
+    }
+
+    public UUID getPubId() {
+        return pubId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Boolean getLocked() {
+        return locked;
+    }
+
+    public UserDetailsEntity getUserDetails() {
+        return userDetails;
+    }
+
+    public FilesystemInfo getUserDrive() {
+        return userDrive;
+    }
+
+    public List<Role> getRoles() {
+        return this.roles
+                .stream()
+                .map(RoleEntity::getRole)
+                .toList();
+    }
 
 }

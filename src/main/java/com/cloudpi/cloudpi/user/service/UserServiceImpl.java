@@ -52,11 +52,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public ImmutableList<UserIdDTO> getAllUsers() {
-        var users = userRepo.findAll()
+        return userRepo.findAll()
                 .stream()
                 .map(UserEntity::toUserIdDTO)
                 .collect(ImmutableList.toImmutableList());
-        return users;
     }
 
     @Override
