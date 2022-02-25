@@ -159,15 +159,13 @@ public class FileInfo {
     }
 
     public void move(FileInfo newParent) {
-        ancestors.forEach(
-                ancestor -> ancestor.setFile(null)
-        );
+        while (!ancestors.isEmpty()) {
+            ancestors.get(0).setFile(null);
+            ancestors.remove(0);
+        }
 
-        ancestors = new ArrayList<>();
-        ancestors.add(
-                new FileAncestor(this, newParent.getId(), 1)
-        );
-
+        parentId = newParent.getId();
+        ancestors.add(new FileAncestor(this, newParent.getId(), 1));
         for (var parentAncestor : newParent.ancestors) {
             ancestors.add(
                     transformToThisFileAncestor(parentAncestor)

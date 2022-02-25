@@ -16,11 +16,18 @@ import javax.validation.Valid;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FileQueryDTO {
 
+    @Schema(nullable = true, description = "nullable")
     private String name;
+
+    @Schema(nullable = true, description = "nullable")
     private FileType type;
+
+    @Schema(nullable = true, description = "nullable")
     @Valid
     @Nullable
     private TimePeriod created;
+
+    @Schema(nullable = true, description = "nullable")
     @Valid
     @Nullable
     private TimePeriod lastModified;

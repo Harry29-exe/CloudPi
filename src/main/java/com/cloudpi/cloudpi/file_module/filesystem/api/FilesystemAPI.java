@@ -23,7 +23,6 @@ import java.util.UUID;
                 " info and modify it.")
 public interface FilesystemAPI {
 
-    //todo fix it
     @GetMapping("file-structure")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "retrieves file structure",
@@ -31,14 +30,14 @@ public interface FilesystemAPI {
                     "if a file has no children or depth level is too low to show them, children value is returned as empty list")
     FileStructureDTO getFileStructure(
             @RequestParam(defaultValue = "0") Integer structureLevels,
-            @RequestParam(defaultValue = "/") String fileStructureRoot,
+            @RequestParam String fileStructureRoot,
             Authentication auth);
 
 
+    @GetMapping("files-shared-by-user")
     @Operation(summary = NotImplemented.PRIORITY_MEDIUM + "Returns list of files that user shared",
             description = "Returns list of files that belong to logged user and" +
                     "can be accessed by someone else other that")
-    @GetMapping("files-shared-by-user")
     List<FileInfoDTO> getFilesSharedByUser();
 
 
@@ -99,6 +98,8 @@ public interface FilesystemAPI {
 
 
     @PostMapping("search")
+    @Operation(summary = "Takes query in request body and search for files matching given criteria",
+            description = "Takes query in request body and search for files matching given criteria")
     List<FileInfoDTO> searchInUserFiles(
             @RequestBody FileQueryDTO searchQuery,
             Authentication auth);
