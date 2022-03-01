@@ -9,9 +9,9 @@ VALUES
  gen_random_uuid(), 'admin');
 
 INSERT INTO user_details
-VALUES (1, NULL, 'admin', NULL);
+VALUES (1, NULL, false, NULL, 'admin');
 
-INSERT INTO user_entity_roles
-VALUES (1, 0),
-       (1, 1),
-       (1, 2);
+INSERT INTO role_entity(id, user_id, role)
+VALUES (1, 1, 0),
+       (2, 1, 1),
+       (3, 1, 2);

@@ -20,24 +20,17 @@ alter table if exists filesystems
     drop constraint if exists FKhf1rlrrl3r5qoewirr7hagfb6;
 alter table if exists filesystems
     drop constraint if exists FKgdl0qxqsj86u4ec55pgcg7vl3;
-alter table if exists sharing
-    drop constraint if exists FK1w3dc5djouoptxtbh8duwqe14;
-alter table if exists sharing
-    drop constraint if exists FKe6u6mgr7nrlaqwy1f3pj5twx;
-alter table if exists user_details
-    drop constraint if exists FKdic9c3qbc8w2vp8humyr03m1m;
+alter table if exists role_entity
+    drop constraint if exists FKih8eyutwr9a19m9q2ihue15r0;
 alter table if exists user_details
     drop constraint if exists FKicouhgavvmiiohc28mgk0kuj5;
-alter table if exists user_entity_roles
-    drop constraint if exists FK80w28k99mayei90r6mycds2em;
 drop table if exists drive cascade;
 drop table if exists file_ancestor cascade;
 drop table if exists file_details cascade;
 drop table if exists file_info cascade;
 drop table if exists file_permission cascade;
 drop table if exists filesystems cascade;
-drop table if exists sharing cascade;
+drop table if exists role_entity cascade;
 drop table if exists user_details cascade;
-drop table if exists user_entity_roles cascade;
 drop table if exists users cascade;
 drop sequence if exists hibernate_sequence;

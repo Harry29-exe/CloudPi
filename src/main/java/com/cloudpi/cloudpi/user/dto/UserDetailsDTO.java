@@ -4,7 +4,6 @@ import com.cloudpi.cloudpi.config.security.Role;
 import lombok.*;
 
 import java.util.Set;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,7 +12,7 @@ import java.util.UUID;
 public class UserDetailsDTO {
     private String username;
     private String email;
-    private UUID profilePicturePubId;
+    private Boolean hasProfileImage;
     private String nickname;
     private String pubId;
     private Set<Role> roles;

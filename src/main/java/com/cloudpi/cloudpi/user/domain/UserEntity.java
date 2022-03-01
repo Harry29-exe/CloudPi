@@ -4,7 +4,6 @@ import com.cloudpi.cloudpi.config.security.Role;
 import com.cloudpi.cloudpi.file_module.filesystem.domain.FilesystemInfo;
 import com.cloudpi.cloudpi.user.dto.UserDetailsDTO;
 import com.cloudpi.cloudpi.user.dto.UserIdDTO;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
@@ -12,8 +11,10 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.*;
-import java.util.stream.Collector;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Setter
@@ -95,14 +96,14 @@ public class UserEntity {
                 username,
                 pubId.toString(),
                 userDetails.getNickname(),
-                userDetails.getProfilePicturePubId());
+                userDetails.isHasProfileImage());
     }
 
     public UserDetailsDTO toUserDetailsDTO() {
         return new UserDetailsDTO(
                 username,
                 userDetails.getEmail(),
-                userDetails.getProfilePicturePubId(),
+                userDetails.isHasProfileImage(),
                 userDetails.getNickname(),
                 pubId.toString(),
                 roles.stream()

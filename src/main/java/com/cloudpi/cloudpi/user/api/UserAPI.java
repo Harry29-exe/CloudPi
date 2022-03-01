@@ -2,6 +2,7 @@ package com.cloudpi.cloudpi.user.api;
 
 import com.cloudpi.cloudpi.config.security.IsAdminOrMod;
 import com.cloudpi.cloudpi.config.security.Role;
+import com.cloudpi.cloudpi.user.api.requests.PatchPasswordRequest;
 import com.cloudpi.cloudpi.user.api.requests.PatchUserRequest;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
 import com.cloudpi.cloudpi.user.dto.UserDetailsDTO;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -23,7 +25,6 @@ import java.util.List;
 public interface UserAPI {
 
 
-
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns all users",
@@ -31,6 +32,7 @@ public interface UserAPI {
     List<UserIdDTO> getAllUsers();
 
 
+    //todo(add with image param)
     //fixme
     @PreAuthorize("hasAnyRole('" + Role.admin + "', '" + Role.moderator + "') OR " +
             "#username == authentication.name")
@@ -51,18 +53,29 @@ public interface UserAPI {
     void createNewUser(@RequestBody @Valid PostUserRequest user);
 
 
-    @PreAuthorize("hasAnyRole('"+Role.admin+"', '"+Role.moderator+"') OR " +
+    @PreAuthorize("hasAnyRole('" + Role.admin + "', '" + Role.moderator + "') OR " +
             "#username == authentication.name")
     @PatchMapping("{username}")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "updates user with provided username",
-            description = "Updates details like username, email and path to profile picture of a"+
+            description = "Updates details like username, email and path to profile picture of a" +
                     "user with specified username")
     void updateUserDetails(@PathVariable(name = "username") String username,
                            @RequestBody PatchUserRequest request);
 
 
-    @PreAuthorize("hasAnyRole('"+Role.admin+"', '"+Role.moderator+"') OR " +
+    @PatchMapping("profile-image")
+    void setProfileImage(@RequestBody MultipartFile file);
+
+
+    @PatchMapping("password")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "updates user's password",
+            description = "Takes current and new password, and set new password to currently logged user")
+    void updateUserPassword(@RequestBody PatchPasswordRequest request);
+
+
+    @PreAuthorize("hasAnyRole('" + Role.admin + "', '" + Role.moderator + "') OR " +
             "#username == authentication.name")
     @DeleteMapping("{username}")
     @Operation(summary = "deletes user with provided username",

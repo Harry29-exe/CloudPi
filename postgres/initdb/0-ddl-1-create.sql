@@ -66,10 +66,11 @@ create table role_entity
 );
 create table user_details
 (
-    user_id            int8         not null,
-    email              varchar(255),
-    nickname           varchar(255) not null,
-    profile_picture_id int8,
+    user_id           int8         not null,
+    email             varchar(255),
+    has_profile_image boolean      not null,
+    image             oid,
+    nickname          varchar(255) not null,
     primary key (user_id)
 );
 create table users
@@ -117,7 +118,5 @@ alter table if exists filesystems
     add constraint FKgdl0qxqsj86u4ec55pgcg7vl3 foreign key (root_directory) references file_info;
 alter table if exists role_entity
     add constraint FKih8eyutwr9a19m9q2ihue15r0 foreign key (user_id) references users;
-alter table if exists user_details
-    add constraint FKdic9c3qbc8w2vp8humyr03m1m foreign key (profile_picture_id) references file_info;
 alter table if exists user_details
     add constraint FKicouhgavvmiiohc28mgk0kuj5 foreign key (user_id) references users;

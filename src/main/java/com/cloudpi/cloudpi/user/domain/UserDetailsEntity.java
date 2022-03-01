@@ -1,18 +1,12 @@
 package com.cloudpi.cloudpi.user.domain;
 
-import com.cloudpi.cloudpi.file_module.filesystem.domain.FileInfo;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.Setter;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.UUID;
 
-@Getter
-@Setter
 @Table(name = "user_details")
 @Entity
 @NoArgsConstructor
@@ -28,14 +22,15 @@ public class UserDetailsEntity {
     private @Nullable
     String email;
 
-    @OneToOne
-    @JoinColumn
-    private @Nullable
-    FileInfo profilePicture;
+    @Lob
+    private byte[] image;
+    @Column(nullable = false)
+    private boolean hasProfileImage = false;
 
     @Id
     @Column(name = "user_id")
     private Long id;
+
     @OneToOne
     @MapsId
     @JoinColumn(name = "user_id")
@@ -43,17 +38,51 @@ public class UserDetailsEntity {
 
     public UserDetailsEntity(@NonNull String nickname,
                              @Nullable String email,
-                             @Nullable FileInfo profilePicture) {
+                             @Nullable byte[] image) {
         this.nickname = nickname;
         this.email = email;
-        this.profilePicture = profilePicture;
+        if (image != null) {
+            this.image = image;
+            this.hasProfileImage = true;
+        }
     }
 
-    public @Nullable
-    UUID getProfilePicturePubId() {
-        return profilePicture != null ?
-                profilePicture.getPubId() :
-                null;
+    public String getNickname() {
+        return nickname;
     }
 
+    @Nullable
+    public String getEmail() {
+        return email;
+    }
+
+    public boolean isHasProfileImage() {
+        return hasProfileImage;
+    }
+
+    @Nullable
+    public byte[] getImage() {
+        if (hasProfileImage) {
+            return this.image;
+        }
+
+        return null;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void setEmail(@Nullable String email) {
+        this.email = email;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+        this.hasProfileImage = true;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
 }

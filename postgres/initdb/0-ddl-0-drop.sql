@@ -23,8 +23,6 @@ alter table if exists filesystems
 alter table if exists role_entity
     drop constraint if exists FKih8eyutwr9a19m9q2ihue15r0;
 alter table if exists user_details
-    drop constraint if exists FKdic9c3qbc8w2vp8humyr03m1m;
-alter table if exists user_details
     drop constraint if exists FKicouhgavvmiiohc28mgk0kuj5;
 drop table if exists drive cascade;
 drop table if exists file_ancestor cascade;

@@ -1,6 +1,8 @@
 package com.cloudpi.cloudpi.user.service;
 
 import com.cloudpi.cloudpi.config.security.Role;
+import com.cloudpi.cloudpi.exception.file.CouldNotReadFileException;
+import com.cloudpi.cloudpi.exception.resource.IllegalNoResourceException;
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
 import com.cloudpi.cloudpi.exception.user.UserNotExistException;
 import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
@@ -21,7 +23,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -98,27 +102,45 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
+    public void updateUserProfilePicture(String username, MultipartFile file) {
+        var entity = userRepo.findByUsername(username)
+                .orElseThrow(IllegalNoResourceException::new);
+
+        try {
+            entity
+                    .getUserDetails()
+                    .setImage(file.getBytes());
+        } catch (IOException e) {
+            throw new CouldNotReadFileException();
+        }
+    }
+
+    @Override
     public void updateUserDetails(String username, PatchUserRequest request) {
         var user = userRepo.findByUsername(username)
                 .orElseThrow(UserNotExistException::new);
+
         if (request.email() != null) {
             user.getUserDetails().setEmail(request.email());
         }
         if (request.nickname() != null) {
             user.getUserDetails().setNickname(request.nickname());
         }
-        if (request.profilePicturePubId() != null) {
-            var file = fileInfoRepo.findByPubId(request.profilePicturePubId())
-                    .orElseThrow(ResourceNotExistException::new);
-            user.getUserDetails().setProfilePicture(file);
-        }
 
         userRepo.save(user);
     }
 
     @Override
+    public void updateUserPassword(String username, String nonEncodedPassword) {
+        var user = userRepo.findByUsername(username)
+                .orElseThrow(ResourceNotExistException::new);
+
+        user.setPassword(passwordEncoder.encode(username));
+    }
+
+    @Override
     public void deleteUser(String username) {
-        for(var id : fileInfoRepo.getUsersFilesIds(username, FileType.DIRECTORY)) {
+        for (var id : fileInfoRepo.getUsersFilesIds(username, FileType.DIRECTORY)) {
             fileService.delete(id);
         }
         var user = userRepo.findByUsername(username)
