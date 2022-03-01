@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.UUID;
@@ -44,11 +45,11 @@ public interface FileAPI {
             Authentication auth);
 
 
-    @GetMapping("file/{fileId}")
+    @GetMapping(value = "file/{fileId}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "downloads a file",
             description = "Returns a binary of file with provided UUID")
-    Resource downloadFile(@PathVariable UUID fileId);
+    Resource downloadFile(@PathVariable UUID fileId, HttpServletResponse response);
 
 
     @GetMapping("directory/{directoryId}")

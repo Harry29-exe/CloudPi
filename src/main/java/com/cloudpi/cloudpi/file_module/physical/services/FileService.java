@@ -3,6 +3,7 @@ package com.cloudpi.cloudpi.file_module.physical.services;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.pojo.VirtualPath;
 import com.cloudpi.cloudpi.file_module.permission.service.dto.CreateFile;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +20,7 @@ public interface FileService {
     FileInfoDTO createDir(VirtualPath path);
 
     @PreAuthorize("@filePermissionVerifier.canRead(#filePubId)")
-    Resource read(UUID filePubId);
+    FileSystemResource read(UUID filePubId);
 
     @PreAuthorize("@filePermissionVerifier.canModify(#filePubId)")
     FileInfoDTO modify(UUID filePubId, MultipartFile file);

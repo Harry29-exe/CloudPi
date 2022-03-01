@@ -5,12 +5,12 @@ import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.file_module.filesystem.pojo.VirtualPath;
 import com.cloudpi.cloudpi.file_module.permission.service.dto.CreateFile;
 import com.cloudpi.cloudpi.file_module.physical.services.FileService;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -53,8 +53,17 @@ public class FileAPIController implements FileAPI {
     }
 
     @Override
-    public Resource downloadFile(UUID fileId) {
-        return fileService.read(fileId);
+    public Resource downloadFile(UUID fileId, HttpServletResponse response) {
+        var file = fileService.read(fileId);
+//        file.getFile().length()
+
+        String contentLength;
+        var rawFile = file.getFile();
+        var length = rawFile.length();
+        contentLength = length + "";
+        response.addHeader("Content-Length", contentLength);
+
+        return file;
     }
 
     @Override

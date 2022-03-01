@@ -12,9 +12,8 @@ import com.cloudpi.cloudpi.file_module.filesystem.services.dto.CreateFileInDB;
 import com.cloudpi.cloudpi.file_module.filesystem.services.dto.UpdateVFile;
 import com.cloudpi.cloudpi.file_module.permission.service.dto.CreateFile;
 import com.cloudpi.cloudpi.utils.AppService;
-import com.fasterxml.jackson.databind.deser.std.StringArrayDeserializer;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -24,7 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -75,15 +77,11 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Resource read(UUID filePubId) {
+    public FileSystemResource read(UUID filePubId) {
         var path = driveService.getPathToFile(filePubId);
 
-        try {
-            return new InputStreamResource(new FileInputStream(path.toFile()));
-
-        } catch (IOException ioex) {
-            throw new CouldNotReadFileException();
-        }
+        //            return new InputStreamResource(new FileInputStream(path.toFile()));
+        return new FileSystemResource(path);
     }
 
     @Override
