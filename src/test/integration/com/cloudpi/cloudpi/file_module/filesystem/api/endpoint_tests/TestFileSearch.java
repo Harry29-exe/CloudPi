@@ -9,6 +9,8 @@ import com.cloudpi.cloudpi.utils.mock_mvc_users.WithUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static com.cloudpi.cloudpi.utils.api_tests.MockMvcUtils.getBodyAsList;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -21,12 +23,13 @@ public class TestFileSearch extends FilesystemTestTemplate {
     }
 
     @Test
-    @WithUser
+    @WithUser(username = "bob")
     void should_return_text_file_info() throws Exception {
         //given
         var query = new FileQueryDTO(
                 "text.txt",
-                FileType.TEXT_FILE,
+                null,
+                List.of(FileType.TEXT_FILE),
                 null,
                 null
         );

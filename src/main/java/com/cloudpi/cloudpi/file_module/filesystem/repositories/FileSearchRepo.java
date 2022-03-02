@@ -16,19 +16,22 @@ public class FileSearchRepo {
     private EntityManager entityManager;
 
     //todo !!! should take username to return only files that belong to user
-    //todo to jest wgl bezpieczne
+    //todo to jest wgl bezpieczne?
     public List<FileInfo> findByQuery(FileQueryDTO queryDTO) {
         String queryStr =
                 "SELECT f " +
                         "FROM FileInfo f " +
                         "JOIN f.details d " +
                         "WHERE " +
+                        (queryDTO.getPath() == null ?
+                                "" :
+                                " f.path LIKE :path") +
                         (queryDTO.getName() == null ?
                                 "" :
-                                " f.name = :name AND ") +
-                        (queryDTO.getType() == null ?
+                                " f.name LIKE :name AND ") +
+                        (queryDTO.getTypes() == null ?
                                 "" :
-                                " f.type = :type AND ") +
+                                " f.type IN :types AND ") +
                         (queryDTO.getLastModified() == null ?
                                 "" :
                                 " d.modifiedAt BETWEEN :modifiedFrom AND :modifiedTo AND ") +
@@ -46,9 +49,11 @@ public class FileSearchRepo {
         );
 
         if (queryDTO.getName() != null)
-            query.setParameter("name", queryDTO.getName());
-        if (queryDTO.getType() != null)
-            query.setParameter("type", queryDTO.getType());
+            query.setParameter("name", "%" + queryDTO.getName() + "%");
+        if (queryDTO.getPath() != null)
+            query.setParameter("path", queryDTO.getPath() + "%");
+        if (queryDTO.getTypes() != null)
+            query.setParameter("types", queryDTO.getTypes());
 
         if (queryDTO.getCreated() != null) {
             query.setParameter("createdFrom", queryDTO.getCreated().getFrom());

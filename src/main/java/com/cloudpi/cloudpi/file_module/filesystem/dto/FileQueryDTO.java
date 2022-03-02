@@ -7,6 +7,7 @@ import lombok.*;
 
 import javax.annotation.Nullable;
 import javax.validation.Valid;
+import java.util.List;
 
 
 @Schema(description = "All values are nullable (but if created or lastModified is supplied it has to contain both from and to dates).")
@@ -20,7 +21,10 @@ public class FileQueryDTO {
     private String name;
 
     @Schema(nullable = true, description = "nullable")
-    private FileType type;
+    private String path;
+
+    @Schema(nullable = true, description = "nullable")
+    private List<FileType> types;
 
     @Schema(nullable = true, description = "nullable")
     @Valid
