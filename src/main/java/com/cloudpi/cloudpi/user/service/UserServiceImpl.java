@@ -18,6 +18,8 @@ import com.cloudpi.cloudpi.user.repositiories.UserRepo;
 import com.cloudpi.cloudpi.user.service.dto.CreateUser;
 import com.cloudpi.cloudpi.utils.AppService;
 import com.google.common.collect.ImmutableList;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -38,7 +40,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final FileInfoRepo fileInfoRepo;
     private final FileService fileService;
 
-    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder, FilesystemService filesystemService, FileInfoRepo fileInfoRepo,
+    public UserServiceImpl(UserRepo userRepo,
+                           PasswordEncoder passwordEncoder,
+                           FilesystemService filesystemService,
+                           FileInfoRepo fileInfoRepo,
                            FileService fileService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
@@ -81,6 +86,19 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 .orElseThrow();
 
         return user.toUserDetailsDTO();
+    }
+
+    @Override
+    public Resource getProfileImg(String username) {
+        var user = userRepo.findByUsername(username)
+                .orElseThrow(UserNotExistException::new);
+
+        var img = user.getUserDetails().getImage();
+        if (img == null) {
+            throw new ResourceNotExistException();
+        }
+
+        return new ByteArrayResource(img);
     }
 
     @Override
@@ -135,7 +153,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         var user = userRepo.findByUsername(username)
                 .orElseThrow(ResourceNotExistException::new);
 
-        user.setPassword(passwordEncoder.encode(username));
+        user.setPassword(passwordEncoder.encode(nonEncodedPassword));
     }
 
     @Override

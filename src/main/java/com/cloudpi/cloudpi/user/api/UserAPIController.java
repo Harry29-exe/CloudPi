@@ -8,6 +8,7 @@ import com.cloudpi.cloudpi.user.dto.UserIdDTO;
 import com.cloudpi.cloudpi.user.service.UserService;
 import com.cloudpi.cloudpi.user.service.dto.CreateUser;
 import com.cloudpi.cloudpi.utils.CurrentRequestUtils;
+import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,6 +37,11 @@ public class UserAPIController implements UserAPI {
     @Override
     public UserDetailsDTO getUsersDetails(String username) {
         return userService.getUserDetails(username);
+    }
+
+    @Override
+    public Resource downloadProfileImage(String username) {
+        return userService.getProfileImg(username);
     }
 
     @Override

@@ -10,7 +10,9 @@ import com.cloudpi.cloudpi.user.dto.UserIdDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,6 +46,11 @@ public interface UserAPI {
     UserDetailsDTO getUsersDetails(@PathVariable(name = "username") String username);
 
 
+    @GetMapping(value = "profile-image", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @Operation(summary = "Downloads user's profile image",
+            description = "Downloads user's profile image as byte array")
+    Resource downloadProfileImage(@RequestParam String username);
+
     @IsAdminOrMod
     @PostMapping("new")
     @ResponseStatus(HttpStatus.CREATED)
@@ -64,7 +71,7 @@ public interface UserAPI {
                            @RequestBody PatchUserRequest request);
 
 
-    @PatchMapping("profile-image")
+    @PostMapping(value = "profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     void setProfileImage(@RequestBody MultipartFile file);
 
 
