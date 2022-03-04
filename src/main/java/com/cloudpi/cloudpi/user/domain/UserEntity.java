@@ -62,6 +62,7 @@ public class UserEntity {
     @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.ALL,
+            orphanRemoval = true,
             fetch = FetchType.EAGER)
     private Set<RoleEntity> roles;
 
@@ -85,9 +86,19 @@ public class UserEntity {
         var roleExist = roles.stream()
                 .anyMatch(r -> r.getRole().equals(role));
 
-        if(!roleExist) {
+        if (!roleExist) {
             roles.add(new RoleEntity(this, role));
         }
+    }
+
+    public void removeRole(Role role) {
+        roles
+                .stream()
+                .filter(re -> re.getRole().equals(role))
+                .findFirst()
+                .ifPresent(re -> re.setUser(null));
+
+        roles.removeIf(re -> re.getRole().equals(role));
     }
 
     //---------------Mappers---------------

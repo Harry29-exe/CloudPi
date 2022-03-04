@@ -2,6 +2,7 @@ package com.cloudpi.cloudpi.user.service;
 
 import com.cloudpi.cloudpi.config.security.Role;
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
+import com.cloudpi.cloudpi.exception.user.UserNotExistException;
 import com.cloudpi.cloudpi.user.domain.RoleEntity;
 import com.cloudpi.cloudpi.user.repositiories.RoleRepo;
 import com.cloudpi.cloudpi.user.repositiories.UserRepo;
@@ -42,6 +43,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void revoke(String username, List<Role> roles) {
-        roleRepo.deleteAllByUser_UsernameAndRoleIn(username, roles);
+        var user = userRepo.findByUsername(username)
+                .orElseThrow(UserNotExistException::new);
+
+        roles.forEach(user::removeRole);
     }
 }
