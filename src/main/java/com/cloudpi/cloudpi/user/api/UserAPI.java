@@ -5,6 +5,7 @@ import com.cloudpi.cloudpi.config.security.Role;
 import com.cloudpi.cloudpi.user.api.requests.PatchPasswordRequest;
 import com.cloudpi.cloudpi.user.api.requests.PatchUserRequest;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
+import com.cloudpi.cloudpi.user.api.requests.PutUserPasswordRequest;
 import com.cloudpi.cloudpi.user.dto.UserDetailsDTO;
 import com.cloudpi.cloudpi.user.dto.UserIdDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -74,12 +75,22 @@ public interface UserAPI {
     @PostMapping(value = "profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     void setProfileImage(@RequestBody MultipartFile file);
 
+    @PostMapping(value = "profile-image/{username}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    void setProfileImage(@PathVariable String username, @RequestBody MultipartFile file);
+
 
     @PatchMapping("password")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "updates user's password",
             description = "Takes current and new password, and set new password to currently logged user")
     void updateUserPassword(@RequestBody PatchPasswordRequest request);
+
+    @PreAuthorize("hasRole('" + Role.admin + "')")
+    @PutMapping("password")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "updates user's password as admin",
+            description = "Takes current and new password, and set new password to currently logged user")
+    void updateUserPassword(@RequestBody PutUserPasswordRequest request);
 
 
     @PreAuthorize("hasAnyRole('" + Role.admin + "', '" + Role.moderator + "') OR " +

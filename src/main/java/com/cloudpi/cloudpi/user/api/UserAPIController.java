@@ -3,6 +3,7 @@ package com.cloudpi.cloudpi.user.api;
 import com.cloudpi.cloudpi.user.api.requests.PatchPasswordRequest;
 import com.cloudpi.cloudpi.user.api.requests.PatchUserRequest;
 import com.cloudpi.cloudpi.user.api.requests.PostUserRequest;
+import com.cloudpi.cloudpi.user.api.requests.PutUserPasswordRequest;
 import com.cloudpi.cloudpi.user.dto.UserDetailsDTO;
 import com.cloudpi.cloudpi.user.dto.UserIdDTO;
 import com.cloudpi.cloudpi.user.service.UserService;
@@ -63,6 +64,11 @@ public class UserAPIController implements UserAPI {
     }
 
     @Override
+    public void setProfileImage(String username, MultipartFile file) {
+        userService.updateUserProfilePicture(username, file);
+    }
+
+    @Override
     public void updateUserDetails(String username, PatchUserRequest request) {
         userService.updateUserDetails(username, request);
     }
@@ -80,6 +86,11 @@ public class UserAPIController implements UserAPI {
 
             userService.updateUserPassword(auth.getName(), request.newPassword());
         }
+    }
+
+    @Override
+    public void updateUserPassword(PutUserPasswordRequest request) {
+        userService.updateUserPassword(request.username(), request.newPassword());
     }
 
     @Override
