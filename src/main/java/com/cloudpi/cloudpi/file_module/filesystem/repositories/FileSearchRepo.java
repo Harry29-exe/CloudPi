@@ -25,7 +25,7 @@ public class FileSearchRepo {
                         "WHERE " +
                         (queryDTO.getPath() == null ?
                                 "" :
-                                " f.path LIKE :path") +
+                                " f.path LIKE :path AND ") +
                         (queryDTO.getName() == null ?
                                 "" :
                                 " f.name LIKE :name AND ") +

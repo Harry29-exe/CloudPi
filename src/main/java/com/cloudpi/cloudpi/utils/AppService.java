@@ -23,7 +23,7 @@ public @interface AppService {
     Propagation propagation() default Propagation.REQUIRED;
 
     @AliasFor(annotation = Transactional.class)
-    Isolation isolation() default Isolation.SERIALIZABLE;
+    Isolation isolation() default Isolation.REPEATABLE_READ;
 
     @AliasFor(annotation = Transactional.class)
     Class<? extends Throwable>[] rollbackFor() default {};
