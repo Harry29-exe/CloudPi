@@ -42,11 +42,10 @@ create table file_info
 );
 create table file_permission
 (
-    id          int8 not null,
-    type        int4 not null,
-    file_id     int8,
-    user_id     int8,
-    permissions int8,
+    id      int8 not null,
+    type    int4 not null,
+    file_id int8,
+    user_id int8,
     primary key (id)
 );
 create table filesystems
@@ -110,8 +109,6 @@ alter table if exists file_permission
     add constraint FKn3kpjngwoce5euneoca0mdrpl foreign key (file_id) references file_info;
 alter table if exists file_permission
     add constraint FKp43uy7esj9vsuqvotjod8i0ty foreign key (user_id) references users;
-alter table if exists file_permission
-    add constraint FKjpfsll8d9e62tmhyc5jo7yjj5 foreign key (permissions) references file_info;
 alter table if exists filesystems
     add constraint FKhf1rlrrl3r5qoewirr7hagfb6 foreign key (user_id) references users;
 alter table if exists filesystems

@@ -14,8 +14,6 @@ alter table if exists file_permission
     drop constraint if exists FKn3kpjngwoce5euneoca0mdrpl;
 alter table if exists file_permission
     drop constraint if exists FKp43uy7esj9vsuqvotjod8i0ty;
-alter table if exists file_permission
-    drop constraint if exists FKjpfsll8d9e62tmhyc5jo7yjj5;
 alter table if exists filesystems
     drop constraint if exists FKhf1rlrrl3r5qoewirr7hagfb6;
 alter table if exists filesystems
