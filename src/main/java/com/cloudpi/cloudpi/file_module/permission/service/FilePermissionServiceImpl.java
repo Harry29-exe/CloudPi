@@ -1,7 +1,6 @@
 package com.cloudpi.cloudpi.file_module.permission.service;
 
 import com.cloudpi.cloudpi.exception.resource.ResourceNotExistException;
-import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.permission.dto.FilePermissionsDTO;
 import com.cloudpi.cloudpi.file_module.permission.dto.UserFilePermissionsDTO;
@@ -67,12 +66,6 @@ public class FilePermissionServiceImpl implements FilePermissionService {
                 filePubId,
                 permissionsDTO
         );
-    }
-
-    @Override
-    public List<FileInfoDTO> getFilesSharedToUser(String username) {
-
-        return null;
     }
 
     @Override

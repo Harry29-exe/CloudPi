@@ -34,4 +34,5 @@ public class FilePermission {
     @ManyToOne
     @JoinColumn
     private FileInfo file;
+
 }

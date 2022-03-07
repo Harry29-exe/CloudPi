@@ -1,6 +1,5 @@
 package com.cloudpi.cloudpi.file_module.permission.service;
 
-import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.permission.dto.FilePermissionsDTO;
 import com.cloudpi.cloudpi.file_module.permission.dto.UserFilePermissionsDTO;
 import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
@@ -18,8 +17,6 @@ public interface FilePermissionService {
     UserFilePermissionsDTO get(UUID filePubId);
 
     FilePermissionsDTO getPermissionsToFile(UUID filePubId);
-
-    List<FileInfoDTO> getFilesSharedToUser(String username);
 
     void grant(String username, UUID filePubId, List<PermissionType> types);
 

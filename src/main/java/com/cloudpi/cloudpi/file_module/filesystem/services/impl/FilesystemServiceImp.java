@@ -12,9 +12,6 @@ import com.cloudpi.cloudpi.file_module.filesystem.pojo.VirtualPath;
 import com.cloudpi.cloudpi.file_module.filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.filesystem.repositories.FilesystemRootInfoRepo;
 import com.cloudpi.cloudpi.file_module.filesystem.services.FilesystemService;
-import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
-import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
-import com.cloudpi.cloudpi.user.domain.UserEntity;
 import com.cloudpi.cloudpi.user.repositiories.UserRepo;
 import com.cloudpi.cloudpi.utils.AppService;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,7 +58,6 @@ public class FilesystemServiceImp implements FilesystemService {
 
         var rootDir = FileInfo.createRootDir(user.getUsername());
         rootDir.setRoot(userDrive);
-        rootDir.setPermissions(grantPermissionsToRoot(user, rootDir));
         fileInfoRepo.saveAndFlush(rootDir);
 
         userDrive.setRootVDirectory(rootDir);
@@ -134,13 +130,6 @@ public class FilesystemServiceImp implements FilesystemService {
     @Override
     public void deleteRoot(String username) {
         filesystemRootInfoRepo.deleteByOwner_Username(username);
-    }
-
-    private List<FilePermission> grantPermissionsToRoot(UserEntity user, FileInfo rootDir) {
-        List<FilePermission> permissions = new ArrayList<>();
-        permissions.add(new FilePermission(PermissionType.READ, user, rootDir));
-        permissions.add(new FilePermission(PermissionType.MODIFY, user, rootDir));
-        return permissions;
     }
 
     private FilesystemInfoDTO getVirtualDrivesInfo(String username, FilesystemInfo filesystem) {

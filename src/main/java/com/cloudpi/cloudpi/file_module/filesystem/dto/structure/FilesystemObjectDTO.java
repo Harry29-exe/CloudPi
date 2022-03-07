@@ -19,6 +19,7 @@ public class FilesystemObjectDTO {
     private Date modifiedAt;
     private Integer version;
     private FileType type;
+    private Boolean favourite;
     private List<FilesystemObjectDTO> children;
 
 }

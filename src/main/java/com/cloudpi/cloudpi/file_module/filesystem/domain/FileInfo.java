@@ -100,8 +100,8 @@ public class FileInfo {
     @OneToMany(
             cascade = {CascadeType.ALL},
             orphanRemoval = true,
+            mappedBy = "file",
             fetch = FetchType.LAZY)
-    @JoinColumn(name = "permissions")
     private List<FilePermission> permissions;
 
     //------Constructors------
@@ -195,6 +195,7 @@ public class FileInfo {
                 details.getModifiedAt(),
                 fileVersion,
                 type,
+                details.getIsFavourite(),
                 children
         );
     }
