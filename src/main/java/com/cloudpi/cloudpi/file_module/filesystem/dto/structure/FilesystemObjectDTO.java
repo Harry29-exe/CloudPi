@@ -1,6 +1,8 @@
 package com.cloudpi.cloudpi.file_module.filesystem.dto.structure;
 
 import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
+import com.cloudpi.cloudpi.file_module.permission.dto.FilePermissionsDTO;
+import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
 import lombok.*;
 
 import java.util.Date;
@@ -20,6 +22,7 @@ public class FilesystemObjectDTO {
     private Integer version;
     private FileType type;
     private Boolean favourite;
+    private List<PermissionType> permissions;
     private List<FilesystemObjectDTO> children;
 
 }

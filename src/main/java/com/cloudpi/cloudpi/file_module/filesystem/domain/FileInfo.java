@@ -1,10 +1,13 @@
 package com.cloudpi.cloudpi.file_module.filesystem.domain;
 
+import com.cloudpi.cloudpi.exception.permissions.PermissionAlreadyExistsException;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.structure.FilesystemObjectDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.pojo.FileType;
 import com.cloudpi.cloudpi.file_module.filesystem.services.dto.UpdateVFile;
+import com.cloudpi.cloudpi.file_module.permission.dto.FilePermissionsDTO;
 import com.cloudpi.cloudpi.file_module.permission.entities.FilePermission;
+import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
 import com.cloudpi.cloudpi.file_module.physical.domain.Drive;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -187,7 +190,8 @@ public class FileInfo {
         );
     }
 
-    public FilesystemObjectDTO mapToFilesystemObjectDTO(List<FilesystemObjectDTO> children) {
+    public FilesystemObjectDTO mapToFilesystemObjectDTO(List<FilesystemObjectDTO> children,
+                                                        List<PermissionType> permissions) {
         return new FilesystemObjectDTO(
                 pubId,
                 name,
@@ -196,6 +200,7 @@ public class FileInfo {
                 fileVersion,
                 type,
                 details.getIsFavourite(),
+                permissions,
                 children
         );
     }

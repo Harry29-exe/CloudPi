@@ -12,14 +12,13 @@ import com.cloudpi.cloudpi.file_module.filesystem.pojo.VirtualPath;
 import com.cloudpi.cloudpi.file_module.filesystem.repositories.FileInfoRepo;
 import com.cloudpi.cloudpi.file_module.filesystem.repositories.FilesystemRootInfoRepo;
 import com.cloudpi.cloudpi.file_module.filesystem.services.FilesystemService;
+import com.cloudpi.cloudpi.file_module.permission.entities.PermissionType;
 import com.cloudpi.cloudpi.user.repositiories.UserRepo;
 import com.cloudpi.cloudpi.utils.AppService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.cloudpi.cloudpi.utils.CurrentRequestUtils.getCurrentUserUsernameOrThrow;
@@ -76,7 +75,7 @@ public class FilesystemServiceImp implements FilesystemService {
                 path, depth
         );
 
-        return transformToFileStructure(files, path);
+        return transformToFileStructure(files, path, username);
     }
 
     @Override
@@ -143,7 +142,7 @@ public class FilesystemServiceImp implements FilesystemService {
         return files.stream().mapToLong(file -> file.getDetails().getSize()).sum();
     }
 
-    private FileStructureDTO transformToFileStructure(List<FileInfo> files, String entryPointPath) {
+    private FileStructureDTO transformToFileStructure(List<FileInfo> files, String entryPointPath, String username) {
         Map<Long, List<FileInfo>> parentIdFileInfoMap =
                 files.stream()
                         .collect(Collectors.groupingBy(f ->
@@ -160,23 +159,33 @@ public class FilesystemServiceImp implements FilesystemService {
 
         return new FileStructureDTO(
                 entryPointPath,
-                createFileStructureObject(fsEntryPoint, parentIdFileInfoMap)
+                createFileStructureObject(fsEntryPoint, parentIdFileInfoMap, username)
         );
     }
 
-    private FilesystemObjectDTO createFileStructureObject(FileInfo entryPoint, Map<Long, List<FileInfo>> parentIdFileMap) {
+    private FilesystemObjectDTO createFileStructureObject(FileInfo entryPoint, Map<Long, List<FileInfo>> parentIdFileMap,
+                                                          String username) {
+        var permissions = entryPoint.getPermissions().stream()
+                .filter(fp -> fp.getUser().getUsername().equals(username))
+                .collect(Collectors.toList());
+        List<PermissionType> permissionNames = new LinkedList<>();
+        for (var perm : permissions) {
+            permissionNames.add(perm.getType());
+        }
+
         var childrenFiles = parentIdFileMap.get(entryPoint.getId());
         if (childrenFiles == null || childrenFiles.isEmpty()) {
-            return entryPoint.mapToFilesystemObjectDTO(new ArrayList<>());
+            return entryPoint.mapToFilesystemObjectDTO(new ArrayList<>(), permissionNames);
         }
 
         var children = childrenFiles
                 .stream()
-                .map(child -> createFileStructureObject(child, parentIdFileMap))
+                .map(child -> createFileStructureObject(child, parentIdFileMap, username))
                 .toList();
 
         return entryPoint.mapToFilesystemObjectDTO(
-                children
+                children,
+                permissionNames
         );
     }
 
