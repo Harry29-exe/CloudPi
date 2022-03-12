@@ -97,7 +97,6 @@ public interface FileInfoRepo extends JpaRepository<FileInfo, Long> {
             """)
     List<FileInfo> findAllSharedByUser(String username, Pageable pageable);
 
-    void deleteAllByRoot_Owner_Username(String username);
 
     @Query("""
                 SELECT f.pubId
@@ -106,4 +105,17 @@ public interface FileInfoRepo extends JpaRepository<FileInfo, Long> {
                 AND f.type <> :directory
             """)
     List<UUID> getUsersFilesIds(String username, FileType directory);
+
+    @Query("""
+                SELECT f.pubId
+                FROM FileInfo f
+                WHERE f.root.owner.username = :username
+                AND f.parentId is not null
+                ORDER BY f.parentId DESC
+            """)
+    List<UUID> getAllUsersFiles(String username);
+
+    @Transactional
+    @Modifying
+    void deleteByPubId(UUID pubId);
 }

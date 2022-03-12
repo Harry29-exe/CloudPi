@@ -163,6 +163,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         }
         var user = userRepo.findByUsername(username)
                 .orElseThrow(UserNotExistException::new);
+        var allIds = fileInfoRepo.getAllUsersFiles(username);
+        for(var id : allIds) {
+            fileInfoRepo.deleteByPubId(id);
+        }
         userRepo.delete(user);
     }
 }
