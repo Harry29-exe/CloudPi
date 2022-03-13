@@ -6,6 +6,7 @@ import com.cloudpi.cloudpi.file_module.filesystem.api.request.MoveFileRequest;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileQueryDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FilesystemInfoDTO;
+import com.cloudpi.cloudpi.file_module.filesystem.dto.SharedFileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.structure.FileStructureDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,7 +46,7 @@ public interface FilesystemAPI {
     @Operation(summary = "Returns list of files that was shared to user",
             description = "Returns list of files that belong to other user but" +
                     "can be accessed by currently logged user")
-    List<FileInfoDTO> getFilesSharedToUser();
+    List<SharedFileInfoDTO> getFilesSharedToUser();
 
 
     @PutMapping("directory")

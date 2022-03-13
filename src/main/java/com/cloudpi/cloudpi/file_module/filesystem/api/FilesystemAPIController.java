@@ -5,6 +5,7 @@ import com.cloudpi.cloudpi.file_module.filesystem.api.request.MoveFileRequest;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileQueryDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FilesystemInfoDTO;
+import com.cloudpi.cloudpi.file_module.filesystem.dto.SharedFileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.structure.FileStructureDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.pojo.VirtualPath;
 import com.cloudpi.cloudpi.file_module.filesystem.services.FileInfoService;
@@ -39,7 +40,7 @@ public class FilesystemAPIController implements FilesystemAPI {
     }
 
     @Override
-    public List<FileInfoDTO> getFilesSharedToUser() {
+    public List<SharedFileInfoDTO> getFilesSharedToUser() {
         return filesystemService.getSharedToUser();
     }
 

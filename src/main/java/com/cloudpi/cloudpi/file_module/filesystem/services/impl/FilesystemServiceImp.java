@@ -6,6 +6,7 @@ import com.cloudpi.cloudpi.file_module.filesystem.domain.FileInfo;
 import com.cloudpi.cloudpi.file_module.filesystem.domain.FilesystemInfo;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FilesystemInfoDTO;
+import com.cloudpi.cloudpi.file_module.filesystem.dto.SharedFileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.structure.FileStructureDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.structure.FilesystemObjectDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.pojo.VirtualPath;
@@ -94,13 +95,17 @@ public class FilesystemServiceImp implements FilesystemService {
     }
 
     @Override
-    public List<FileInfoDTO> getSharedToUser() {
+    public List<SharedFileInfoDTO> getSharedToUser() {
         var username = getCurrentUserUsernameOrThrow();
         var sharedFiles = fileInfoRepo.findAllSharedToUser(username);
+        List<SharedFileInfoDTO> sharedFilesDTO = new LinkedList<>();
 
-        return sharedFiles.stream()
-                .map(FileInfo::mapToDTO)
-                .collect(Collectors.toList());
+        for(var file: sharedFiles) {
+            var permissions = getUserFilePermissions(file, username);
+            var fileDto = file.mapToDTO();
+            sharedFilesDTO.add(new SharedFileInfoDTO(fileDto, permissions));
+        }
+        return sharedFilesDTO;
     }
 
     @Override
@@ -165,13 +170,7 @@ public class FilesystemServiceImp implements FilesystemService {
 
     private FilesystemObjectDTO createFileStructureObject(FileInfo entryPoint, Map<Long, List<FileInfo>> parentIdFileMap,
                                                           String username) {
-        var permissions = entryPoint.getPermissions().stream()
-                .filter(fp -> fp.getUser().getUsername().equals(username))
-                .collect(Collectors.toList());
-        List<PermissionType> permissionNames = new LinkedList<>();
-        for (var perm : permissions) {
-            permissionNames.add(perm.getType());
-        }
+        var permissionNames = getUserFilePermissions(entryPoint, username);
 
         var childrenFiles = parentIdFileMap.get(entryPoint.getId());
         if (childrenFiles == null || childrenFiles.isEmpty()) {
@@ -187,6 +186,22 @@ public class FilesystemServiceImp implements FilesystemService {
                 children,
                 permissionNames
         );
+    }
+
+    private List<PermissionType> getUserFilePermissions(FileInfo file, String username) {
+        var permissions = file.getPermissions().stream()
+                .filter(fp -> fp.getUser().getUsername().equals(username))
+                .collect(Collectors.toList());
+        List<PermissionType> permissionNames = new LinkedList<>();
+        if(file.getRoot().getOwner().getUsername().equals(username)) {
+            permissionNames.add(PermissionType.READ);
+            permissionNames.add(PermissionType.MODIFY);
+            return permissionNames;
+        }
+        for (var perm : permissions) {
+            permissionNames.add(perm.getType());
+        }
+        return permissionNames;
     }
 
 }

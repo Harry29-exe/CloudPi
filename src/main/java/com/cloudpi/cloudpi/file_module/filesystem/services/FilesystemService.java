@@ -3,6 +3,7 @@ package com.cloudpi.cloudpi.file_module.filesystem.services;
 import com.cloudpi.cloudpi.config.security.HasUserRole;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.FilesystemInfoDTO;
+import com.cloudpi.cloudpi.file_module.filesystem.dto.SharedFileInfoDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.dto.structure.FileStructureDTO;
 import com.cloudpi.cloudpi.file_module.filesystem.pojo.VirtualPath;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public interface FilesystemService {
     List<FileInfoDTO> getSharedByUser(Pageable pageable);
 
     @HasUserRole
-    List<FileInfoDTO> getSharedToUser();
+    List<SharedFileInfoDTO> getSharedToUser();
 
     @HasUserRole
     List<FileInfoDTO> getSharedToUser(Pageable pageable);
