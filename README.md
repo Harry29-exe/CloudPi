@@ -8,6 +8,21 @@ CloudPi is project aiming to create home cloud storage that can be run at Raspbe
 microcomputer. Project was developed during "Team Project" classes at the 
 Warsaw University of Technology by team of 5 people.
 
+## Table of content
+- [CloudPi Project](#cloudpi-project)
+- [Team](#team)
+- [About](#about-this-repository)
+- [Functionality](#project-functionality)
+  - [FileAPI](#fileapi)
+  - [FilesystemAPI](#filesystemapi)
+  - [FilePermissionAPI](#filepermissionapi)
+  - [FavouriteAPI](#favouriteapi)
+  - [DriveAPI](#driveapi)
+  - [UserManagementAPI](#usermanagementapi)
+  - [RoleAPI](#roleapi)
+  - [AuthenticationAPI](#authenticationapi)
+- [Deployment](#deployment)
+
 ## Team
 Project was developed by 5 people.  
 Backend was done by:
@@ -80,4 +95,14 @@ used for accessing resources.
 ![](readme/AuthenticationAPI.png)
 
 
-
+## Deployment
+#### docker-compose
+Easiest way of deploying application is through docker-compose
+in this approach the only requirement is installed docker and docker-compose.
+```
+cd <path>/CloudPi
+sudo docker-compose build;
+sudo docker-compose up;
+```
+The main disadvantage of this approach is that docker can not access system
+filesystem and is therefore unable to write uploaded files to any installed drive.
