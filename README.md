@@ -10,8 +10,8 @@ Warsaw University of Technology by team of 5 people.
 
 ## Table of content
 - [CloudPi Project](#cloudpi-project)
-- [Team](#team)
 - [About](#about-this-repository)
+- [Team](#team)
 - [Functionality](#project-functionality)
   - [FileAPI](#fileapi)
   - [FilesystemAPI](#filesystemapi)
@@ -23,6 +23,17 @@ Warsaw University of Technology by team of 5 people.
   - [AuthenticationAPI](#authenticationapi)
 - [Deployment](#deployment)
 
+## About this repository
+This is repository for backend of project called Raspberry.
+Project is split between two repositories this one containing backend and the other one containing
+frontend of the application.
+<br/><br/>
+Link to frontend repository:
+<a href="https://github.com/KamilSztandur/CloudPi-clients">
+CloudPi frontend
+</a>
+
+
 ## Team
 Project was developed by 5 people.  
 Backend was done by:
@@ -33,16 +44,6 @@ Frontend was done by:
 - Kamil Sztandur
 - Kuba Grenda
 - \------ ----------
-
-## About this repository
-This is repository for backend of project called Raspberry. 
-Project is split between two repositories this one containing backend and the other one containing
-frontend of the application.
-<br/><br/>
-Link to frontend repository: 
-<a href="https://github.com/KamilSztandur/CloudPi-clients">
-    CloudPi frontend
-</a>
 
 ## Project functionality
 Main project functionality is file uploading, browsing and downloading. 
